@@ -1,0 +1,10 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Base.Theme.AndroidTask" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here -->
+        <item name="colorPrimary">#FF49709B</item>
+        <item name="colorPrimaryDark">#FF33547B</item>
+        <item name="colorAccent">#FF49709B</item>
+    </style>
+
+    <style name="Theme.AndroidTask" parent="Base.Theme.AndroidTask" />
+</resources>
