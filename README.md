@@ -2,7 +2,7 @@
 
 ## 添加请求链接
 
-在network软件包下的service软件包下的PhotoService类中添加，例如接口http://47.107.52.7:88/member/photo/share格式如下：
+在network软件包下的service软件包下的PhotoService类中添加，例如接口http://47.107.52.7:88/member/photo/share 格式如下：
 
 ```java
 	@GET("share")
@@ -59,11 +59,11 @@ Call的优缺点:
 
 #### 范型选择
 
-复制返回数据到BeJson网站（[在线JSON字符串转Java实体类(JavaBean、Entity)-BeJSON.com](https://www.bejson.com/json2javapojo/new/)），即可生成实体类。
+复制返回数据到BeJson网站（[在线JSON字符串转Java实体类(JavaBean、Entity)-BeJSON.com](https://www.bejson.com/json2javapojo/new/)） ，即可生成实体类。
 
 需要注意的是：生成的实体类可以把某些数据类型改为范型，这样可以重用这些实体类
 
-例如，http://47.107.52.7:88/member/photo/share返回的数据中data是一个Json，里面又有一个records列表，列表里面还是Json对象
+例如，http://47.107.52.7:88/member/photo/share 返回的数据中data是一个Json，里面又有一个records列表，列表里面还是Json对象
 
 ```json
 {
@@ -163,7 +163,7 @@ public class BaseResponse <T> {  //对应返回结果
 
 普通参数：比如请求地址:http://47.107.52.7:88/member/photo/collect?userId=1 那么userId作为参数传递时选择注解@Query
 
-Json参数：比如注册请求：http://47.107.52.7:88/member/photo/user/register，但参数是
+Json参数：比如注册请求：http://47.107.52.7:88/member/photo/user/register ，但参数是
 
 {
   "password": "123456",
