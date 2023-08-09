@@ -13,7 +13,7 @@
 
 图片分享后端提供api中除了GET就是POST，是哪个就写哪个
 
-链接就写除了BASE_URL(http://47.107.52.7:88/member/photo/)以外的部分，上面的链接就是share
+链接就写除了BASE_URL(http://47.107.52.7:88/member/photo/)  以外的部分，上面的链接就是share
 
 **注意：链接前面是没有/的，因为BASE_URL是以/结尾的**
 
