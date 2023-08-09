@@ -157,7 +157,7 @@ public class BaseResponse <T> {  //对应返回结果
 }
 ```
 
-那么此时我们的范型选择为**Observable<BaseResponse<Data<Records>>>**，刚好跟返回结果层层对应。
+那么此时我们的范型选择为Observable<BaseResponse<Data<Records>>>，刚好跟返回结果层层对应。
 
 #### 参数注解选择
 
