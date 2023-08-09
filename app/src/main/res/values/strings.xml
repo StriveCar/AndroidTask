@@ -14,4 +14,7 @@
     <string name="forget_password">忘记密码？</string>
     <string name="login">用户登录</string>
     <string name="resgiter">免费注册</string>
+    <string name="confirm_pwd">确认密码</string>
+    <string name="verify">验证码</string>
+    <string name="send_verify">发送验证码</string>
 </resources>
