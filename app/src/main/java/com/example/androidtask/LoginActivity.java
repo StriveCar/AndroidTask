@@ -4,7 +4,6 @@ package com.example.androidtask;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.InputType;
@@ -15,8 +14,19 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.androidtask.network.RetrofitClient;
+import com.example.androidtask.network.service.PhotoService;
+import com.example.androidtask.response.BaseResponse;
+import com.example.androidtask.response.LoginData;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -24,6 +34,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private EditText etPwd;
     private EditText etAccount;
     private CheckBox cbRememberPwd;
+    private ImageView ivPwdSwitch;
+    private Button btLogin;
+    private Button btRegister;
+
+    private final PhotoService photoService = RetrofitClient.getInstance().getService(PhotoService.class);
+    private Intent intent;
+
+    private static final  String  USER_ID = "USER_ID";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,11 +50,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
 
 
-        ImageView ivPwdSwitch = findViewById(R.id.iv_pwd_switch);
+        ivPwdSwitch = findViewById(R.id.iv_pwd_switch);
         etPwd = findViewById(R.id.et_pwd);
         etAccount = findViewById(R.id.et_account);
         cbRememberPwd = findViewById(R.id.cb_remember_pwd);
-        Button btLogin = findViewById(R.id.bt_login);
+        btLogin = findViewById(R.id.bt_login);
+        btRegister = findViewById(R.id.bt_resgiter);
 
 
         String spFileName = getResources()
@@ -67,8 +86,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         if (rememberPassword) cbRememberPwd.setChecked(true);
 
-        btLogin.setOnClickListener(this);
-
         ivPwdSwitch.setOnClickListener(view -> {
             int context = String.valueOf(etPwd.getText()).length();
             bPwdSwitch = !bPwdSwitch;
@@ -82,42 +99,77 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
             etPwd.setSelection(context);
         });
+
+        btLogin.setOnClickListener(this);
+        btRegister.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
-        String spFileName = getResources()
-                .getString(R.string.shared_preferences_file_name);
-        String accountKey = getResources()
-                .getString(R.string.login_account_name);
-        String passwordKey = getResources()
-                .getString(R.string.login_password);
-        String rememberPasswordKey = getResources()
-                .getString(R.string.login_remember_password);
+        if (view.getId() == R.id.bt_login) {
+            String spFileName = getResources()
+                    .getString(R.string.shared_preferences_file_name);
+            String accountKey = getResources()
+                    .getString(R.string.login_account_name);
+            String passwordKey = getResources()
+                    .getString(R.string.login_password);
+            String rememberPasswordKey = getResources()
+                    .getString(R.string.login_remember_password);
 
-        SharedPreferences spFile = getSharedPreferences(
-                spFileName,
-                Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = spFile.edit();
+            SharedPreferences spFile = getSharedPreferences(
+                    spFileName,
+                    Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = spFile.edit();
 
-        if (cbRememberPwd.isChecked()) {
             String password = etPwd.getText().toString();
             String account = etAccount.getText().toString();
 
-            editor.putString(accountKey, account);
-            editor.putString(passwordKey, password);
-            editor.putBoolean(rememberPasswordKey, true);
-            editor.apply();
-        } else {
-            editor.remove(accountKey);
-            editor.remove(passwordKey);
-            editor.remove(rememberPasswordKey);
-            editor.apply();
-        }
+            if (account.trim().isEmpty()) {
+                Toast.makeText(LoginActivity.this, "账号不能为空", Toast.LENGTH_SHORT).show();
+            } else if (password.trim().isEmpty()) {
+                Toast.makeText(LoginActivity.this, "密码不能为空", Toast.LENGTH_SHORT).show();
+            } else {
+                if (cbRememberPwd.isChecked()) {
+                    editor.putString(accountKey, account);
+                    editor.putString(passwordKey, password);
+                    editor.putBoolean(rememberPasswordKey, true);
+                    editor.apply();
+                } else {
+                    editor.remove(accountKey);
+                    editor.remove(passwordKey);
+                    editor.remove(rememberPasswordKey);
+                    editor.apply();
+                }
+                photoService.userLogin(etPwd.getText().toString(), etAccount.getText().toString()).enqueue(new Callback<BaseResponse<LoginData>>() {
+                    @Override
+                    public void onResponse(@NonNull Call<BaseResponse<LoginData>> call, @NonNull Response<BaseResponse<LoginData>> response) {
+                        if (response.body() != null) {
+                            if (response.body().getCode() == 200) {
+                                Toast.makeText(LoginActivity.this, "登录成功! ", Toast.LENGTH_SHORT).show();
 
-        Intent intent =new Intent();
-        intent.setClass(LoginActivity.this,MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+                                intent = new Intent();
+                                Bundle bundle = new Bundle();
+                                bundle.putString(USER_ID, response.body().getData().getId());
+                                intent.setClass(LoginActivity.this, MainActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                intent.putExtras(bundle);
+                                startActivity(intent);
+                            } else if (response.body().getCode() == 500) {
+                                Toast.makeText(LoginActivity.this, response.body().getMsg(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<BaseResponse<LoginData>> call, @NonNull Throwable t) {
+                        Toast.makeText(LoginActivity.this, "登录失败！", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+        } else if (view.getId() == R.id.bt_resgiter) {
+            intent = new Intent(LoginActivity.this, RegisterActivity.class);
+            startActivity(intent);
+        }
     }
 }

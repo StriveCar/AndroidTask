@@ -12,9 +12,19 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.androidtask.network.RetrofitClient;
+import com.example.androidtask.network.service.PhotoService;
+import com.example.androidtask.response.BaseResponse;
+import com.example.androidtask.response.User;
+
 import java.util.regex.Pattern;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
 
@@ -22,13 +32,15 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private EditText etPwd;
     private EditText etPwd2;
 
-    private EditText  etAccount;
+    private EditText etAccount;
     private EditText etVerify;
     private ImageView ivPwdSwitch;
     private ImageView ivPwdSwitch2;
 
-    private String num = "^1(3[0-9]|5[0-3,5-9]|7[1-3,5-8]|8[0-9])\\d{8}$";
+    private final String UserName = "^[a-z0-9A-Z]+{5,10}$";
     private Button btRegister;
+
+    private final PhotoService photoService = RetrofitClient.getInstance().getService(PhotoService.class);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +48,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_register);
 
-        etAccount  = findViewById(R.id.et_account);
+        etAccount = findViewById(R.id.et_account);
         etPwd = findViewById(R.id.et_pwd);
         etPwd2 = findViewById(R.id.et_pwd2);
         ivPwdSwitch = findViewById(R.id.iv_pwd_switch);
@@ -54,14 +66,29 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.bt_resgiter) {
-            if(!Pattern.matches(num,etAccount.getText().toString())){
-                Toast.makeText(this, "手机号码格式不正确", Toast.LENGTH_SHORT).show();
+            if (!Pattern.matches(UserName, etAccount.getText().toString())) {
+                Toast.makeText(this, "用户名由字母和数字组成", Toast.LENGTH_SHORT).show();
             }
-            Toast.makeText(this, "注册成功", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent();
-            intent.setClass(RegisterActivity.this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-//            startActivity(intent);
+            photoService.userRegister(new User("admin", "admin")).enqueue(new Callback<BaseResponse<Object>>() {
+                @Override
+                public void onResponse(Call<BaseResponse<Object>> call, Response<BaseResponse<Object>> response) {
+                    if (response.body() != null) {
+                        if (response.body().getCode() == 200) {
+                            Toast.makeText(RegisterActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent();
+                            intent.setClass(RegisterActivity.this, MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                        } else if (response.body().getCode() == 500) {
+                            Toast.makeText(RegisterActivity.this, response.body().getMsg(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+                @Override
+                public void onFailure(Call<BaseResponse<Object>> call, Throwable t) {
+                    Toast.makeText(RegisterActivity.this, "注册失败", Toast.LENGTH_SHORT).show();
+                }
+            });
         } else if (view.getId() == R.id.iv_pwd_switch || view.getId() == R.id.iv_pwd_switch2) {
             int context = String.valueOf(etPwd.getText()).length();
             int context2 = String.valueOf(etPwd2.getText()).length();
@@ -87,10 +114,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
-        if (hasFocus){
+        if (hasFocus) {
             String con = etPwd.getText().toString();
             String con2 = etPwd2.getText().toString();
-            if (!con.equals(con2)){
+            if (!con.equals(con2)) {
                 etPwd2.requestFocus();
                 Toast.makeText(this, "两次输入密码不相同", Toast.LENGTH_SHORT).show();
             }

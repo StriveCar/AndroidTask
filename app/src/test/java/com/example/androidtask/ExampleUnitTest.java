@@ -8,6 +8,7 @@ import com.example.androidtask.network.RetrofitClient;
 import com.example.androidtask.network.service.PhotoService;
 import com.example.androidtask.response.BaseResponse;
 import com.example.androidtask.response.Data;
+import com.example.androidtask.response.LoginData;
 import com.example.androidtask.response.Records;
 import com.example.androidtask.response.User;
 
@@ -36,42 +37,58 @@ public class ExampleUnitTest {
 //            }
 //        });
 
-        photoService.getShare(1).subscribe(new Observer<BaseResponse<Data<Records>>>() {
-            @Override
-            public void onSubscribe(@NonNull Disposable d) {  //接收到数据时调用
+//        photoService.getShare(1).subscribe(new Observer<BaseResponse<Data<Records>>>() {
+//            @Override
+//            public void onSubscribe(@NonNull Disposable d) {  //接收到数据时调用
+//
+//            }
+//
+//            @Override
+//            public void onNext(@NonNull BaseResponse<Data<Records>> dataBaseResponse) { //接收到数据时调用
+//                System.out.println(dataBaseResponse);
+//            }
+//
+//            @Override
+//            public void onError(@NonNull Throwable e) { //发生错误时调用
+//                System.out.println("注册失败");
+//            }
+//
+//            @Override
+//            public void onComplete() { //完成时调用
+//                System.out.println("注册成功");
+//            }
+//        });
+//        photoService.userRegister(new User("admin", "admin")).enqueue(new Callback<BaseResponse<Object>>() {
+//            @Override
+//            public void onResponse(Call<BaseResponse<Object>> call, Response<BaseResponse<Object>> response) {
+//                if (response.body().getCode() == 200) {
+//                    System.out.println("注册成功!  "+response.body());
+//                } else if (response.body().getCode() == 500) {
+//                    System.out.println(response.body().getMsg());
+//                }
+//            }
+//            @Override
+//            public void onFailure(Call<BaseResponse<Object>> call, Throwable t) {
+//                System.out.println("注册失败");
+//            }
+//        });
 
-            }
 
+        photoService.userLogin("admin", "admin").enqueue(new Callback<BaseResponse<LoginData>>() {
             @Override
-            public void onNext(@NonNull BaseResponse<Data<Records>> dataBaseResponse) { //接收到数据时调用
-                System.out.println(dataBaseResponse);
-            }
-
-            @Override
-            public void onError(@NonNull Throwable e) { //发生错误时调用
-                System.out.println("注册失败");
-            }
-
-            @Override
-            public void onComplete() { //完成时调用
-                System.out.println("注册成功");
-            }
-        });
-        photoService.userRegister(new User("admin", "admin")).enqueue(new Callback<BaseResponse<Object>>() {
-            @Override
-            public void onResponse(Call<BaseResponse<Object>> call, Response<BaseResponse<Object>> response) {
+            public void onResponse(Call<BaseResponse<LoginData>> call, Response<BaseResponse<LoginData>> response) {
                 if (response.body().getCode() == 200) {
-                    System.out.println("注册成功!  "+response.body());
+                    System.out.println("登录成功!  "+response.body().getData());
                 } else if (response.body().getCode() == 500) {
                     System.out.println(response.body().getMsg());
                 }
             }
+
             @Override
-            public void onFailure(Call<BaseResponse<Object>> call, Throwable t) {
-                System.out.println("注册失败");
+            public void onFailure(Call<BaseResponse<LoginData>> call, Throwable t) {
+                System.out.println("登陆失败");
             }
         });
-
 
         while (true) {
         }

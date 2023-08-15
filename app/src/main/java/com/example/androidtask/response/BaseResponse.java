@@ -1,5 +1,7 @@
 package com.example.androidtask.response;
 
+import androidx.annotation.NonNull;
+
 public class BaseResponse <T> {
     private int code;
     private String msg;
@@ -35,6 +37,7 @@ public class BaseResponse <T> {
         this.data = data;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "BaseResponse{" +
