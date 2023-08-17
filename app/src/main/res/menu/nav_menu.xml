@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/person_data"
+            android:icon="@drawable/baseline_person2_24"
+            android:title="个人信息" />
+        <item
+            android:id="@+id/like_work"
+            android:icon="@drawable/baseline_thumb_up_alt_24"
+            android:title="已点赞作品" />
+        <item
+            android:id="@+id/night"
+            android:icon="@drawable/baseline_dark_mode_24"
+            android:title="夜间模式" />
+        <item
+            android:id="@+id/about_us"
+            android:icon="@drawable/baseline_info_24"
+            android:title="关于我们" />
+        <item
+            android:id="@+id/set"
+            android:icon="@drawable/baseline_settings_24"
+            android:title="设置" />
+        <item
+            android:id="@+id/exit_app"
+            android:icon="@drawable/baseline_exit_to_app_24"
+            android:title="退出" />
+    </group>
+</menu>

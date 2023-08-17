@@ -37,7 +37,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private ImageView ivPwdSwitch;
     private ImageView ivPwdSwitch2;
 
-    private final String UserName = "^[a-z0-9A-Z]+{5,10}$";
+    private final String UserName = "^[a-z0-9A-Z]+$";
     private Button btRegister;
 
     private final PhotoService photoService = RetrofitClient.getInstance().getService(PhotoService.class);
@@ -66,29 +66,31 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.bt_resgiter) {
-            if (!Pattern.matches(UserName, etAccount.getText().toString())) {
-                Toast.makeText(this, "用户名由字母和数字组成", Toast.LENGTH_SHORT).show();
+            if (!Pattern.matches(UserName, etPwd.getText().toString())) {
+                Toast.makeText(this, "密码由字母和数字组成", Toast.LENGTH_SHORT).show();
             }
-            photoService.userRegister(new User("admin", "admin")).enqueue(new Callback<BaseResponse<Object>>() {
-                @Override
-                public void onResponse(Call<BaseResponse<Object>> call, Response<BaseResponse<Object>> response) {
-                    if (response.body() != null) {
-                        if (response.body().getCode() == 200) {
-                            Toast.makeText(RegisterActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent();
-                            intent.setClass(RegisterActivity.this, MainActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
-                        } else if (response.body().getCode() == 500) {
-                            Toast.makeText(RegisterActivity.this, response.body().getMsg(), Toast.LENGTH_SHORT).show();
+            else {
+                photoService.userRegister(new User("admin", "admin")).enqueue(new Callback<BaseResponse<Object>>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse<Object>> call, Response<BaseResponse<Object>> response) {
+                        if (response.body() != null) {
+                            if (response.body().getCode() == 200) {
+                                Toast.makeText(RegisterActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent();
+                                intent.setClass(RegisterActivity.this, MainActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                            } else if (response.body().getCode() == 500) {
+                                Toast.makeText(RegisterActivity.this, response.body().getMsg(), Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
-                }
-                @Override
-                public void onFailure(Call<BaseResponse<Object>> call, Throwable t) {
-                    Toast.makeText(RegisterActivity.this, "注册失败", Toast.LENGTH_SHORT).show();
-                }
-            });
+                    @Override
+                    public void onFailure(Call<BaseResponse<Object>> call, Throwable t) {
+                        Toast.makeText(RegisterActivity.this, "注册失败", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
         } else if (view.getId() == R.id.iv_pwd_switch || view.getId() == R.id.iv_pwd_switch2) {
             int context = String.valueOf(etPwd.getText()).length();
             int context2 = String.valueOf(etPwd2.getText()).length();

@@ -1,5 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Base.Theme.AndroidTask" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="Base.Theme.AndroidTask" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here -->
         <item name="colorPrimary">#FF49709B</item>
         <item name="colorPrimaryDark">#FF33547B</item>

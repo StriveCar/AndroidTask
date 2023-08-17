@@ -41,7 +41,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private final PhotoService photoService = RetrofitClient.getInstance().getService(PhotoService.class);
     private Intent intent;
 
-    private static final  String  USER_ID = "USER_ID";
+    public static final String USER_ID = "id";
+    public static final String USER_NAME = "name";
+    public static final String USER_PROFILE = "profile";
+    public static final String USER_INTRODUCE = "introduce";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,10 +150,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             if (response.body().getCode() == 200) {
                                 Toast.makeText(LoginActivity.this, "登录成功! ", Toast.LENGTH_SHORT).show();
 
-                                intent = new Intent();
+                                intent = new Intent(LoginActivity.this, MainActivity.class);
+                                ;
                                 Bundle bundle = new Bundle();
                                 bundle.putString(USER_ID, response.body().getData().getId());
-                                intent.setClass(LoginActivity.this, MainActivity.class);
+                                bundle.putString(USER_NAME, response.body().getData().getUsername());
+                                bundle.putString(USER_PROFILE, response.body().getData().getAvatar());
+                                if (response.body().getData().getIntroduce() == null) {
+                                    bundle.putString(USER_INTRODUCE, "这是你的个性签名！");
+                                } else {
+                                    bundle.putString(USER_INTRODUCE, response.body().getData().getIntroduce());
+                                }
                                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                 intent.putExtras(bundle);
                                 startActivity(intent);

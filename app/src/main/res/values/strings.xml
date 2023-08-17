@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AndroidTask</string>
+    <string name="app_name">享图</string>
     <string name="shared_preferences_file_name">sp_login
     </string>
     <string name="login_account_name">login_account_name
