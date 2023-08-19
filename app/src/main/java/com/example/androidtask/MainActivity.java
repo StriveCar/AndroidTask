@@ -1,10 +1,12 @@
 package com.example.androidtask;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +34,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private CircleImageView im_profile;
     private TextView tv_username,tv_introduce;
 
+    private ImageView new_share;
+    private Intent intent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         im_profile = headerView.findViewById(R.id.icon_image);
         tv_username = headerView.findViewById(R.id.username);
         tv_introduce = headerView.findViewById(R.id.tv_introduce);
+
+        new_share = findViewById(R.id.bottom_bar_image_3);
 
         bundle = getIntent().getExtras();
         if (bundle!=null){
@@ -67,10 +74,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             drawer_layout.openDrawer(GravityCompat.START);
         });
 
+        new_share.setOnClickListener(this);
+
     }
 
     @Override
     public void onClick(View v) {
+        if (v.getId() == R.id.bottom_bar_image_3){
+            intent = new Intent(this, AddActivity.class);
+            startActivity(intent);
+        }
 
     }
 

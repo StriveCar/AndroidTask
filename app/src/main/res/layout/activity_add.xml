@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#CDC7C7"
+    android:orientation="vertical"
+    tools:context=".AddActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="写下此时的想法"
+        android:textSize="20dp"
+        android:layout_marginTop="30px"
+        android:layout_marginBottom="30px"
+        />
+
+    <LinearLayout
+        android:layout_gravity="center"
+        android:layout_width="1000px"
+        android:layout_height="600px"
+        android:orientation="vertical"
+        android:background="@drawable/radius_border"
+        >
+
+
+        <EditText
+            android:id="@+id/add_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:hint="在此输入"
+            android:textColorHint="#888888"
+            android:inputType="textMultiLine"
+
+            android:singleLine="true"
+            android:textCursorDrawable="@null"
+            android:gravity="top"
+            android:padding="15dp"
+            />
+
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="上传图片"
+        android:textSize="20dp"
+        android:layout_marginTop="100px"
+        android:layout_marginBottom="30px"
+        />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+        <ImageView
+            android:id="@+id/picture"
+            android:layout_width="320px"
+            android:layout_height="320px"
+            android:background="#F3EFEF"
+            android:layout_marginLeft="30px"
+            android:src="@drawable/add2"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:text="点击添加"
+            android:textSize="20dp"
+            android:layout_gravity="center"
+            />
+    </LinearLayout>
+
+
+        <Button
+            android:id="@+id/addPic"
+            android:layout_width="match_parent"
+            android:layout_height="40sp"
+            android:text="发布"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="100dp"
+            android:textSize="20dp"
+            android:textColor="@color/white"
+            android:background="@drawable/button_shape"
+            />
+
+</LinearLayout>

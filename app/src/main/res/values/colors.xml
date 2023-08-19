@@ -4,4 +4,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="teal_200">#FF49709B</color>
     <color name="lucency">#00FFFFFF</color>
+    <color name="coreGray">#C8B9B9</color>
 </resources>

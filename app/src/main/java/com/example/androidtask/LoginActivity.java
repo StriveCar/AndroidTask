@@ -1,7 +1,7 @@
 package com.example.androidtask;
 
 
-import android.content.Context;
+import  android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
@@ -37,6 +37,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private ImageView ivPwdSwitch;
     private Button btLogin;
     private Button btRegister;
+
 
     private final PhotoService photoService = RetrofitClient.getInstance().getService(PhotoService.class);
     private Intent intent;
