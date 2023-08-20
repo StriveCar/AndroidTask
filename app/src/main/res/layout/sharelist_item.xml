@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:cardElevation="8dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        <ImageView
+            android:id="@+id/sharelist_item_userimage"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_margin="8dp"
+            />
+
+        <TextView
+            android:id="@+id/sharelist_item_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="abcdefg"
+            android:textSize="32dp"
+            android:textColor="@color/teal_200"
+            android:layout_margin="4dp"
+            />
+    </LinearLayout>
+
+
+
+</androidx.cardview.widget.CardView>
