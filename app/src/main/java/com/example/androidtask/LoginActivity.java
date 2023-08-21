@@ -16,6 +16,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -40,11 +42,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private final PhotoService photoService = RetrofitClient.getInstance().getService(PhotoService.class);
     private Intent intent;
+    private ActivityResultLauncher<Intent> register;
 
     public static final String USER_ID = "id";
     public static final String USER_NAME = "name";
+    public static final String USER_PWD = "password";
     public static final String USER_PROFILE = "profile";
     public static final String USER_INTRODUCE = "introduce";
+    private Bundle bundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,8 +108,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             etPwd.setSelection(context);
         });
 
+
         btLogin.setOnClickListener(this);
         btRegister.setOnClickListener(this);
+
+        register = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result != null) {
+                if (result.getData() != null) {
+                    bundle = result.getData().getExtras();
+                    etAccount.setText(bundle.getString(LoginActivity.USER_NAME));
+                    etPwd.setText(bundle.getString(LoginActivity.USER_PWD));
+                }
+            }
+        });
     }
 
     @Override
@@ -151,8 +167,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 Toast.makeText(LoginActivity.this, "登录成功! ", Toast.LENGTH_SHORT).show();
 
                                 intent = new Intent(LoginActivity.this, MainActivity.class);
-                                ;
-                                Bundle bundle = new Bundle();
+                                bundle = new Bundle();
                                 bundle.putString(USER_ID, response.body().getData().getId());
                                 bundle.putString(USER_NAME, response.body().getData().getUsername());
                                 bundle.putString(USER_PROFILE, response.body().getData().getAvatar());
@@ -179,7 +194,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         } else if (view.getId() == R.id.bt_resgiter) {
             intent = new Intent(LoginActivity.this, RegisterActivity.class);
-            startActivity(intent);
+            register.launch(intent);
         }
     }
 }
