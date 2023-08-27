@@ -44,6 +44,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         im_profile = headerView.findViewById(R.id.icon_image);
         tv_username = headerView.findViewById(R.id.username);
         tv_introduce = headerView.findViewById(R.id.tv_introduce);
+        //开启分享列表fragment
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .setReorderingAllowed(true)
+                    .add(R.id.fragment_container_view_shareList, ShareListFragment.class, null)
+                    .commit();
+        }
 
         bundle = getIntent().getExtras();
         if (bundle!=null){
