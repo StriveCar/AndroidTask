@@ -9,5 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 public class ShareListFragment extends Fragment {
-
+    public ShareListFragment(){
+        super(R.layout.fragment_share_list);
+    }
 }
