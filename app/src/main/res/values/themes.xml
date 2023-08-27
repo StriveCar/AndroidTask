@@ -1,10 +1,89 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
+
     <style name="Base.Theme.AndroidTask" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here -->
+
+        <!-- 应用的主要色调,actionBar默认使用该颜色，Toolbar导航栏的底色 -->
         <item name="colorPrimary">#FF49709B</item>
+        <!-- 应用的主要暗色调,statusBarColor 默认使用该颜色 -->
         <item name="colorPrimaryDark">#FF33547B</item>
-        <item name="colorAccent">#FF49709B</item>
+        <!-- 一般控件的选中效果默认采用该颜色,如 CheckBox,RadioButton,SwitchCompat，ProcessBar等-->
+        <item name="colorAccent">#FF19497D</item>
+
+        <!-- 状态栏、顶部导航栏 相关-->
+        <!-- status bar color -->
+        <item name="android:statusBarColor">@color/teal_200</item>
+        <!-- activity 是否能在status bar 底部绘制-->
+        <item name="android:windowOverscan">true</item>
+        <!-- 让status bar透明，相当于statusBarColor=transparent + windowOverscan=true-->
+        <item name="android:windowTranslucentStatus">true</item>
+        <!-- 改变status bar 文字颜色， true黑色， false白色，API23可用-->
+        <item name="android:windowLightStatusBar">true</item>
+        <!-- 全屏显示，隐藏状态栏、导航栏、底部导航栏 -->
+        <item name="android:windowFullscreen">true</item>
+        <!-- hide title bar-->
+        <item name="windowNoTitle">true</item>
+        <!-- 底部虚拟导航栏颜色-->
+        <item name="android:navigationBarColor">@color/lucency</item>
+
+        <!-- WindowBackground，可以设置@drawable，颜色引用（@color），不能设置颜色值（#fffffff），
+        Window区域说明：Window涵盖整个屏幕显示区域，包括StatusBar的区域。当windowOverscan=false时，window的区域比Activity多出StatusBar，当windowOverscan=true时，window区域与Activity相同-->
+        <!--        <item name="android:windowBackground">@drawable/ic_launcher_background</item>-->
+        <!--<item name="android:windowBackground">@color/light_purple</item>-->
+
+        <!-- 默认 Button,TextView的文字颜色 -->
+        <item name="android:textColor">@color/white</item>
+        <!-- 默认 EditView 输入框字体的颜色 -->
+        <item name="android:editTextColor">@color/black</item>
+        <!-- RadioButton checkbox等控件的文字-->
+        <item name="android:textColorPrimaryDisableOnly">@color/black</item>
+        <!--  应用的主要文字颜色,actionBar menu的标题文字默认使用该颜色-->
+        <item name="android:textColorPrimary">@color/black</item>
+        <!--  控件选中时的颜色,默认使用colorAccent-->
+        <item name="android:colorControlActivated">@color/teal_300</item>
+        <!-- 控件按压时的色调-->
+        <item name="android:colorControlHighlight">#bfbfbf</item>
+        <!-- CheckBox,RadioButton,SwitchCompat等默认状态的颜色 -->
+        <item name="android:colorControlNormal">@color/black</item>
+        <!-- 默认按钮的背景颜色 -->
+        <item name="android:colorButtonNormal">@color/white</item>
+
+        <!-- 【无效】 在theme中设置Activity的属性无效， 请到AndroidManifest中Activity标签下设置 -->
+        <item name="android:launchMode">singleTop</item>
+        <item name="android:screenOrientation">landscape</item>
     </style>
+
+    <style name="Base.Theme.NightAndroidTask" parent="Theme.AppCompat.Light.NoActionBar">
+
+        <!-- 应用的主要色调 -->
+        <item name="colorPrimary">#FF49709B</item>
+        <!-- 应用的主要暗色调 -->
+        <item name="colorPrimaryDark">#FF33547B</item>
+        <!-- 控件选中时的颜色 -->
+        <item name="colorAccent">#FF19497D</item>
+
+        <!-- 状态栏、顶部导航栏相关 -->
+        <item name="android:statusBarColor">@color/night_status_bar_color</item>
+        <item name="android:windowOverscan">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:navigationBarColor">@color/night_navigation_bar_color</item>
+
+        <!-- WindowBackground -->
+        <item name="android:windowBackground">@color/night_window_background</item>
+
+        <!-- 文字颜色 -->
+        <item name="android:textColor">@color/night_text_color</item>
+        <item name="android:editTextColor">@color/night_edit_text_color</item>
+        <item name="android:textColorPrimaryDisableOnly">@color/night_text_color</item>
+        <item name="android:textColorPrimary">@color/night_text_color</item>
+        <item name="android:colorControlActivated">@color/night_color_control_activated</item>
+        <item name="android:colorControlHighlight">@color/night_color_control_highlight</item>
+        <item name="android:colorControlNormal">@color/night_color_control_normal</item>
+        <item name="android:colorButtonNormal">@color/night_button_normal</item>
+    </style>
+
 
     <style name="Theme.AndroidTask" parent="Base.Theme.AndroidTask" />
 </resources>

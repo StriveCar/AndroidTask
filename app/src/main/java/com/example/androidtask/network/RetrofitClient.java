@@ -1,8 +1,9 @@
 package com.example.androidtask.network;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
@@ -11,19 +12,19 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitClient {
     private volatile static RetrofitClient myInstance;
 
-    private static final String BASE_URL = "http://47.107.52.7:88/member/photo/";
+    private static final String DEFAULT_BASE_URL = "http://47.107.52.7:88/member/photo/";
 
-    OkHttpClient client = new OkHttpClient.Builder().connectTimeout(20, TimeUnit.SECONDS)                   //设置请求超时时间
-            .readTimeout(20, TimeUnit.SECONDS)                      //设置读取数据超时时间
-            .writeTimeout(20, TimeUnit.SECONDS)                  //设置写入数据超时时间
-//            .addInterceptor(InterceptorUtil.LogInterceptor())              //绑定日志拦截器
-            .addNetworkInterceptor(InterceptorUtil.HeaderInterceptor())       //绑定header拦截器
+    private final OkHttpClient client = new OkHttpClient.Builder()
+            .connectTimeout(20, TimeUnit.SECONDS)
+            .readTimeout(20, TimeUnit.SECONDS)
+            .writeTimeout(20, TimeUnit.SECONDS)
+            .addInterceptor(InterceptorUtil.LogInterceptor())
+            .addNetworkInterceptor(InterceptorUtil.HeaderInterceptor())
             .build();
-    private Retrofit retrofit;
 
-    private RetrofitClient() {
+    private final Map<String, Retrofit> retrofitMap = new HashMap<>();
 
-    }
+    private RetrofitClient() {}
 
     public static RetrofitClient getInstance() {
         if (myInstance == null) {
@@ -37,16 +38,24 @@ public class RetrofitClient {
     }
 
     public <T> T getService(Class<T> cls) {
-        return getRetrofit().create(cls);
+        return getService(DEFAULT_BASE_URL, cls);
     }
 
-    private Retrofit getRetrofit() {
-        if (retrofit == null) {
-            retrofit = new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create())    //设置gson转换器,将返回的json数据转为实体
-                    .addCallAdapterFactory(RxJava3CallAdapterFactory.create())       //设置CallAdapter
-                    .baseUrl(BASE_URL).client(client)                                //设置客户端okhttp相关参数
+    public <T> T getService(String baseUrl, Class<T> cls) {
+        return getRetrofit(baseUrl).create(cls);
+    }
+
+    private Retrofit getRetrofit(String baseUrl) {
+        if (!retrofitMap.containsKey(baseUrl)) {
+            Retrofit retrofit = new Retrofit.Builder()
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+                    .baseUrl(baseUrl)
+                    .client(client)
                     .build();
+            retrofitMap.put(baseUrl, retrofit);
         }
-        return retrofit;
+        return retrofitMap.get(baseUrl);
     }
 }
+

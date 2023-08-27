@@ -1,6 +1,7 @@
 package com.example.androidtask;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import com.example.androidtask.network.RetrofitClient;
 import com.example.androidtask.network.service.PhotoService;
 import com.example.androidtask.response.BaseResponse;
 import com.example.androidtask.response.User;
+import com.example.androidtask.util.CodeUtils;
 
 import java.util.regex.Pattern;
 
@@ -34,11 +36,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     private EditText etAccount;
     private EditText etVerify;
-    private ImageView ivPwdSwitch;
-    private ImageView ivPwdSwitch2;
+    private ImageView ivPwdSwitch, ivPwdSwitch2, ivCode;
 
     private final String UserName = "^[a-z0-9A-Z]+$";
     private Button btRegister;
+    private CodeUtils codeutils;
+
 
     private final PhotoService photoService = RetrofitClient.getInstance().getService(PhotoService.class);
 
@@ -55,38 +58,56 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         ivPwdSwitch2 = findViewById(R.id.iv_pwd_switch2);
         etVerify = findViewById(R.id.et_verify);
         btRegister = findViewById(R.id.bt_resgiter);
+        ivCode = findViewById(R.id.iv_code);
 
+        codeutils = CodeUtils.getInstance();
+        ivCode.setImageBitmap(codeutils.createBitmap());
 
         btRegister.setOnClickListener(this);
         ivPwdSwitch.setOnClickListener(this);
         ivPwdSwitch2.setOnClickListener(this);
+        ivCode.setOnClickListener(this);
         etVerify.setOnFocusChangeListener(this);
+
     }
 
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.bt_resgiter) {
-            if (!Pattern.matches(UserName, etPwd.getText().toString())) {
-                Toast.makeText(this, "密码由字母和数字组成", Toast.LENGTH_SHORT).show();
+            if (etAccount.toString().trim().equals("")) {
+                Toast.makeText(this, "用户名不能为空", Toast.LENGTH_SHORT).show();
+                return;
             }
-            else {
-                photoService.userRegister(new User("admin", "admin")).enqueue(new Callback<BaseResponse<Object>>() {
+
+            if (!Pattern.matches(UserName, etPwd.getText().toString().toLowerCase())) {
+                Toast.makeText(this, "密码由字母和数字组成", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (!codeutils.getCode().equals(etVerify.getText().toString().toLowerCase())) {
+                Toast.makeText(this, "验证码错误", Toast.LENGTH_SHORT).show();
+            } else {
+                photoService.userRegister(new User(etPwd.getText().toString(), etAccount.getText().toString())).enqueue(new Callback<BaseResponse<Object>>() {
                     @Override
-                    public void onResponse(Call<BaseResponse<Object>> call, Response<BaseResponse<Object>> response) {
+                    public void onResponse(@NonNull Call<BaseResponse<Object>> call, @NonNull Response<BaseResponse<Object>> response) {
                         if (response.body() != null) {
                             if (response.body().getCode() == 200) {
                                 Toast.makeText(RegisterActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent();
-                                intent.setClass(RegisterActivity.this, MainActivity.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
+                                Bundle bundle = new Bundle();
+                                bundle.putString(LoginActivity.USER_NAME, etAccount.getText().toString());
+                                bundle.putString(LoginActivity.USER_PWD, etPwd.getText().toString());
+                                intent.putExtras(bundle);
+                                setResult(Activity.RESULT_OK, intent);
+                                finish();
                             } else if (response.body().getCode() == 500) {
                                 Toast.makeText(RegisterActivity.this, response.body().getMsg(), Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
+
                     @Override
-                    public void onFailure(Call<BaseResponse<Object>> call, Throwable t) {
+                    public void onFailure(@NonNull Call<BaseResponse<Object>> call, @NonNull Throwable t) {
                         Toast.makeText(RegisterActivity.this, "注册失败", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -111,6 +132,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
             etPwd.setSelection(context);
             etPwd2.setSelection(context2);
+        } else if (view.getId() == R.id.iv_code) {
+            ivCode.setImageBitmap(codeutils.createBitmap());
         }
     }
 
