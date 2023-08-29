@@ -13,21 +13,15 @@
         android:orientation="vertical">
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:gravity="center"
-            android:text="hello, this is a string"/>
-
-        <Button
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="123456"
+            android:text="这里放分享列表"
+            android:textSize="20sp"
             android:textColor="@color/teal_200"/>
 
-
         <ListView
-            android:id="@+id/shareList"
+            android:id="@+id/lv_shareList"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

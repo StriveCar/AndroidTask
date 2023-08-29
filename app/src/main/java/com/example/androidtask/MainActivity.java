@@ -7,12 +7,15 @@ import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -42,11 +45,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private boolean night_sun = false;
     private Toolbar toolbar;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        RelativeLayout bottom_bar_1 = findViewById(R.id.bottom_bar_1_btn);
+        RelativeLayout bottom_bar_5= findViewById(R.id.bottom_bar_5_btn);
+        CardView bottom_bar_3 = findViewById(R.id.bottom_bar_3_btn);
+        RelativeLayout bottom_bar_2 = findViewById(R.id.bottom_bar_2_btn);
+        RelativeLayout bottom_bar_4 = findViewById(R.id.bottom_bar_4_btn);
+        bottom_bar_3.setOnClickListener(this);
+        bottom_bar_4.setOnClickListener(this);
+        bottom_bar_1.setOnClickListener(this);
+        bottom_bar_2.setOnClickListener(this);
+        bottom_bar_5.setOnClickListener(this);
 
         toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
@@ -113,8 +126,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
     @Override
     public void onClick(View v) {
-
+        //fragment 切换
+        int id = v.getId();
+        if(id == R.id.bottom_bar_1_btn){
+            Toast.makeText(this,"主页", Toast.LENGTH_SHORT).show();
+            //返回主页
+        } else if (id == R.id.bottom_bar_2_btn) {
+            Toast.makeText(this,"关注", Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.bottom_bar_3_btn) {
+            Toast.makeText(this,"发布", Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.bottom_bar_4_btn) {
+            Toast.makeText(this,"收藏", Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.bottom_bar_5_btn) {
+            Toast.makeText(this,"我的作品", Toast.LENGTH_SHORT).show();
+        }
     }
+
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {

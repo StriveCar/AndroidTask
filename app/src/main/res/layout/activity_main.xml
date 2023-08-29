@@ -60,7 +60,8 @@
                 android:id="@+id/bottom_bar_1_btn"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:clickable="true">
 
                 <TextView
                     android:id="@+id/bottom_bar_text_1"
@@ -86,7 +87,8 @@
                 android:id="@+id/bottom_bar_2_btn"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:clickable="true">
 
                 <TextView
                     android:id="@+id/bottom_bar_text_2"
@@ -114,13 +116,14 @@
             </RelativeLayout>
 
             <LinearLayout
-                android:id="@+id/bottom_bar_3_btn"
                 android:layout_width="70dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:clipChildren="false"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:clickable="true">
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/bottom_bar_3_btn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="-32dp"
@@ -157,7 +160,8 @@
                 android:id="@+id/bottom_bar_4_btn"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:clickable="true">
 
                 <TextView
                     android:id="@+id/bottom_bar_text_4"
@@ -187,7 +191,8 @@
                 android:id="@+id/bottom_bar_5_btn"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:clickable="true">
 
                 <TextView
                     android:id="@+id/bottom_bar_text_5"
@@ -214,15 +219,6 @@
             </RelativeLayout>
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!--    <FrameLayout-->
-    <!--        android:background="#80000000"-->
-    <!--        android:clickable="true"-->
-    <!--        android:focusable="true"-->
-    <!--        android:id="@+id/mask_layout"-->
-    <!--        android:layout_height="match_parent"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:visibility="invisible" />-->
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
