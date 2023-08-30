@@ -22,8 +22,8 @@ public class InterceptorUtil {
             Request request = chain.request().newBuilder()
                     .addHeader("Accept","application/json, text/plain, */*")
                     .addHeader("Content-Type","application/json")
-                    .addHeader("appId", "aff864aa8c674c33bf862f457b36d175")
-                    .addHeader("appSecret", "762317521a5fc2ea94608b3d14dd0dc18a003")
+                    .addHeader("appId", "78340245670c4b6299c088d9c5f8d1c3")
+                    .addHeader("appSecret", "23948880c9d94b4834bc7b8396bdfad28504f")
                     .build();
             try {
                 return chain.proceed(request);
