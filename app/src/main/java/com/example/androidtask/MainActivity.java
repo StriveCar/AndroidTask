@@ -1,6 +1,7 @@
 package com.example.androidtask;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -22,15 +23,26 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.androidtask.network.RetrofitClient;
 import com.example.androidtask.network.service.ArtWordService;
+import com.example.androidtask.network.service.PhotoService;
+import com.example.androidtask.response.BaseResponse;
+import com.example.androidtask.response.Data;
+import com.example.androidtask.response.Records;
 import com.example.androidtask.response.WordResponse;
 import com.google.android.material.navigation.NavigationView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.reactivex.rxjava3.functions.Consumer;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -49,23 +61,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private boolean night_sun = false;
     private Toolbar toolbar;
+    private RelativeLayout bottom_bar_1,bottom_bar_2,bottom_bar_4,bottom_bar_5;
+    private CardView bottom_bar_3;
+    private List<Fragment> fragmentlist = new ArrayList<>();
+    private ViewPager2 viewpager;
+    private String userId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        RelativeLayout bottom_bar_1 = findViewById(R.id.bottom_bar_1_btn);
-        RelativeLayout bottom_bar_5= findViewById(R.id.bottom_bar_5_btn);
-        //CardView bottom_bar_3 = findViewById(R.id.bottom_bar_3_btn);
-        RelativeLayout bottom_bar_2 = findViewById(R.id.bottom_bar_2_btn);
-        RelativeLayout bottom_bar_4 = findViewById(R.id.bottom_bar_4_btn);
-        //bottom_bar_3.setOnClickListener(this);
-        bottom_bar_4.setOnClickListener(this);
-        bottom_bar_1.setOnClickListener(this);
-        bottom_bar_2.setOnClickListener(this);
-        bottom_bar_5.setOnClickListener(this);
-        //初始化主页
-        replaceFragment(new ShareListFragment());
+        initBottomNavigationfunction();
+        initViewPager();
+
         toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         drawer_layout = findViewById(R.id.drawer_layout);
@@ -88,6 +96,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         nav_view.setNavigationItemSelectedListener(this);
         drawer_layout.setOnClickListener(this);
+    }
+
+    private void initViewPager() {
+        //初始化Fragment，使用Viewpager管理Fragment
+        fragmentlist.add(new ShareListFragment());
+        fragmentlist.add(new FollowListFragment());
+        fragmentlist.add(new FavouriteListFragment());
+        fragmentlist.add(new MyShareListFragment());
+        viewpager = findViewById(R.id.viewpager);
+        ViewPagerAdapter viewpagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle(), fragmentlist);
+        viewpager.setAdapter(viewpagerAdapter);
+        //默认主页,打开软件就显示主页的分享列表
+        viewpager.setCurrentItem(0);
+    }
+
+    private void initBottomNavigationfunction() {
+        //创建底部导航栏
+        bottom_bar_1 = findViewById(R.id.bottom_bar_1_btn);
+        bottom_bar_5 = findViewById(R.id.bottom_bar_5_btn);
+        // bottom_bar_3 = findViewById(R.id.bottom_bar_3_btn);
+        bottom_bar_2 = findViewById(R.id.bottom_bar_2_btn);
+        bottom_bar_4 = findViewById(R.id.bottom_bar_4_btn);
+        //bottom_bar_3.setOnClickListener(this);
+        bottom_bar_4.setOnClickListener(this);
+        bottom_bar_1.setOnClickListener(this);
+        bottom_bar_2.setOnClickListener(this);
+        bottom_bar_5.setOnClickListener(this);
     }
 
     public void initData() {
@@ -113,6 +148,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (bundle != null) {
             tv_username.setText(bundle.getString(LoginActivity.USER_NAME));
             tv_introduce.setText(bundle.getString(LoginActivity.USER_INTRODUCE));
+            userId = bundle.getString(LoginActivity.USER_ID);
             if (bundle.getString(LoginActivity.USER_PROFILE) != null) {
                 Glide.with(this).load(bundle.getString(LoginActivity.USER_PROFILE)).diskCacheStrategy(DiskCacheStrategy.NONE).into(im_profile);
             } else {
@@ -134,33 +170,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //fragment 切换
         int id = v.getId();
         if(id == R.id.bottom_bar_1_btn){
-            Toast.makeText(this,"主页", Toast.LENGTH_SHORT).show();
-            //返回主页
-            replaceFragment(new ShareListFragment());
+            viewpager.setCurrentItem(0);
         } else if (id == R.id.bottom_bar_2_btn) {
-            Toast.makeText(this,"关注", Toast.LENGTH_SHORT).show();
-            replaceFragment(new FollowListFragment());
+            viewpager.setCurrentItem(1);
         }
 //        else if (id == R.id.bottom_bar_3_btn) {
+//            //放发布页面的Fragment切换
 //            Toast.makeText(this,"发布", Toast.LENGTH_SHORT).show();
 //        }
         else if (id == R.id.bottom_bar_4_btn) {
-            Toast.makeText(this,"收藏", Toast.LENGTH_SHORT).show();
-            replaceFragment(new FavouriteListFragment());
+            viewpager.setCurrentItem(2);
         } else if (id == R.id.bottom_bar_5_btn) {
-            Toast.makeText(this,"我的作品", Toast.LENGTH_SHORT).show();
-            replaceFragment(new MyShareListFragment());
+            viewpager.setCurrentItem(3);
         }
     }
-
-    private void replaceFragment(Fragment fragment) {
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction fmt = fm.beginTransaction();
-        fmt.replace(R.id.framelayout_mainActivity, fragment);
-        fmt.addToBackStack(null);
-        fmt.commit();
-    }
-
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {

@@ -2,8 +2,10 @@
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     app:cardElevation="8dp"
+    app:cardCornerRadius="6dp"
+    android:layout_margin="8dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
@@ -27,6 +29,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"
+                android:text="This is my name"
                 android:textSize="18sp"
                 android:textColor="@color/teal_200"
                 android:textStyle="bold"/>
@@ -35,6 +38,9 @@
 
         <TextView
             android:id="@+id/sharelist_item_content"
+            android:text="test string for sharelist_item_content"
+            android:textColor="@color/black"
+            android:padding="4dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
