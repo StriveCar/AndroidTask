@@ -39,7 +39,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private ImageView ivPwdSwitch;
     private Button btLogin;
     private Button btRegister;
-
     private final PhotoService photoService = RetrofitClient.getInstance().getService(PhotoService.class);
     private Intent intent;
     private ActivityResultLauncher<Intent> register;

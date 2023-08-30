@@ -20,8 +20,8 @@
             android:textColor="@color/teal_200"
             android:layout_gravity="center"/>
 
-        <ListView
-            android:id="@+id/lv_shareList"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/shareList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constraintStart_toStartOf="parent"
