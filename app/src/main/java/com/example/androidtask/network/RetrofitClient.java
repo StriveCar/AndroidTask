@@ -18,7 +18,7 @@ public class RetrofitClient {
             .connectTimeout(20, TimeUnit.SECONDS)
             .readTimeout(20, TimeUnit.SECONDS)
             .writeTimeout(20, TimeUnit.SECONDS)
-            .addInterceptor(InterceptorUtil.LogInterceptor())
+//            .addInterceptor(InterceptorUtil.LogInterceptor())
             .addNetworkInterceptor(InterceptorUtil.HeaderInterceptor())
             .build();
 

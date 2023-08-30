@@ -2,6 +2,8 @@ package com.example.androidtask;
 
 import static org.junit.Assert.assertEquals;
 
+import android.util.Log;
+
 import com.example.androidtask.network.RetrofitClient;
 import com.example.androidtask.network.service.PhotoService;
 import com.example.androidtask.response.BaseResponse;
@@ -49,8 +51,7 @@ public class ExampleUnitTest {
 //            }
 //        });
 
-        photoService.getShare(null, null, 1).subscribeOn(Schedulers.io()) // 在 IO 线程执行请求
-                .observeOn(AndroidSchedulers.mainThread()) // 在主线程处理响应
+        photoService.getShare(null, null, "1692126434274971648")
                 .subscribe(new FlowableSubscriber<BaseResponse<Data<Records>>>() {
                     @Override
                     public void onSubscribe(Subscription s) {
@@ -59,7 +60,7 @@ public class ExampleUnitTest {
 
                     @Override
                     public void onNext(BaseResponse<Data<Records>> response) {
-                        // 处理响应数据，比如更新 UI
+                        System.out.println(response.getData().getRecords());
                     }
 
                     @Override
