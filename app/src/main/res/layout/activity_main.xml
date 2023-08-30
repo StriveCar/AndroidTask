@@ -8,6 +8,7 @@
     android:contentDescription="@string/app_name"
     android:elevation="3dp"
     tools:ignore="MissingConstraints"
+    android:fitsSystemWindows="true"
     tools:openDrawer="start">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -90,14 +91,14 @@
                     android:gravity="center"
                     android:singleLine="true"
                     android:text="@string/find"
-                    android:textColor="#666666"
+                    android:textColor="#49709B"
                     android:textSize="14sp" />
 
                 <ImageView
                     android:id="@+id/bottom_bar_image_1"
                     style="@style/main_tab_button"
                     android:layout_above="@+id/bottom_bar_text_1"
-                    android:src="@drawable/find" />
+                    android:src="@drawable/find2" />
             </RelativeLayout>
 
             <RelativeLayout

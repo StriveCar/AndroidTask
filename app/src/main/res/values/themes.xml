@@ -11,15 +11,15 @@
 
         <!-- 状态栏、顶部导航栏 相关-->
         <!-- status bar color -->
-        <item name="android:statusBarColor">@color/teal_200</item>
+        <item name="android:statusBarColor">?attr/colorPrimary</item>
         <!-- activity 是否能在status bar 底部绘制-->
         <item name="android:windowOverscan">true</item>
         <!-- 让status bar透明，相当于statusBarColor=transparent + windowOverscan=true-->
         <item name="android:windowTranslucentStatus">true</item>
         <!-- 改变status bar 文字颜色， true黑色， false白色，API23可用-->
-        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightStatusBar">false</item>
         <!-- 全屏显示，隐藏状态栏、导航栏、底部导航栏 -->
-        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowFullscreen">false</item>
         <!-- hide title bar-->
         <item name="windowNoTitle">true</item>
         <!-- 底部虚拟导航栏颜色-->

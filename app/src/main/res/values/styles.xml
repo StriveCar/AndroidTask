@@ -8,4 +8,11 @@
         <item name="android:layout_centerHorizontal">true</item>
         <item name="android:layout_marginTop">3dp</item>
     </style>
+
+    <style name="CustomNumberPickerStyle">
+        <item name="android:colorControlNormal">@color/gray</item>
+        <item name="android:colorControlActivated">@color/gray</item>
+        <item name="android:colorControlHighlight">@color/gray</item>
+        <item name="android:dividerHeight">2dp</item>
+    </style>
 </resources>

@@ -44,11 +44,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private Intent intent;
     private ActivityResultLauncher<Intent> register;
 
-    public static final String USER_ID = "id";
     public static final String USER_NAME = "name";
     public static final String USER_PWD = "password";
-    public static final String USER_PROFILE = "profile";
-    public static final String USER_INTRODUCE = "introduce";
     private Bundle bundle;
 
     @Override
@@ -167,17 +164,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 Toast.makeText(LoginActivity.this, "登录成功! ", Toast.LENGTH_SHORT).show();
 
                                 intent = new Intent(LoginActivity.this, MainActivity.class);
-                                bundle = new Bundle();
-                                bundle.putString(USER_ID, response.body().getData().getId());
-                                bundle.putString(USER_NAME, response.body().getData().getUsername());
-                                bundle.putString(USER_PROFILE, response.body().getData().getAvatar());
+                                LoginData.setMloginData(response.body().getData());
+                                LoginData mloginData = LoginData.getMloginData();
                                 if (response.body().getData().getIntroduce() == null) {
-                                    bundle.putString(USER_INTRODUCE, "这是你的个性签名！");
-                                } else {
-                                    bundle.putString(USER_INTRODUCE, response.body().getData().getIntroduce());
+                                    mloginData.setIntroduce("这是你的个性签名！");
                                 }
+                                mloginData.setCreateTime(null);
+                                mloginData.setLastUpdateTime(null);
+                                mloginData.setAppKey(null);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                intent.putExtras(bundle);
                                 startActivity(intent);
                             } else if (response.body().getCode() == 500) {
                                 Toast.makeText(LoginActivity.this, response.body().getMsg(), Toast.LENGTH_SHORT).show();

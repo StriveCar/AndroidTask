@@ -46,10 +46,13 @@
             android:id="@+id/icon_image"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_margin="2dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="2dp"
+            android:layout_marginBottom="2dp"
+            android:foreground="?android:attr/selectableItemBackground"
             android:src="@mipmap/ic_launcher"
             app:civ_border_color="@color/black"
-            android:foreground="?android:attr/selectableItemBackground"
             app:civ_border_overlay="false"
             app:civ_border_width="1dp" />
 
