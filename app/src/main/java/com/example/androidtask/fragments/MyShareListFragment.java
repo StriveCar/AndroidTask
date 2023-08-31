@@ -1,4 +1,4 @@
-package com.example.androidtask;
+package com.example.androidtask.fragments;
 
 import android.os.Bundle;
 
@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.example.androidtask.R;
 
 public class MyShareListFragment extends Fragment {
     private View MyShareList;

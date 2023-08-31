@@ -1,15 +1,12 @@
 package com.example.androidtask;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,33 +18,24 @@ import androidx.cardview.widget.CardView;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.androidtask.adapters.ViewPagerAdapter;
+import com.example.androidtask.fragments.FollowListFragment;
+import com.example.androidtask.fragments.MyShareListFragment;
+import com.example.androidtask.fragments.ShareListFragment;
 import com.example.androidtask.network.RetrofitClient;
 import com.example.androidtask.network.service.ArtWordService;
-import com.example.androidtask.network.service.PhotoService;
-import com.example.androidtask.response.BaseResponse;
-import com.example.androidtask.response.Data;
-import com.example.androidtask.response.Records;
+import com.example.androidtask.fragments.FavouriteListFragment;
 import com.example.androidtask.response.WordResponse;
 import com.google.android.material.navigation.NavigationView;
-
-import org.reactivestreams.Subscription;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.FlowableSubscriber;
-import io.reactivex.rxjava3.functions.Consumer;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
