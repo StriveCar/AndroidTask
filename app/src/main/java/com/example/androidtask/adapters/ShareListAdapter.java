@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.androidtask.R;
@@ -33,10 +34,15 @@ public class ShareListAdapter extends RecyclerView.Adapter<ShareListAdapter.mVie
     @Override
     public void onBindViewHolder(@NonNull mViewHolder holder, int position) {
         Records record = data.get(position);
-        holder.sharelist_item_username.setText(record.getUsername());
+        String title = String.format("用户 %s 的分享:",record.getUsername());
+        holder.sharelist_item_username.setText(title);
         holder.sharelist_item_content.setText(record.getContent());
-        System.out.println(record.getUsername());
-        System.out.println(record.getContent());
+        //配置嵌套的图片列表适配器
+        LinearLayoutManager llm = new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false);
+        holder.sharelist_item_imagelist.setLayoutManager(llm);
+        ImageListAdapter rvadapter = new ImageListAdapter(context, record.getImageUrlList());
+        holder.sharelist_item_imagelist.setAdapter(rvadapter);
+        holder.sharelist_item_imagelist.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -48,14 +54,14 @@ public class ShareListAdapter extends RecyclerView.Adapter<ShareListAdapter.mVie
         return data.size();
     }
      class mViewHolder extends RecyclerView.ViewHolder{
-        //ImageView sharelist_item_userimage;
         TextView sharelist_item_username;
         TextView sharelist_item_content;
-        //ListView sharelist_item_imagelist;
+        RecyclerView sharelist_item_imagelist;
         public mViewHolder(@NonNull View itemView) {
             super(itemView);
             sharelist_item_username = itemView.findViewById(R.id.sharelist_item_username);
             sharelist_item_content = itemView.findViewById(R.id.sharelist_item_content);
+            sharelist_item_imagelist = itemView.findViewById(R.id.sharelist_item_imagelist);
         }
 
 

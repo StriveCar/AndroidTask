@@ -1,5 +1,6 @@
 package com.example.androidtask.fragments;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,8 @@ import com.example.androidtask.network.service.PhotoService;
 import com.example.androidtask.response.BaseResponse;
 import com.example.androidtask.response.Data;
 import com.example.androidtask.response.Records;
+
+import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +48,7 @@ public class ShareListFragment extends Fragment {
     }
 
     private void initData() {
-        photoService.getShare(null, null, "1").enqueue(new Callback<BaseResponse<Data<Records>>>() {
+        photoService.getShare(null, 50, "1").enqueue(new Callback<BaseResponse<Data<Records>>>() {
             @Override
             public void onResponse(Call<BaseResponse<Data<Records>>> call, Response<BaseResponse<Data<Records>>> response) {
                 recordlist = response.body().getData().getRecords();
