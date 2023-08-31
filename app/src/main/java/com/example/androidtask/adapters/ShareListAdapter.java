@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -39,7 +40,8 @@ public class ShareListAdapter extends RecyclerView.Adapter<ShareListAdapter.mVie
         holder.sharelist_item_content.setText(record.getContent());
         //配置嵌套的图片列表适配器
         LinearLayoutManager llm = new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false);
-        holder.sharelist_item_imagelist.setLayoutManager(llm);
+        GridLayoutManager glm = new GridLayoutManager(context,3);
+        holder.sharelist_item_imagelist.setLayoutManager(glm);
         ImageListAdapter rvadapter = new ImageListAdapter(context, record.getImageUrlList());
         holder.sharelist_item_imagelist.setAdapter(rvadapter);
         holder.sharelist_item_imagelist.setVisibility(View.VISIBLE);

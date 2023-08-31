@@ -1,14 +1,18 @@
 package com.example.androidtask.adapters;
 
 import android.content.Context;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.androidtask.R;
 
 import java.util.ArrayList;
@@ -30,8 +34,11 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull ImageListAdapter.ViewHolder holder, int position) {
-        holder.tv_imageurl.setText(imgURLlist.get(position));
-        System.out.println(imgURLlist.get(position));
+
+        Glide.with(context).load(imgURLlist.get(position))
+                .fitCenter()
+                .override(400,400)
+                .into(holder.iv_imglist_item);
     }
 
     @Override
@@ -40,10 +47,10 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.View
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        TextView tv_imageurl;
+        ImageView iv_imglist_item;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            tv_imageurl = itemView.findViewById(R.id.tv_imgurl);
+            iv_imglist_item = itemView.findViewById(R.id.iv_imglist_item);
         }
     }
 }
