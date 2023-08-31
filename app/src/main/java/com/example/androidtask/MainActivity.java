@@ -38,11 +38,16 @@ import com.example.androidtask.response.Records;
 import com.example.androidtask.response.WordResponse;
 import com.google.android.material.navigation.NavigationView;
 
+import org.reactivestreams.Subscription;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.FlowableSubscriber;
 import io.reactivex.rxjava3.functions.Consumer;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -66,13 +71,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private List<Fragment> fragmentlist = new ArrayList<>();
     private ViewPager2 viewpager;
     private String userId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        initBottomNavigationfunction();
-        initViewPager();
 
         toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
@@ -93,9 +96,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         initData();
 
-
         nav_view.setNavigationItemSelectedListener(this);
         drawer_layout.setOnClickListener(this);
+        initBottomNavigationfunction();
+        initViewPager();
     }
 
     private void initViewPager() {

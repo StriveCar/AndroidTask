@@ -49,29 +49,29 @@ public class ExampleUnitTest {
 //            }
 //        });
 
-        photoService.getShare(null, null, 1).subscribeOn(Schedulers.io()) // 在 IO 线程执行请求
-                .observeOn(AndroidSchedulers.mainThread()) // 在主线程处理响应
-                .subscribe(new FlowableSubscriber<BaseResponse<Data<Records>>>() {
-                    @Override
-                    public void onSubscribe(Subscription s) {
-                        s.request(Long.MAX_VALUE); // 请求数据
-                    }
-
-                    @Override
-                    public void onNext(BaseResponse<Data<Records>> response) {
-                        // 处理响应数据，比如更新 UI
-                    }
-
-                    @Override
-                    public void onError(Throwable t) {
-                        // 处理错误情况，比如显示错误信息
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        // 数据流处理完成，可以执行一些收尾操作
-                    }
-                });
+//        photoService.getShare(null, null, "1").subscribeOn(Schedulers.io()) // 在 IO 线程执行请求
+//                .observeOn(AndroidSchedulers.mainThread()) // 在主线程处理响应
+//                .subscribe(new FlowableSubscriber<BaseResponse<Data<Records>>>() {
+//                    @Override
+//                    public void onSubscribe(Subscription s) {
+//                        s.request(Long.MAX_VALUE); // 请求数据
+//                    }
+//
+//                    @Override
+//                    public void onNext(BaseResponse<Data<Records>> response) {
+//                        // 处理响应数据，比如更新 UI
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable t) {
+//                        // 处理错误情况，比如显示错误信息
+//                    }
+//
+//                    @Override
+//                    public void onComplete() {
+//                        // 数据流处理完成，可以执行一些收尾操作
+//                    }
+//                });
 
 //        photoService.userRegister(new User("admin", "admin")).enqueue(new Callback<BaseResponse<Object>>() {
 //            @Override

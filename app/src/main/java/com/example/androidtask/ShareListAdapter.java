@@ -17,11 +17,10 @@ import java.util.List;
 
 public class ShareListAdapter extends RecyclerView.Adapter<ShareListAdapter.mViewHolder> {
 
-    private List<Records> recordslist;
-    private List<String> data;
+    private List<Records> data;
     private Context context;
 
-    public ShareListAdapter(@NonNull Context context, List<String> data){
+    public ShareListAdapter(@NonNull Context context, List<Records> data){
         this.data = data;
         this.context = context;
     }
@@ -34,15 +33,11 @@ public class ShareListAdapter extends RecyclerView.Adapter<ShareListAdapter.mVie
 
     @Override
     public void onBindViewHolder(@NonNull mViewHolder holder, int position) {
-//        Records record = recordslist.get(position);
-//        String title = String.format("用户 "+record.getUsername()+"的分享");
-//        holder.sharelist_item_username.setText(title);
-//        holder.sharelist_item_content.setText(record.getContent());
-//        System.out.println(title);
-//        System.out.println(record.getContent());
-        String s = data.get(position);
-        holder.sharelist_item_content.setText(s);
-        holder.sharelist_item_username.setText(s);
+        Records record = data.get(position);
+        holder.sharelist_item_username.setText(record.getUsername());
+        holder.sharelist_item_content.setText(record.getContent());
+        System.out.println(record.getUsername());
+        System.out.println(record.getContent());
     }
 
     @Override
