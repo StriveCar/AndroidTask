@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.example.androidtask.R;
 import com.example.androidtask.adapters.ShareListAdapter;
@@ -54,7 +55,8 @@ public class ShareListFragment extends Fragment {
                 recordlist = response.body().getData().getRecords();
                 rv_sharelist = sharelistView.findViewById(R.id.shareList);
                 adapter = new ShareListAdapter(getActivity(),recordlist);
-                rv_sharelist.setLayoutManager(new LinearLayoutManager(getActivity(),RecyclerView.VERTICAL, false));
+//                rv_sharelist.setLayoutManager(new LinearLayoutManager(LinearLayoutManager.HORIZONTAL,false));
+                rv_sharelist.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
                 rv_sharelist.setAdapter(adapter);
             }
 
