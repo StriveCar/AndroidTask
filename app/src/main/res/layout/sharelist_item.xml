@@ -13,27 +13,24 @@
         android:orientation="vertical">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/iv_userprofile"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_margin="8dp" />
 
             <TextView
                 android:id="@+id/sharelist_item_username"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:padding="4dp"
                 android:text="This is my name"
-                android:textSize="16sp"
                 android:textColor="@color/teal_200"
-                android:textStyle="bold"/>
-            <TextView
-                android:id="@+id/sharelist_item_content"
-                android:text="test string for sharelist_item_content"
-                android:textColor="@color/black"
-                android:layout_marginStart="16dp"
-                android:padding="4dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:gravity="center_vertical"/>
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -43,6 +40,56 @@
             android:scrollbars="horizontal"
             android:fadeScrollbars="false"
             android:scrollbarSize="6dp"
-            />
+            android:clickable="true" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="38dp"
+                    android:layout_weight="1"
+                    android:scaleType="center"
+                    android:src="@drawable/baseline_thumb_up_off_alt_24"
+                    android:layout_gravity="center"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="点赞"
+                    android:textSize="14sp"
+                    android:textColor="@color/teal_200"
+                    android:layout_gravity="center"
+                    android:gravity="center"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="38dp"
+                    android:layout_weight="1"
+                    android:scaleType="center"
+                    android:layout_gravity="center"
+                    android:src="@drawable/baseline_star_border_24"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="收藏"
+                    android:textSize="14sp"
+                    android:textColor="@color/teal_200"
+                    android:layout_gravity="center"
+                    android:gravity="center"/>
+            </LinearLayout>
+
+        </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

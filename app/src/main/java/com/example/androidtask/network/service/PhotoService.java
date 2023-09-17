@@ -5,6 +5,7 @@ import com.example.androidtask.response.Data;
 import com.example.androidtask.response.LoginData;
 import com.example.androidtask.response.Records;
 import com.example.androidtask.response.User;
+import com.example.androidtask.response.UserInfo;
 
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Observable;
@@ -25,4 +26,7 @@ public interface PhotoService {
 
     @POST("user/login")
     Call<BaseResponse<LoginData>> userLogin(@Query("password") String pwd,@Query("username") String une);
+
+    @GET("user/getUserByName")
+    Call<BaseResponse<UserInfo>> getUserByName(@Query("username")String username);
 }
