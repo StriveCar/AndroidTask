@@ -74,7 +74,5 @@ public class ShareListAdapter extends RecyclerView.Adapter<ShareListAdapter.mVie
             sharelist_item_imagelist = itemView.findViewById(R.id.sharelist_item_imagelist);
             iv_userprofile = itemView.findViewById(R.id.iv_userprofile);
         }
-
-
      }
 }

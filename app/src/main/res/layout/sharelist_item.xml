@@ -4,7 +4,8 @@
     android:layout_width="240dp"
     android:layout_height="wrap_content"
     app:cardElevation="4dp"
-    android:layout_margin="8dp"
+    android:layout_marginRight="8dp"
+    android:layout_marginBottom="8dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
@@ -45,51 +46,20 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical">
                 <ImageView
                     android:layout_width="wrap_content"
-                    android:layout_height="38dp"
+                    android:layout_height="36dp"
                     android:layout_weight="1"
-                    android:scaleType="center"
                     android:src="@drawable/baseline_thumb_up_off_alt_24"
                     android:layout_gravity="center"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="点赞"
-                    android:textSize="14sp"
-                    android:textColor="@color/teal_200"
-                    android:layout_gravity="center"
-                    android:gravity="center"/>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical">
                 <ImageView
                     android:layout_width="wrap_content"
-                    android:layout_height="38dp"
+                    android:layout_height="36dp"
                     android:layout_weight="1"
-                    android:scaleType="center"
                     android:layout_gravity="center"
                     android:src="@drawable/baseline_star_border_24"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="收藏"
-                    android:textSize="14sp"
-                    android:textColor="@color/teal_200"
-                    android:layout_gravity="center"
-                    android:gravity="center"/>
-            </LinearLayout>
-
         </LinearLayout>
+
     </LinearLayout>
 </androidx.cardview.widget.CardView>

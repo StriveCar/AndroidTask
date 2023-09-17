@@ -25,17 +25,20 @@ import com.example.androidtask.response.UserInfo;
 import com.example.androidtask.response.sharelist_item;
 
 import org.checkerframework.checker.units.qual.A;
+import org.reactivestreams.Subscription;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.rxjava3.core.FlowableSubscriber;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ShareListFragment extends Fragment {
     private View sharelistView;
-    private static List<Records> recordlist = new ArrayList<>();
+    private List<Records> recordlist = new ArrayList<>();
+    private ArrayList<sharelist_item> data = new ArrayList<>();
     private RecyclerView rv_sharelist;
     private ShareListAdapter adapter;
     private PhotoService photoService = RetrofitClient.getInstance().getService(PhotoService.class);
@@ -50,41 +53,52 @@ public class ShareListFragment extends Fragment {
     }
 
     private void initData() {
-        photoService.getShare(null, 50, "1").enqueue(new Callback<BaseResponse<Data<Records>>>() {
-            @Override
-            public void onResponse(Call<BaseResponse<Data<Records>>> call, Response<BaseResponse<Data<Records>>> response) {
-                recordlist = response.body().getData().getRecords();
-                //获取头像
-                ArrayList<sharelist_item> data = new ArrayList<>();
-                for(int i=0; i<response.body().getData().getSize();i++){
-                    sharelist_item item = new sharelist_item();
-                    item.record = recordlist.get(i);
-                    photoService.getUserByName(item.record.getUsername()).enqueue(new Callback<BaseResponse<UserInfo>>() {
-                        @Override
-                        public void onResponse(Call<BaseResponse<UserInfo>> call, Response<BaseResponse<UserInfo>> response) {
-                            item.profileUrl = response.body().getData().getAvatar();
+        photoService.getShare(0, 60, "1692126434274971648")
+                .subscribe(new FlowableSubscriber<BaseResponse<Data<Records>>>() {
+                    @Override
+                    public void onSubscribe(Subscription s) {
+                        s.request(Long.MAX_VALUE); // 请求数据
+                    }
+
+                    @Override
+                    public void onNext(BaseResponse<Data<Records>> response) {
+                        recordlist = response.getData().getRecords();
+                        // 获取头像并添加到数据列表
+                        for (int i = 0; i < response.getData().getSize(); i++) {
+                            sharelist_item item = new sharelist_item();
+                            item.record = recordlist.get(i);
+                            photoService.getUserByName(item.record.getUsername()).enqueue(new Callback<BaseResponse<UserInfo>>() {
+                                @Override
+                                public void onResponse(Call<BaseResponse<UserInfo>> call, Response<BaseResponse<UserInfo>> profileresponse) {
+                                    item.profileUrl = profileresponse.body().getData().getAvatar();
+                                    data.add(item);
+                                    if (data.size() == response.getData().getSize()) {
+                                        rv_sharelist = sharelistView.findViewById(R.id.shareList);
+                                        System.out.println(data);
+                                        adapter = new ShareListAdapter(getActivity(), data);
+                                        rv_sharelist.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+                                        rv_sharelist.setAdapter(adapter);
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<BaseResponse<UserInfo>> call, Throwable t) {
+                                    Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
                         }
+                    }
 
-                        @Override
-                        public void onFailure(Call<BaseResponse<UserInfo>> call, Throwable t) {
-                            Toast.makeText(getContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    data.add(item);
-                }
+                    @Override
+                    public void onError(Throwable t) {
+                        // 处理错误情况，比如显示错误信息
+                        Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
 
-                rv_sharelist = sharelistView.findViewById(R.id.shareList);
-                adapter = new ShareListAdapter(getActivity(),data);
-//                rv_sharelist.setLayoutManager(new LinearLayoutManager(LinearLayoutManager.HORIZONTAL,false));
-                rv_sharelist.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
-                rv_sharelist.setAdapter(adapter);
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onFailure(Call<BaseResponse<Data<Records>>> call, Throwable t) {
-                Toast.makeText(getContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
-            }
-        });
+                    @Override
+                    public void onComplete() {
+                        // 数据流处理完成，可以执行一些收尾操作
+                    }
+                });
     }
 }
