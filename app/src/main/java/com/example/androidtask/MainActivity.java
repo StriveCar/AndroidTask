@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.MenuItem;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -82,7 +84,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         rl_4 = findViewById(R.id.bottom_bar_5_btn);
 
         toolbar.setNavigationIcon(R.drawable.navigation);
-        toolbar.setNavigationOnClickListener(v -> drawer_layout.openDrawer(GravityCompat.START));
+        toolbar.setNavigationOnClickListener(v -> {
+            drawer_layout.openDrawer(GravityCompat.START);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.lucency));
+            }
+        });
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
@@ -132,6 +139,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         iv_image.setMaxHeight(displayMetrics.heightPixels - 1300);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.teal_200));
+        }
 
     }
 

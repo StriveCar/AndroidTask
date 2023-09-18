@@ -10,6 +10,9 @@ import org.junit.runner.RunWith;
 
 import static org.junit.Assert.*;
 
+import com.example.androidtask.network.RetrofitClient;
+import com.example.androidtask.network.service.PhotoService;
+
 /**
  * Instrumented test, which will execute on an Android device.
  *
@@ -22,5 +25,8 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
         assertEquals("com.example.androidtask", appContext.getPackageName());
+
+        PhotoService photoService = RetrofitClient.getInstance().getService(PhotoService.class);
+        photoService.getShare(null,null,"");
     }
 }

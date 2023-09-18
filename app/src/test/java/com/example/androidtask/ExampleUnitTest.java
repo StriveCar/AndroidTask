@@ -14,7 +14,10 @@ import org.junit.Test;
 import org.reactivestreams.Subscription;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.FlowableSubscriber;
+import io.reactivex.rxjava3.core.Observer;
+import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 /**
@@ -51,6 +54,27 @@ public class ExampleUnitTest {
 //            }
 //        });
 
+//        photoService.getShare(null, null, "1692126434274971648").subscribe(new Observer<BaseResponse<Data<Records>>>() {
+//            @Override
+//            public void onSubscribe(@NonNull Disposable d) {
+//
+//            }
+//
+//            @Override
+//            public void onNext(@NonNull BaseResponse<Data<Records>> dataBaseResponse) {
+//                Log.d("kkx ;",dataBaseResponse.toString());
+//            }
+//
+//            @Override
+//            public void onError(@NonNull Throwable e) {
+//                Log.d("kkx ;",e.getMessage());
+//            }
+//
+//            @Override
+//            public void onComplete() {
+//                Log.d("kkx ;","完成");
+//            }
+//        });
         photoService.getShare(null, null, "1692126434274971648")
                 .subscribe(new FlowableSubscriber<BaseResponse<Data<Records>>>() {
                     @Override

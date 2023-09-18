@@ -1,11 +1,13 @@
 package com.example.androidtask;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -14,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
@@ -57,7 +60,13 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
     private Intent intent;
     private Bundle bundle;
 
-    public static String MODE="mode";
+    private Integer choose=-1;
+    //拍照
+    private static final int TAKE_PHOTO = 1;
+    //获取相册的图片
+    private static final int CHOOSE_PHOTO = 2;
+
+    public static String MODE = "mode";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,33 +121,46 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
         mResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == RESULT_OK) {
                 Intent intent = result.getData();
-                mUri = intent.getData();
-                if (mUri != null) {
-                    iv_head_image.setImageURI(mUri);
-
-                    byte[] imageBytes = getImageBytes(mUri);
-
+                if (intent != null) {
+                    byte[] imageBytes = null;
+                    if (choose==TAKE_PHOTO) {
+                        Bitmap image = intent.getExtras().getParcelable("data");
+                        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                        image.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                        imageBytes = byteArrayOutputStream.toByteArray();
+                        iv_head_image.setImageBitmap(image);
+                    } else if (choose==CHOOSE_PHOTO) {
+                        mUri = intent.getData();
+                        if (mUri != null) {
+                            iv_head_image.setImageURI(mUri);
+                            imageBytes = getImageBytes(mUri);
+                        }
+                    }
                     MediaType mediaType = MediaType.Companion.parse("multipart/form-data");
                     RequestBody requestBody = RequestBody.Companion.create(imageBytes, mediaType);
                     MultipartBody.Part imagePart = MultipartBody.Part.createFormData("fileList", "image.jpg", requestBody);
 
                     photoService.uploadImage(imagePart).enqueue(new Callback<BaseResponse<ImageUrl>>() {
                         @Override
-                        public void onResponse(Call<BaseResponse<ImageUrl>> call, Response<BaseResponse<ImageUrl>> response) {
-                            if (response.body().getCode() == 200) {
+                        public void onResponse(@NonNull Call<BaseResponse<ImageUrl>> call, @NonNull Response<BaseResponse<ImageUrl>> response) {
+                            if (response.body() != null && response.body().getCode() == 200) {
                                 mloginData.setAvatar(response.body().getData().getImageUrlList().get(0));
                                 Toast.makeText(UserInfoActivity.this, "上传成功", Toast.LENGTH_SHORT).show();
                             }
                         }
 
                         @Override
-                        public void onFailure(Call<BaseResponse<ImageUrl>> call, Throwable t) {
+                        public void onFailure(@NonNull Call<BaseResponse<ImageUrl>> call, @NonNull Throwable t) {
                             Toast.makeText(UserInfoActivity.this, "上传失败", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
+
             }
         });
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.teal_200));
+        }
     }
 
     public byte[] getImageBytes(Uri contentUri) {
@@ -165,13 +187,13 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
         if (v.getId() == R.id.rl_account) {
             intent = new Intent(this, ModifyUsernameActivity.class);
             bundle = new Bundle();
-            bundle.putInt(MODE,1);
+            bundle.putInt(MODE, 1);
             intent.putExtras(bundle);
             startActivity(intent);
         } else if (v.getId() == R.id.rl_signature) {
             intent = new Intent(this, ModifyUsernameActivity.class);
             bundle = new Bundle();
-            bundle.putInt(MODE,2);
+            bundle.putInt(MODE, 2);
             intent.putExtras(bundle);
             startActivity(intent);
         } else if (v.getId() == R.id.rl_sex) {
@@ -182,11 +204,19 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
                     Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED) {
                 // 权限还没有授予，进行申请
-                ActivityCompat.requestPermissions((Activity) this,
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 200); // 申请的 requestCode 为 200
+//                ActivityCompat.requestPermissions((Activity) this,
+//                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 200); // 申请的 requestCode 为 200
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 100);
+            }
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                // 如果没有相机权限，请求权限
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 100);
             } else {
                 intent = new Intent(Intent.ACTION_GET_CONTENT);
+                choose = CHOOSE_PHOTO;
                 intent.setType("image/*");
+//                intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                choose=TAKE_PHOTO;
                 mResultLauncher.launch(intent);
             }
         }
@@ -196,14 +226,14 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
     public void onBackPressed() {
         photoService.updateInfo(mloginData).enqueue(new Callback<BaseResponse<Object>>() {
             @Override
-            public void onResponse(Call<BaseResponse<Object>> call, Response<BaseResponse<Object>> response) {
-                if (response.body().getCode() == 200) {
+            public void onResponse(@NonNull Call<BaseResponse<Object>> call, @NonNull Response<BaseResponse<Object>> response) {
+                if (response.body() != null && response.body().getCode() == 200) {
                     Toast.makeText(UserInfoActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<BaseResponse<Object>> call, Throwable t) {
+            public void onFailure(@NonNull Call<BaseResponse<Object>> call, @NonNull Throwable t) {
                 Toast.makeText(UserInfoActivity.this, "修改失败", Toast.LENGTH_SHORT).show();
             }
         });

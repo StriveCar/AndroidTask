@@ -4,6 +4,7 @@ package com.example.androidtask;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.example.androidtask.network.RetrofitClient;
 import com.example.androidtask.network.service.PhotoService;
@@ -68,6 +70,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         ivPwdSwitch2.setOnClickListener(this);
         ivCode.setOnClickListener(this);
         etVerify.setOnFocusChangeListener(this);
+
 
     }
 

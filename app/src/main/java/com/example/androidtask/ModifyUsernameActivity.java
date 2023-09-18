@@ -2,6 +2,7 @@ package com.example.androidtask;
 
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -132,6 +133,9 @@ public class ModifyUsernameActivity extends AppCompatActivity {
             toolbar.setTitle("修改我的个性签名");
             etUsername.setText(mloginData.getIntroduce());
             tvNum.setText("" + (60 - mloginData.getIntroduce().length()));
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.teal_200));
         }
     }
 }

@@ -8,14 +8,13 @@
         <item name="colorPrimaryDark">#FF33547B</item>
         <!-- 一般控件的选中效果默认采用该颜色,如 CheckBox,RadioButton,SwitchCompat，ProcessBar等-->
         <item name="colorAccent">#FF19497D</item>
-
         <!-- 状态栏、顶部导航栏 相关-->
         <!-- status bar color -->
-        <item name="android:statusBarColor">?attr/colorPrimary</item>
+        <item name="android:statusBarColor">@color/lucency</item>
         <!-- activity 是否能在status bar 底部绘制-->
         <item name="android:windowOverscan">true</item>
         <!-- 让status bar透明，相当于statusBarColor=transparent + windowOverscan=true-->
-        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentStatus">false</item>
         <!-- 改变status bar 文字颜色， true黑色， false白色，API23可用-->
         <item name="android:windowLightStatusBar">false</item>
         <!-- 全屏显示，隐藏状态栏、导航栏、底部导航栏 -->

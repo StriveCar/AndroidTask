@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/mainbcc"
+    android:orientation="vertical"
+    tools:context=".SplashActivity">
+
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            app:cardCornerRadius="10dp"
+            android:layout_marginTop="27dp"
+            android:layout_marginEnd="16dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/countdown_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:layout_marginStart="4dp"
+                    android:background="@color/lucency"
+                    android:text=" 5秒 |"
+                    android:textColor="@color/black"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/skip_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/lucency"
+                    android:text="跳过  "
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/iv_like"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:background="@drawable/shape_rect3"
+        android:text="٩(๑•̀ω•́๑)۶"
+        android:textColor="@color/teal_200"
+        android:layout_gravity="center"
+        android:textSize="25sp"
+        tools:ignore="HardcodedText" />
+
+
+    <TextView
+        android:id="@+id/don"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/shape_rect3"
+        android:clickable="true"
+        android:gravity="center"
+        android:text="欢迎来到享图"
+        android:textColor="@color/teal_200"
+        android:textSize="28sp" />
+
+    <TextView
+        android:id="@+id/dom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/shape_rect3"
+        android:clickable="true"
+        android:text=" (˵¯͒〰¯͒˵)(˵¯͒〰¯͒˵) "
+        android:textColor="@color/teal_200"
+        android:textSize="25sp" />
+
+    <TextView
+        android:id="@+id/dong"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:background="@drawable/shape_rect3"
+        android:gravity="center_horizontal"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:text="  车江宁小组专属  "
+        android:textColor="@color/teal_200"
+        android:textSize="28sp" />
+
+
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/gv_error"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"
+        android:src="@drawable/ikun"
+        tools:ignore="MissingClass"></pl.droidsonroids.gif.GifImageView>
+</LinearLayout>

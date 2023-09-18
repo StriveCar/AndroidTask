@@ -23,7 +23,7 @@ import retrofit2.http.Query;
 public interface PhotoService {
 
     @GET("share")
-//    Observable<BaseResponse<Data<Records>>> getShare(@Query("userId") int userId);
+//    Observable<BaseResponse<Data<Records>>> getShare(@Query("current") Integer current,@Query("size") Integer size,@Query("userId") String userId);
     Flowable<BaseResponse<Data<Records>>> getShare(@Query("current") Integer current,@Query("size") Integer size,@Query("userId") String userId);
 
     @POST("user/update")
