@@ -1,9 +1,10 @@
 package com.example.androidtask.response;
 
+import java.io.Serializable;
 import java.util.List;
 
 
-public class Records {
+public class Records implements Serializable{
 
     private String id;
     private String pUserId;

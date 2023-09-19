@@ -37,15 +37,18 @@ public class ShareDetail extends AppCompatActivity {
         ImageView iv = findViewById(R.id.iv_profile);
         TextView tv_username = findViewById(R.id.tv_username);
         TextView tv_content = findViewById(R.id.tv_content);
+        TextView tv_title = findViewById(R.id.tv_title);
+        //处理头像
         String st = item.getProfileUrl();
         if(st == "" || st == null){
             iv.setImageResource(R.drawable.baseline_person_outline_24);
         } else {
             Glide.with(this).load(item.getProfileUrl()).into(iv);
         }
-        tv_username.setText(item.getUsername());
-        tv_content.setText(item.getContent());
-        adapter = new ShareDetailPageAdapter(this, item.getImageUrlList());
+        tv_username.setText(item.getRecord().getUsername());
+        tv_content.setText(item.getRecord().getContent());
+        tv_title.setText(item.getRecord().getTitle());
+        adapter = new ShareDetailPageAdapter(this, item.getRecord().getImageUrlList());
         RecyclerView rv = findViewById(R.id.rv_imglist);
         GridLayoutManager glm = new GridLayoutManager(this, 3);
         rv.setAdapter(adapter);

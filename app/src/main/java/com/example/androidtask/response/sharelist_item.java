@@ -4,10 +4,17 @@ import java.io.Serializable;
 import java.util.List;
 
 public class sharelist_item implements Serializable {
+
+    private Records record;
     private String profileUrl;
-    private String username;
-    private String content;
-    private List<String> imageUrlList;
+
+    public Records getRecord() {
+        return record;
+    }
+
+    public void setRecord(Records record) {
+        this.record = record;
+    }
 
     public String getProfileUrl() {
         return profileUrl;
@@ -15,29 +22,5 @@ public class sharelist_item implements Serializable {
 
     public void setProfileUrl(String profileUrl) {
         this.profileUrl = profileUrl;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public List<String> getImageUrlList() {
-        return imageUrlList;
-    }
-
-    public void setImageUrlList(List<String> imageUrlList) {
-        this.imageUrlList = imageUrlList;
     }
 }

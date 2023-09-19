@@ -43,7 +43,7 @@ import retrofit2.Response;
 public class ShareListFragment extends Fragment {
     private View sharelistView;
     private List<Records> recordlist = new ArrayList<>();
-    private ArrayList<sharelist_item> data = new ArrayList<>();
+    private List<sharelist_item> data = new ArrayList<>();
     private RecyclerView rv_sharelist;
     private ShareListAdapter adapter;
     private PhotoService photoService = RetrofitClient.getInstance().getService(PhotoService.class);
@@ -70,21 +70,17 @@ public class ShareListFragment extends Fragment {
                         recordlist = response.getData().getRecords();
                         Records temp;
                         // 获取头像并添加到数据列表
-                        for (int i = 0; i < response.getData().getSize(); i++) {
+                        for (int i = 0; i < recordlist.size(); i++) {
                             sharelist_item item = new sharelist_item();
-                            temp = response.getData().getRecords().get(i);
-                            item.setUsername(temp.getUsername());
-                            item.setImageUrlList(temp.getImageUrlList());
-                            item.setContent(temp.getContent());
-
+                            temp = recordlist.get(i);
+                            item.setRecord(temp);
                             photoService.getUserByName(temp.getUsername()).enqueue(new Callback<BaseResponse<UserInfo>>() {
                                 @Override
                                 public void onResponse(Call<BaseResponse<UserInfo>> call, Response<BaseResponse<UserInfo>> profileresponse) {
                                     item.setProfileUrl(profileresponse.body().getData().getAvatar());
                                     data.add(item);
-                                    if (data.size() == response.getData().getSize()) {
+                                    if (data.size() == recordlist.size()) {
                                         rv_sharelist = sharelistView.findViewById(R.id.shareList);
-                                        //System.out.println(data);
                                         DisplayMetrics dm = new DisplayMetrics();
                                         getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
                                         int width = dm.widthPixels / 2;
@@ -97,7 +93,6 @@ public class ShareListFragment extends Fragment {
                                                 bd.putSerializable("item", item);
                                                 intent.putExtras(bd);
                                                 startActivity(intent);
-
                                             }
                                         }, width);
                                         rv_sharelist.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));

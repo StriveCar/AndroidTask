@@ -47,7 +47,7 @@ public class ShareListAdapter extends RecyclerView.Adapter<ShareListAdapter.mVie
     @Override
     public void onBindViewHolder(@NonNull mViewHolder holder, int position) {
         sharelist_item item = data.get(position);
-        String title = String.format("%s",item.getUsername());
+        String title = String.format("%s",item.getRecord().getUsername());
         holder.sharelist_item_username.setText(title);
         String st = data.get(position).getProfileUrl();
         if(st == "" || st == null){
@@ -59,7 +59,7 @@ public class ShareListAdapter extends RecyclerView.Adapter<ShareListAdapter.mVie
         LinearLayoutManager llm = new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false);
         GridLayoutManager glm = new GridLayoutManager(context,3);
         holder.sharelist_item_imagelist.setLayoutManager(llm);
-        ImageListAdapter rvadapter = new ImageListAdapter(context, item.getImageUrlList());
+        ImageListAdapter rvadapter = new ImageListAdapter(context, item.getRecord().getImageUrlList());
         holder.sharelist_item_imagelist.setAdapter(rvadapter);
         holder.sharelist_item_imagelist.setVisibility(View.VISIBLE);
 
