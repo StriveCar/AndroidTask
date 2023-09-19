@@ -1,7 +1,9 @@
 package com.example.androidtask.fragments;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +16,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.example.androidtask.OnItemClickListener;
 import com.example.androidtask.R;
+import com.example.androidtask.ShareDetail;
 import com.example.androidtask.adapters.ShareListAdapter;
 import com.example.androidtask.network.RetrofitClient;
 import com.example.androidtask.network.service.PhotoService;
@@ -27,6 +31,7 @@ import com.example.androidtask.response.sharelist_item;
 import org.checkerframework.checker.units.qual.A;
 import org.reactivestreams.Subscription;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,19 +68,38 @@ public class ShareListFragment extends Fragment {
                     @Override
                     public void onNext(BaseResponse<Data<Records>> response) {
                         recordlist = response.getData().getRecords();
+                        Records temp;
                         // 获取头像并添加到数据列表
                         for (int i = 0; i < response.getData().getSize(); i++) {
                             sharelist_item item = new sharelist_item();
-                            item.record = recordlist.get(i);
-                            photoService.getUserByName(item.record.getUsername()).enqueue(new Callback<BaseResponse<UserInfo>>() {
+                            temp = response.getData().getRecords().get(i);
+                            item.setUsername(temp.getUsername());
+                            item.setImageUrlList(temp.getImageUrlList());
+                            item.setContent(temp.getContent());
+
+                            photoService.getUserByName(temp.getUsername()).enqueue(new Callback<BaseResponse<UserInfo>>() {
                                 @Override
                                 public void onResponse(Call<BaseResponse<UserInfo>> call, Response<BaseResponse<UserInfo>> profileresponse) {
-                                    item.profileUrl = profileresponse.body().getData().getAvatar();
+                                    item.setProfileUrl(profileresponse.body().getData().getAvatar());
                                     data.add(item);
                                     if (data.size() == response.getData().getSize()) {
                                         rv_sharelist = sharelistView.findViewById(R.id.shareList);
-                                        System.out.println(data);
-                                        adapter = new ShareListAdapter(getActivity(), data);
+                                        //System.out.println(data);
+                                        DisplayMetrics dm = new DisplayMetrics();
+                                        getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
+                                        int width = dm.widthPixels / 2;
+                                        adapter = new ShareListAdapter(getActivity(), data, new OnItemClickListener() {
+                                            @Override
+                                            public void onItemClick(int position) {
+                                                sharelist_item item = data.get(position);
+                                                Intent intent = new Intent(getActivity(), ShareDetail.class);
+                                                Bundle bd = new Bundle();
+                                                bd.putSerializable("item", item);
+                                                intent.putExtras(bd);
+                                                startActivity(intent);
+
+                                            }
+                                        }, width);
                                         rv_sharelist.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
                                         rv_sharelist.setAdapter(adapter);
                                     }

@@ -2,13 +2,12 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    android:layout_margin="8dp">
 
     <ImageView
-        android:id="@+id/iv_imglist_item"
-        android:layout_margin="4dp"
+        android:id="@+id/iv_SDP_imglist_item"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scaleType="center" />
-
+        android:layout_height="match_parent"
+        android:scaleType="center"/>
 </LinearLayout>
