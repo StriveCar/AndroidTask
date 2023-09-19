@@ -3,6 +3,7 @@ package com.example.androidtask.network.service;
 import com.example.androidtask.LoginActivity;
 import com.example.androidtask.response.BaseResponse;
 import com.example.androidtask.response.Data;
+import com.example.androidtask.response.ImageText;
 import com.example.androidtask.response.ImageUrl;
 import com.example.androidtask.response.LoginData;
 import com.example.androidtask.response.Records;
@@ -38,4 +39,7 @@ public interface PhotoService {
 
     @POST("user/login")
     Call<BaseResponse<LoginData>> userLogin(@Query("password") String pwd,@Query("username") String une);
+
+    @POST("share/add")
+    Call<BaseResponse<Object>> uploadAdd(@Body ImageText imageText);
 }

@@ -33,17 +33,10 @@ import retrofit2.Response;
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
 
     private Boolean bPwdSwitch = false;
-    private EditText etPwd;
-    private EditText etPwd2;
-
-    private EditText etAccount;
-    private EditText etVerify;
+    private EditText etPwd,etPwd2,etAccount,etVerify;
     private ImageView ivPwdSwitch, ivPwdSwitch2, ivCode;
-
-    private final String UserName = "^[a-z0-9A-Z]+$";
     private Button btRegister;
     private CodeUtils codeutils;
-
 
     private final PhotoService photoService = RetrofitClient.getInstance().getService(PhotoService.class);
 
@@ -71,6 +64,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         ivCode.setOnClickListener(this);
         etVerify.setOnFocusChangeListener(this);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.cyan));
+        }
 
     }
 
@@ -82,7 +78,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 return;
             }
 
-            if (!Pattern.matches(UserName, etPwd.getText().toString().toLowerCase())) {
+            String userName = "^[a-z0-9A-Z]+$";
+            if (!Pattern.matches(userName, etPwd.getText().toString().toLowerCase())) {
                 Toast.makeText(this, "密码由字母和数字组成", Toast.LENGTH_SHORT).show();
                 return;
             }

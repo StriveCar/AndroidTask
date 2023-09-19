@@ -8,6 +8,7 @@ import com.example.androidtask.network.RetrofitClient;
 import com.example.androidtask.network.service.PhotoService;
 import com.example.androidtask.response.BaseResponse;
 import com.example.androidtask.response.Data;
+import com.example.androidtask.response.ImageText;
 import com.example.androidtask.response.Records;
 
 import org.junit.Test;
@@ -19,6 +20,9 @@ import io.reactivex.rxjava3.core.FlowableSubscriber;
 import io.reactivex.rxjava3.core.Observer;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -75,28 +79,28 @@ public class ExampleUnitTest {
 //                Log.d("kkx ;","完成");
 //            }
 //        });
-        photoService.getShare(null, null, "1692126434274971648")
-                .subscribe(new FlowableSubscriber<BaseResponse<Data<Records>>>() {
-                    @Override
-                    public void onSubscribe(Subscription s) {
-                        s.request(Long.MAX_VALUE); // 请求数据
-                    }
-
-                    @Override
-                    public void onNext(BaseResponse<Data<Records>> response) {
-                        System.out.println(response.getData().getRecords());
-                    }
-
-                    @Override
-                    public void onError(Throwable t) {
-                        // 处理错误情况，比如显示错误信息
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        // 数据流处理完成，可以执行一些收尾操作
-                    }
-                });
+//        photoService.getShare(null, null, "1692126434274971648")
+//                .subscribe(new FlowableSubscriber<BaseResponse<Data<Records>>>() {
+//                    @Override
+//                    public void onSubscribe(Subscription s) {
+//                        s.request(Long.MAX_VALUE); // 请求数据
+//                    }
+//
+//                    @Override
+//                    public void onNext(BaseResponse<Data<Records>> response) {
+//                        System.out.println(response.getData().getRecords());
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable t) {
+//                        // 处理错误情况，比如显示错误信息
+//                    }
+//
+//                    @Override
+//                    public void onComplete() {
+//                        // 数据流处理完成，可以执行一些收尾操作
+//                    }
+//                });
 
 //        photoService.userRegister(new User("admin", "admin")).enqueue(new Callback<BaseResponse<Object>>() {
 //            @Override
@@ -113,22 +117,27 @@ public class ExampleUnitTest {
 //            }
 //        });
 
+        ImageText imageText = new ImageText();
+        imageText.setContent("kkx");
+        imageText.setImageCode("1703725920025710592");
+        imageText.setPUserId("1691444731072090112");
+        imageText.setTitle("测试2");
 
-//        photoService.userLogin("admin", "admin").enqueue(new Callback<BaseResponse<LoginData>>() {
-//            @Override
-//            public void onResponse(Call<BaseResponse<LoginData>> call, Response<BaseResponse<LoginData>> response) {
-//                if (response.body().getCode() == 200) {
-//                    System.out.println("登录成功!  "+response.body().getData());
-//                } else if (response.body().getCode() == 500) {
-//                    System.out.println(response.body().getMsg());
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<BaseResponse<LoginData>> call, Throwable t) {
-//                System.out.println("登陆失败");
-//            }
-//        });
+        photoService.uploadAdd(imageText).enqueue(new Callback<BaseResponse<Object>>() {
+            @Override
+            public void onResponse(Call<BaseResponse<Object>> call, Response<BaseResponse<Object>> response) {
+                if (response.body().getCode() == 200) {
+                    System.out.println("新增成功!  " + response.body());
+                } else if (response.body().getCode() == 500) {
+                    System.out.println(response.body().getMsg());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BaseResponse<Object>> call, Throwable t) {
+
+            }
+        });
 
         while (true) {
         }

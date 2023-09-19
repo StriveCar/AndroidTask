@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,6 +30,8 @@ import com.example.androidtask.response.LoginData;
 import com.example.androidtask.response.WordResponse;
 import com.google.android.material.navigation.NavigationView;
 
+import java.util.Random;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -36,22 +39,21 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
 
-    private DrawerLayout drawer_layout;
-    private NavigationView nav_view;
-
-    private CircleImageView im_profile;
-    private TextView tv_username, tv_introduce, tv_art;
-
+    private DrawerLayout drawerLayout;
+    private NavigationView navView;
+    private CircleImageView imProfile;
+    private TextView tvUsername, tvIntroduce, tvArt;
     private final ArtWordService artWordService = RetrofitClient.getInstance().getService("https://apis.tianapi.com/", ArtWordService.class);
-    private ImageView iv_image;
-
-    private boolean night_sun = false;
+    private boolean nightSun = false;
     private Toolbar toolbar;
-
-    private ImageView icon, icon_1, icon_2, icon_3, icon_4;
+    private ImageView icon, icon_1, icon_2, icon_3, icon_4, ivImage;
     private TextView iconTv, iconTv_1, iconTv_2, iconTv_3, iconTv_4;
     private RelativeLayout rl_1, rl_2, rl_3, rl_4;
     private Intent intent;
+    private int index = 7;
+    private int[] imageResources;
+
+    private CountDownTimer clickTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,14 +62,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
-        drawer_layout = findViewById(R.id.drawer_layout);
-        nav_view = findViewById(R.id.nav_view);
-        View headerView = nav_view.getHeaderView(0);
-        im_profile = headerView.findViewById(R.id.icon_image);
-        tv_username = headerView.findViewById(R.id.username);
-        tv_introduce = headerView.findViewById(R.id.tv_introduce);
-        tv_art = headerView.findViewById(R.id.art_word);
-        iv_image = findViewById(R.id.image);
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navView = findViewById(R.id.nav_view);
+        View headerView = navView.getHeaderView(0);
+        imProfile = headerView.findViewById(R.id.icon_image);
+        tvUsername = headerView.findViewById(R.id.username);
+        tvIntroduce = headerView.findViewById(R.id.tv_introduce);
+        tvArt = headerView.findViewById(R.id.art_word);
+        ivImage = findViewById(R.id.image);
         icon = findViewById(R.id.bottom_bar_image_1);
         iconTv = findViewById(R.id.bottom_bar_text_1);
         icon_1 = findViewById(R.id.bottom_bar_image_1);
@@ -85,48 +87,54 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         toolbar.setNavigationIcon(R.drawable.navigation);
         toolbar.setNavigationOnClickListener(v -> {
-            drawer_layout.openDrawer(GravityCompat.START);
+            drawerLayout.openDrawer(GravityCompat.START);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.lucency));
             }
         });
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-        }
 
         initData();
 
-        nav_view.setNavigationItemSelectedListener(this);
-        drawer_layout.setOnClickListener(this);
+        navView.setNavigationItemSelectedListener(this);
+        drawerLayout.setOnClickListener(this);
         rl_1.setOnClickListener(this);
         rl_2.setOnClickListener(this);
         rl_3.setOnClickListener(this);
         rl_4.setOnClickListener(this);
+        ivImage.setOnClickListener(this);
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         LoginData mloginData = LoginData.getMloginData();
-        tv_username.setText(mloginData.getUsername());
-        tv_introduce.setText(mloginData.getIntroduce());
+        tvUsername.setText(mloginData.getUsername());
+        tvIntroduce.setText(mloginData.getIntroduce());
         if (mloginData.getAvatar() != null) {
-            Glide.with(this).load(mloginData.getAvatar()).diskCacheStrategy(DiskCacheStrategy.NONE).into(im_profile);
+            Glide.with(this).load(mloginData.getAvatar()).diskCacheStrategy(DiskCacheStrategy.NONE).into(imProfile);
         } else {
-            Glide.with(this).load(R.drawable.bysl).diskCacheStrategy(DiskCacheStrategy.NONE).into(im_profile);
+            Glide.with(this).load(R.drawable.bysl).diskCacheStrategy(DiskCacheStrategy.NONE).into(imProfile);
         }
     }
 
     public void initData() {
         Typeface typeface = Typeface.createFromAsset(getAssets(), "ZiTiGuanJiaNaNa-2.ttf");
-        tv_art.setTypeface(typeface);
+        tvArt.setTypeface(typeface);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.teal_200));
+        }
 
         artWordService.getArtWord().enqueue(new Callback<WordResponse>() {
             @SuppressLint("SetTextI18n")
             @Override
             public void onResponse(@NonNull Call<WordResponse> call, @NonNull Response<WordResponse> response) {
                 if (response.body() != null && response.body().getCode() == 200) {
-                    tv_art.setText("ʕ ᵔᴥᵔ ʔ  " + response.body().getResult().getContent());
+                    tvArt.setText("ʕ ᵔᴥᵔ ʔ  " + response.body().getResult().getContent());
                 }
             }
 
@@ -138,12 +146,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        iv_image.setMaxHeight(displayMetrics.heightPixels - 1300);
+        ivImage.setMaxHeight(displayMetrics.heightPixels - 1300);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.teal_200));
-        }
+        LoadingDialog.getInstance().dismiss();
 
+        imageResources = new int[]{R.drawable.image01, R.drawable.image02, R.drawable.image03, R.drawable.image04,
+                R.drawable.image05, R.drawable.image06, R.drawable.image07, R.drawable.image08,
+                R.drawable.image09, R.drawable.image10, R.drawable.image11, R.drawable.image12,
+                R.drawable.image13, R.drawable.image14, R.drawable.image15, R.drawable.image16,
+                R.drawable.image17, R.drawable.image18, R.drawable.image19, R.drawable.image20,
+                R.drawable.image21, R.drawable.image23, R.drawable.image24, R.drawable.image25,
+                R.drawable.image26};
+
+        clickTimer = new CountDownTimer(2000, 1000) {
+            public void onTick(long millisUntilFinished) {
+
+            }
+
+            public void onFinish() {
+                ivImage.setEnabled(true);
+            }
+        };
     }
 
     public void changeSelectStatus(ImageView iv, TextView tv) {
@@ -186,6 +209,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             changeSelectStatus(icon_3, iconTv_3);
         } else if (v.getId() == R.id.bottom_bar_5_btn) {
             changeSelectStatus(icon_4, iconTv_4);
+        } else if (v.getId() == R.id.image) {
+            clickTimer.start();
+            ivImage.setEnabled(false);
+            Random random = new Random();
+            int randomIndex = random.nextInt(imageResources.length);
+            if (randomIndex == index) {
+                randomIndex = (randomIndex + 1) % imageResources.length;
+            }
+            index = randomIndex;
+            ivImage.setImageResource(imageResources[randomIndex]);
         }
     }
 
@@ -197,8 +230,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (item.getItemId() == R.id.like_work) {
 
         } else if (item.getItemId() == R.id.night) {
-            night_sun = !night_sun;
-            if (night_sun) {
+            nightSun = !nightSun;
+            if (nightSun) {
                 item.setIcon(R.drawable.baseline_wb_sunny_24);
                 setTheme(R.style.Base_Theme_NightAndroidTask);
                 recreate();
@@ -207,10 +240,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
         } else if (item.getItemId() == R.id.about_us) {
-
+            intent = new Intent(this, ModifyUsernameActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putInt(UserInfoActivity.MODE, 3);
+            intent.putExtras(bundle);
+            startActivity(intent);
         } else if (item.getItemId() == R.id.exit_app) {
             finish();
         }
         return false;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        clickTimer.cancel();
     }
 }

@@ -7,8 +7,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -47,14 +45,12 @@ import retrofit2.Response;
 public class UserInfoActivity extends AppCompatActivity implements View.OnClickListener, GenderBottomSheetFragment.OnGenderSelectedListener {
 
     private Toolbar toolbar;
-    private CircleImageView iv_head_image;
-    private CardView small_icon;
-    private TextView tv_user_name, tv_introduce, tv_sex;
-    private RelativeLayout rl_account, rl_sex, rl_signature;
+    private CircleImageView ivHeadImage;
+    private CardView smallIcon;
+    private TextView tvUsername, tvIntroduce, tvSex;
+    private RelativeLayout rlAccount, rlSex, rlSignature;
     private LoginData mloginData = LoginData.getMloginData();
-
     private Uri mUri;
-
     private final PhotoService photoService = RetrofitClient.getInstance().getService(PhotoService.class);
     private ActivityResultLauncher<Intent> mResultLauncher;
     private Intent intent;
@@ -74,22 +70,22 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.activity_user_info);
 
         toolbar = findViewById(R.id.tool_bar);
-        iv_head_image = findViewById(R.id.iv_head_image);
-        small_icon = findViewById(R.id.small_icon);
-        tv_user_name = findViewById(R.id.tv_user_name);
-        tv_introduce = findViewById(R.id.tv_introduce);
-        tv_sex = findViewById(R.id.tv_sex);
-        rl_account = findViewById(R.id.rl_account);
-        rl_signature = findViewById(R.id.rl_signature);
-        rl_sex = findViewById(R.id.rl_sex);
+        ivHeadImage = findViewById(R.id.iv_head_image);
+        smallIcon = findViewById(R.id.small_icon);
+        tvUsername = findViewById(R.id.tv_user_name);
+        tvIntroduce = findViewById(R.id.tv_introduce);
+        tvSex = findViewById(R.id.tv_sex);
+        rlAccount = findViewById(R.id.rl_account);
+        rlSignature = findViewById(R.id.rl_signature);
+        rlSex = findViewById(R.id.rl_sex);
 
         initData();
 
-        rl_account.setOnClickListener(this);
-        rl_sex.setOnClickListener(this);
-        rl_signature.setOnClickListener(this);
-        iv_head_image.setOnClickListener(this);
-        small_icon.setOnClickListener(this);
+        rlAccount.setOnClickListener(this);
+        rlSex.setOnClickListener(this);
+        rlSignature.setOnClickListener(this);
+        ivHeadImage.setOnClickListener(this);
+        smallIcon.setOnClickListener(this);
     }
 
 
@@ -97,16 +93,16 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
     protected void onStart() {
         super.onStart();
         if (mloginData.getAvatar() != null) {
-            Glide.with(this).load(mloginData.getAvatar()).diskCacheStrategy(DiskCacheStrategy.NONE).into(iv_head_image);
+            Glide.with(this).load(mloginData.getAvatar()).diskCacheStrategy(DiskCacheStrategy.NONE).into(ivHeadImage);
         } else {
-            Glide.with(this).load(R.drawable.bysl).diskCacheStrategy(DiskCacheStrategy.NONE).into(iv_head_image);
+            Glide.with(this).load(R.drawable.bysl).diskCacheStrategy(DiskCacheStrategy.NONE).into(ivHeadImage);
         }
-        tv_user_name.setText(mloginData.getUsername());
-        tv_introduce.setText(mloginData.getIntroduce());
+        tvUsername.setText(mloginData.getUsername());
+        tvIntroduce.setText(mloginData.getIntroduce());
         if (mloginData.getSex() % 2 == 0) {
-            tv_sex.setText("女");
+            tvSex.setText("女");
         } else {
-            tv_sex.setText("男");
+            tvSex.setText("男");
         }
     }
 
@@ -128,11 +124,11 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
                         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                         image.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
                         imageBytes = byteArrayOutputStream.toByteArray();
-                        iv_head_image.setImageBitmap(image);
+                        ivHeadImage.setImageBitmap(image);
                     } else if (choose==CHOOSE_PHOTO) {
                         mUri = intent.getData();
                         if (mUri != null) {
-                            iv_head_image.setImageURI(mUri);
+                            ivHeadImage.setImageURI(mUri);
                             imageBytes = getImageBytes(mUri);
                         }
                     }
@@ -242,8 +238,8 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onGenderSelected(String gender) {
-        if (!tv_sex.getText().equals(gender)) {
-            tv_sex.setText(gender);
+        if (!tvSex.getText().equals(gender)) {
+            tvSex.setText(gender);
         }
         if (gender.equals("男")) {
             mloginData.setSex(1);

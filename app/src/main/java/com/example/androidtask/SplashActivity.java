@@ -4,9 +4,10 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -16,6 +17,7 @@ public class SplashActivity extends AppCompatActivity {
     private TextView countdownTextView, skipButton;
     private CountDownTimer countDownTimer;
 
+    private Handler handler = new Handler();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,6 +25,10 @@ public class SplashActivity extends AppCompatActivity {
 
         countdownTextView = findViewById(R.id.countdown_text);
         skipButton = findViewById(R.id.skip_text);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.cyan));
+        }
 
         long countdownMillis = 4000;
         long intervalMillis = 1000;
@@ -41,23 +47,19 @@ public class SplashActivity extends AppCompatActivity {
             }
         };
 
-        // 启动倒计时
         countDownTimer.start();
 
-        // 添加点击事件监听器，当用户点击跳过按钮时取消倒计时并执行跳过操作
-        skipButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // 取消倒计时
-                countDownTimer.cancel();
-                jumpToMainActivity();
-            }
+        skipButton.setOnClickListener(v -> {
+            countDownTimer.cancel();
+            jumpToMainActivity();
         });
     }
 
     private void jumpToMainActivity() {
+        LoadingDialog.getInstance(this).show();
         Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
         startActivity(intent);
-        finish(); // 关闭当前 Splash Activity
+        finish();
+//        handler.postDelayed(this::finish, 500);
     }
 }

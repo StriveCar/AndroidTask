@@ -27,4 +27,14 @@
     <string name="set">设置</string>
     <string name="exit">退出</string>
     <string name="seconds_remaining">%1$d秒 |</string>
+    <string name="title_activity_loading_dialog">LoadingDialog</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="about_info">队名：车江宁队\n组长：车立钧\n组员：梁喜宁，徐江荣\n\n项目描述：我们的大作业项目名为拾影，是一个安卓应用，旨在分享图片\n\n版权信息：2023年车江宁小组保留所有权利\n\n联系方式：如果您对我们的项目或团队有任何疑问或建议，请随时与我们联系：\n- 电子邮件：iclj@foxmail.com</string>
 </resources>

@@ -5,12 +5,12 @@
         <!-- 应用的主要色调,actionBar默认使用该颜色，Toolbar导航栏的底色 -->
         <item name="colorPrimary">#FF49709B</item>
         <!-- 应用的主要暗色调,statusBarColor 默认使用该颜色 -->
-        <item name="colorPrimaryDark">#FF33547B</item>
+        <item name="colorPrimaryDark">#FF49709B</item>
         <!-- 一般控件的选中效果默认采用该颜色,如 CheckBox,RadioButton,SwitchCompat，ProcessBar等-->
         <item name="colorAccent">#FF19497D</item>
         <!-- 状态栏、顶部导航栏 相关-->
         <!-- status bar color -->
-        <item name="android:statusBarColor">@color/lucency</item>
+        <item name="android:statusBarColor">@color/cyan</item>
         <!-- activity 是否能在status bar 底部绘制-->
         <item name="android:windowOverscan">true</item>
         <!-- 让status bar透明，相当于statusBarColor=transparent + windowOverscan=true-->
@@ -24,10 +24,6 @@
         <!-- 底部虚拟导航栏颜色-->
         <item name="android:navigationBarColor">@color/lucency</item>
 
-        <!-- WindowBackground，可以设置@drawable，颜色引用（@color），不能设置颜色值（#fffffff），
-        Window区域说明：Window涵盖整个屏幕显示区域，包括StatusBar的区域。当windowOverscan=false时，window的区域比Activity多出StatusBar，当windowOverscan=true时，window区域与Activity相同-->
-        <!--        <item name="android:windowBackground">@drawable/ic_launcher_background</item>-->
-        <!--<item name="android:windowBackground">@color/light_purple</item>-->
 
         <!-- 默认 Button,TextView的文字颜色 -->
         <item name="android:textColor">@color/white</item>

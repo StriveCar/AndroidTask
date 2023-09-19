@@ -6,7 +6,8 @@
     <color name="teal_300">#FF33547B</color>
     <color name="teal_400">#FF1F5082</color>
     <color name="teal_500">#FF19497D</color>
-    <color name="lucency">#00FFFFFF</color>
+    <color name="lucency">#00000000</color>
+    <color name="cyan">#C2CDD1</color>
     <color name="gray">#F5F5F5</color>
     <color name="gray2">#8C8C8C</color>
     <color name="night_status_bar_color">#000000</color>

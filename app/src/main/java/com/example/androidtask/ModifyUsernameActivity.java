@@ -8,6 +8,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,7 +46,7 @@ public class ModifyUsernameActivity extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         mode = bundle.getInt(UserInfoActivity.MODE);
-        addComplete();
+        if (mode < 3) addComplete();
         initData();
     }
 
@@ -133,6 +135,19 @@ public class ModifyUsernameActivity extends AppCompatActivity {
             toolbar.setTitle("修改我的个性签名");
             etUsername.setText(mloginData.getIntroduce());
             tvNum.setText("" + (60 - mloginData.getIntroduce().length()));
+        } else if (mode == 3) {
+            toolbar.setTitle("关于我们");
+            tvNum.setVisibility(View.GONE);
+
+            etUsername.setSingleLine(false);
+            ViewGroup.LayoutParams layoutParams = etUsername.getLayoutParams();
+            layoutParams.height = 900;
+            etUsername.setLayoutParams(layoutParams);
+            etUsername.setMaxLines(15);
+            etUsername.setText(getResources()
+                    .getString(R.string.about_info));
+            etUsername.setFocusable(false);
+            etUsername.setFocusableInTouchMode(false);
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.teal_200));
