@@ -39,5 +39,9 @@ public interface PhotoService {
     @POST("share/add")
     Call<BaseResponse<Object>> uploadAdd(@Body ImageText imageText);
 
+    @POST("share/save")
+    Call<BaseResponse<Object>> saveAdd(@Body ImageText imageText);
+
+
 
 }

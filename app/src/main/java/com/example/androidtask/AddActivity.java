@@ -2,6 +2,7 @@ package com.example.androidtask;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -30,6 +31,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -66,13 +68,6 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
 
     //照片选取类
     PhotoPopupWindow mPhotoPopupWindow;
-
-    DisplayImageOptions options;
-    //权限常量
-    private static final String TAG = "AddActivity";
-    private static final int REQUEST_IMAGE_GET = 0;
-    private static final int REQUEST_IMAGE_CAPTURE = 1;
-    private static final int REQUEST_SMALL_IMAGE_CUTTING = 2;
 
     private Integer choose=-1;
     //拍照
@@ -178,6 +173,15 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
     }
 
 
+
+    // 当要退出此Activity时，再运行特定函数
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //弹出框
+        onBackPressed();
+    }
+
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.add_picture){
@@ -194,7 +198,9 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
         }
     }
 
+    //新增图文分享
     private void uploadPic() {
+
 
         ImageText imageText = new ImageText();
         imageText.setImageCode(imageCode);
@@ -202,30 +208,43 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
         imageText.setContent(pb_content.getText().toString());
         imageText.setTitle(pb_title.getText().toString());
 
+        String textTitle = pb_title.getText().toString().trim();
+        String textContent = pb_content.getText().toString().trim();
+        if(textTitle.isEmpty()||textContent.isEmpty() ){
+            Toast.makeText(AddActivity.this, "主题或内容未输入！", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            if (imageCode == null){
+                Toast.makeText(AddActivity.this, "请上传图片！", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                photoService.uploadAdd(imageText).enqueue(new Callback<BaseResponse<Object>>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse<Object>> call, Response<BaseResponse<Object>> response) {
+                        if (response.body().getCode() == 200) {
+                            Toast.makeText(AddActivity.this, "新增成功", Toast.LENGTH_SHORT).show();
+                            System.out.println("新增成功!  " + response.body());
+                        } else if (response.body().getCode() == 500) {
+                            System.out.println(response.body().getMsg());
+                        }
+                    }
 
-        photoService.uploadAdd(imageText).enqueue(new Callback<BaseResponse<Object>>() {
-            @Override
-            public void onResponse(Call<BaseResponse<Object>> call, Response<BaseResponse<Object>> response) {
-                if (response.body().getCode() == 200) {
-                    Toast.makeText(AddActivity.this, "新增成功", Toast.LENGTH_SHORT).show();
-                    System.out.println("新增成功!  " + response.body());
-                } else if (response.body().getCode() == 500) {
-                    System.out.println(response.body().getMsg());
-                }
+                    @Override
+                    public void onFailure(Call<BaseResponse<Object>> call, Throwable t) {
+                        Toast.makeText(AddActivity.this, "新增失败", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                Intent intent = new Intent(this,MainActivity.class);
+                startActivity(intent);
             }
 
-            @Override
-            public void onFailure(Call<BaseResponse<Object>> call, Throwable t) {
-                Toast.makeText(AddActivity.this, "新增失败", Toast.LENGTH_SHORT).show();
-            }
-        });
+        }
 
-        Intent intent = new Intent(this,MainActivity.class);
-        startActivity(intent);
     }
 
+    //弹出选择框
     private void showSelectDialog() {
-
 
         mPhotoPopupWindow = new PhotoPopupWindow(AddActivity.this,new View.OnClickListener() {
             @Override
@@ -303,18 +322,6 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
 //    }
 
 
-    private Bitmap compressImage(Bitmap originalBitmap, int maxWidth, int maxHeight) {
-        int width = originalBitmap.getWidth();
-        int height = originalBitmap.getHeight();
-
-        float scale = Math.min((float) maxWidth / width, (float) maxHeight / height);
-        int newWidth = (int) (width * scale);
-        int newHeight = (int) (height * scale);
-
-        Bitmap compressedBitmap = Bitmap.createScaledBitmap(originalBitmap, newWidth, newHeight, true);
-        return compressedBitmap;
-    }
-
     public byte[] getImageBytes(Uri contentUri) {
         try {
             InputStream inputStream = getContentResolver().openInputStream(contentUri);
@@ -372,4 +379,63 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
             manager.hideSoftInputFromWindow(token, InputMethodManager.HIDE_NOT_ALWAYS);
         }
     }
+
+
+    //退出时弹出是否保存
+    @Override
+    public void onBackPressed() {
+        ImageText imageText = new ImageText();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        //
+        String textTitle = pb_title.getText().toString().trim();
+        String textContent = pb_content.getText().toString().trim();
+        if(textTitle.isEmpty() && textContent.isEmpty() && imageCode == null){
+            finish();
+        }
+        else {
+            builder.setMessage("是否要保存当前内容？")
+                    .setPositiveButton("是", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // 点击确认按钮，保存图文
+                            imageText.setImageCode(imageCode);
+                            imageText.setPUserId(mlogindata.getId());
+                            imageText.setContent(pb_content.getText().toString());
+                            imageText.setTitle(pb_title.getText().toString());
+
+                            photoService.saveAdd(imageText).enqueue(new Callback<BaseResponse<Object>>() {
+                                @Override
+                                public void onResponse(Call<BaseResponse<Object>> call, Response<BaseResponse<Object>> response) {
+                                    if (response.body().getCode() == 200) {
+                                        Toast.makeText(AddActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
+                                        System.out.println("保存成功!  " + response.body());
+                                        System.out.println(imageCode+mlogindata.getId()+pb_content.getText().toString()+pb_title.getText().toString());
+                                        finish();
+                                    } else if (response.body().getCode() == 500) {
+                                        Toast.makeText(AddActivity.this, "保存失败！保存图文时每一项内容都要填写", Toast.LENGTH_SHORT).show();
+                                        System.out.println(response.body().getMsg());
+
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<BaseResponse<Object>> call, Throwable t) {
+                                    Toast.makeText(AddActivity.this, "保存失败", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    })
+                    .setNegativeButton("否", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // 点击取消按钮，对话框消失
+                            dialog.cancel();
+                            finish();
+                        }
+                    })
+                    .show();
+        }
+
+    }
+
 }

@@ -87,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.bottom_bar_image_3){
+
             intent = new Intent(this, AddActivity.class);
             startActivity(intent);
         }
