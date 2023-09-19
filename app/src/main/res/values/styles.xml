@@ -9,4 +9,10 @@
         <item name="android:layout_centerHorizontal">true</item>
         <item name="android:layout_marginTop">3dp</item>
     </style>
+
+    <style name="AnimationPreview">
+        <item name="android:windowEnterAnimation">@animator/fade_in</item>
+        <item name="android:windowExitAnimation">@animator/fade_out</item>
+    </style>
+
 </resources>

@@ -16,7 +16,7 @@ public class RetrofitClient {
     OkHttpClient client = new OkHttpClient.Builder().connectTimeout(20, TimeUnit.SECONDS)                   //设置请求超时时间
             .readTimeout(20, TimeUnit.SECONDS)                      //设置读取数据超时时间
             .writeTimeout(20, TimeUnit.SECONDS)                  //设置写入数据超时时间
-//            .addInterceptor(InterceptorUtil.LogInterceptor())              //绑定日志拦截器
+            .addInterceptor(InterceptorUtil.LogInterceptor())              //绑定日志拦截器
             .addNetworkInterceptor(InterceptorUtil.HeaderInterceptor())       //绑定header拦截器
             .build();
     private Retrofit retrofit;

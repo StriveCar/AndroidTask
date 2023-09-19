@@ -1,9 +1,14 @@
 package com.example.androidtask;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -13,6 +18,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
+import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -54,13 +60,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         bundle = getIntent().getExtras();
         if (bundle!=null){
-            tv_username.setText(bundle.getString(LoginActivity.USER_NAME));
-            tv_introduce.setText(bundle.getString(LoginActivity.USER_INTRODUCE));
-            if (bundle.getString(LoginActivity.USER_PROFILE) != null){
-                Glide.with(this).load(bundle.getString(LoginActivity.USER_PROFILE)).diskCacheStrategy(DiskCacheStrategy.NONE).into(im_profile);
-            }else {
-                Glide.with(this).load(R.drawable.bysl).diskCacheStrategy(DiskCacheStrategy.NONE).into(im_profile);
-            }
+//            tv_username.setText(bundle.getString(LoginActivity.USER_NAME));
+//            tv_introduce.setText(bundle.getString(LoginActivity.USER_INTRODUCE));
+//            if (bundle.getString(LoginActivity.USER_PROFILE) != null){
+//                Glide.with(this).load(bundle.getString(LoginActivity.USER_PROFILE)).diskCacheStrategy(DiskCacheStrategy.NONE).into(im_profile);
+//            }else {
+//                Glide.with(this).load(R.drawable.bysl).diskCacheStrategy(DiskCacheStrategy.NONE).into(im_profile);
+//            }
         }
 //        maskLayout = findViewByIdf(R.id.mask_layout);
 //        drawer_layout.setScrimColor(Color.TRANSPARENT);
@@ -98,4 +104,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         return false;
     }
+
 }

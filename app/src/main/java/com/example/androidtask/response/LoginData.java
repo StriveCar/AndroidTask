@@ -1,26 +1,50 @@
 package com.example.androidtask.response;
 
+
+import com.example.androidtask.network.RetrofitClient;
+
 public class LoginData {
 
     private String id;
     private String appKey;
     private String username;
     private String password;
-    private String sex;
+    private int sex;
     private String introduce;
     private String avatar;
     private String createTime;
     private String lastUpdateTime;
+
+    private static LoginData mloginData;
+
     public void setId(String id) {
         this.id = id;
     }
+
+    public static LoginData getMloginData() {
+        if (mloginData == null) {
+            synchronized (LoginData.class) {
+                if (mloginData == null) {
+                    mloginData  = new LoginData();
+                }
+            }
+        }
+        return mloginData;
+    }
+
+    public static void setMloginData(LoginData mloginData) {
+        LoginData.mloginData = mloginData;
+    }
+
     public String getId() {
         return id;
     }
 
+
     public void setAppKey(String appKey) {
         this.appKey = appKey;
     }
+
     public String getAppKey() {
         return appKey;
     }
@@ -28,6 +52,7 @@ public class LoginData {
     public void setUsername(String username) {
         this.username = username;
     }
+
     public String getUsername() {
         return username;
     }
@@ -35,20 +60,23 @@ public class LoginData {
     public void setPassword(String password) {
         this.password = password;
     }
+
     public String getPassword() {
         return password;
     }
 
-    public void setSex(String sex) {
+    public void setSex(int sex) {
         this.sex = sex;
     }
-    public String getSex() {
+
+    public int getSex() {
         return sex;
     }
 
     public void setIntroduce(String introduce) {
         this.introduce = introduce;
     }
+
     public String getIntroduce() {
         return introduce;
     }
@@ -56,6 +84,7 @@ public class LoginData {
     public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
+
     public String getAvatar() {
         return avatar;
     }
@@ -63,6 +92,7 @@ public class LoginData {
     public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
+
     public String getCreateTime() {
         return createTime;
     }
@@ -70,6 +100,7 @@ public class LoginData {
     public void setLastUpdateTime(String lastUpdateTime) {
         this.lastUpdateTime = lastUpdateTime;
     }
+
     public String getLastUpdateTime() {
         return lastUpdateTime;
     }

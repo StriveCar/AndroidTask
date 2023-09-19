@@ -1,10 +1,11 @@
 package com.example.androidtask;
 
 
-import  android.content.Context;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -16,8 +17,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.example.androidtask.network.RetrofitClient;
 import com.example.androidtask.network.service.PhotoService;
@@ -38,14 +42,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private Button btLogin;
     private Button btRegister;
 
-
     private final PhotoService photoService = RetrofitClient.getInstance().getService(PhotoService.class);
     private Intent intent;
+    private ActivityResultLauncher<Intent> register;
 
-    public static final String USER_ID = "id";
     public static final String USER_NAME = "name";
-    public static final String USER_PROFILE = "profile";
-    public static final String USER_INTRODUCE = "introduce";
+    public static final String USER_PWD = "password";
+    private Bundle bundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,8 +107,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             etPwd.setSelection(context);
         });
 
+
         btLogin.setOnClickListener(this);
         btRegister.setOnClickListener(this);
+
+        register = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result != null) {
+                if (result.getData() != null) {
+                    bundle = result.getData().getExtras();
+                    etAccount.setText(bundle.getString(LoginActivity.USER_NAME));
+                    etPwd.setText(bundle.getString(LoginActivity.USER_PWD));
+                }
+            }
+        });
     }
 
     @Override
@@ -152,18 +166,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 Toast.makeText(LoginActivity.this, "登录成功! ", Toast.LENGTH_SHORT).show();
 
                                 intent = new Intent(LoginActivity.this, MainActivity.class);
-                                ;
-                                Bundle bundle = new Bundle();
-                                bundle.putString(USER_ID, response.body().getData().getId());
-                                bundle.putString(USER_NAME, response.body().getData().getUsername());
-                                bundle.putString(USER_PROFILE, response.body().getData().getAvatar());
+                                LoginData.setMloginData(response.body().getData());
+                                LoginData mloginData = LoginData.getMloginData();
                                 if (response.body().getData().getIntroduce() == null) {
-                                    bundle.putString(USER_INTRODUCE, "这是你的个性签名！");
-                                } else {
-                                    bundle.putString(USER_INTRODUCE, response.body().getData().getIntroduce());
+                                    mloginData.setIntroduce("这是你的个性签名！");
                                 }
+                                mloginData.setCreateTime(null);
+                                mloginData.setLastUpdateTime(null);
+                                mloginData.setAppKey(null);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                intent.putExtras(bundle);
                                 startActivity(intent);
                             } else if (response.body().getCode() == 500) {
                                 Toast.makeText(LoginActivity.this, response.body().getMsg(), Toast.LENGTH_SHORT).show();
@@ -180,7 +191,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         } else if (view.getId() == R.id.bt_resgiter) {
             intent = new Intent(LoginActivity.this, RegisterActivity.class);
-            startActivity(intent);
+            register.launch(intent);
         }
     }
 }
