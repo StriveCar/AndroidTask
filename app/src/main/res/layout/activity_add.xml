@@ -8,19 +8,37 @@
     android:orientation="vertical"
     tools:context=".AddActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="写下此时的想法"
-        android:textSize="20dp"
-        android:layout_marginTop="30px"
-        android:layout_marginBottom="30px"
-        />
+    <LinearLayout
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="110px"
+        android:orientation="horizontal"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="写下此时的想法"
+            android:textSize="20dp"
+
+            />
+        <Button
+            android:id="@+id/myDrafts_button"
+            android:layout_width="wrap_content"
+            android:layout_height="36sp"
+            android:layout_marginLeft="120dp"
+            android:text="草稿箱"
+            android:textSize="20dp"
+            android:textColor="@color/white"
+            android:background="@drawable/button_shape"
+            />
+    </LinearLayout>
+
 
     <LinearLayout
         android:layout_gravity="center"
         android:layout_width="1000px"
         android:layout_height="150px"
+        android:layout_marginTop="20sp"
         android:orientation="vertical"
         android:background="@drawable/radius_border"
         >

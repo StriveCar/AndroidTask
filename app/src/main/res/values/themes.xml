@@ -7,4 +7,10 @@
     </style>
 
     <style name="Theme.AndroidTask" parent="Base.Theme.AndroidTask" />
+    <style name="Theme.AndroidTask.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="Theme.AndroidTask.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.AndroidTask.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

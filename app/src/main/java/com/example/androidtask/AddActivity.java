@@ -1,21 +1,14 @@
 package com.example.androidtask;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.IBinder;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -33,27 +26,17 @@ import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
-import com.bumptech.glide.Glide;
 import com.example.androidtask.network.RetrofitClient;
 
 
 import com.example.androidtask.network.service.PhotoService;
 import com.example.androidtask.response.ImageText;
 import com.example.androidtask.response.BaseResponse;
-import com.example.androidtask.response.ImageText;
 import com.example.androidtask.response.ImageUrl;
 import com.example.androidtask.response.LoginData;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -84,6 +67,7 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
     private ImageView pb_picture;
     private EditText pb_content;
     private EditText pb_title;
+    private Button drafts_button;
 
     private LoginData mlogindata = LoginData.getMloginData();
 
@@ -110,9 +94,14 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
         pb_content = findViewById(R.id.add_content);
         pb_title = findViewById(R.id.add_title);
 
+        drafts_button = findViewById(R.id.myDrafts_button);
+
         publish_button.setOnClickListener(this);
         pb_picture.setOnClickListener(this);
         sc_button.setOnClickListener(this);
+
+        drafts_button.setOnClickListener(this);
+
 
 //        ImageLoader imageLoader= ImageLoader.getInstance();
 //        imageLoader.init(ImageLoaderConfiguration.createDefault(AddActivity.this));
@@ -195,6 +184,10 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
         }
         if (view.getId() == R.id.addPic){
             uploadPic();
+        }
+        if(view.getId() == R.id.myDrafts_button){
+            Intent intent = new Intent(this, DraftsActivity.class);
+            startActivity(intent);
         }
     }
 

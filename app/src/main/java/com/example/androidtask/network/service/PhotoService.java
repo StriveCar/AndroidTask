@@ -43,5 +43,9 @@ public interface PhotoService {
     Call<BaseResponse<Object>> saveAdd(@Body ImageText imageText);
 
 
+    @GET("share/save")
+    Call<BaseResponse<Data<Records>>> getAdd(@Query("userId") String userid);
+
+
 
 }
