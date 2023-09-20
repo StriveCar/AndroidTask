@@ -7,7 +7,9 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,13 +30,13 @@ import com.example.androidtask.network.service.PhotoService;
 import com.example.androidtask.response.BaseResponse;
 import com.example.androidtask.response.ImageUrl;
 import com.example.androidtask.response.LoginData;
+import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -45,7 +47,7 @@ import retrofit2.Response;
 public class UserInfoActivity extends AppCompatActivity implements View.OnClickListener, GenderBottomSheetFragment.OnGenderSelectedListener {
 
     private Toolbar toolbar;
-    private CircleImageView ivHeadImage;
+    private ImageView ivHeadImage;
     private CardView smallIcon;
     private TextView tvUsername, tvIntroduce, tvSex;
     private RelativeLayout rlAccount, rlSex, rlSignature;
@@ -56,13 +58,19 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
     private Intent intent;
     private Bundle bundle;
 
-    private Integer choose=-1;
+    private Integer choose = -1;
     //拍照
     private static final int TAKE_PHOTO = 1;
     //获取相册的图片
     private static final int CHOOSE_PHOTO = 2;
 
     public static String MODE = "mode";
+
+    private int insert = 0;
+
+    private LoginData loginData;
+    private String jsonString;
+    private Gson gson;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,19 +121,21 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
         toolbar.setTitle("编辑资料");
 
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
+        gson = new Gson();
+        jsonString = gson.toJson(mloginData);
 
         mResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == RESULT_OK) {
                 Intent intent = result.getData();
                 if (intent != null) {
                     byte[] imageBytes = null;
-                    if (choose==TAKE_PHOTO) {
+                    if (choose == TAKE_PHOTO) {
                         Bitmap image = intent.getExtras().getParcelable("data");
                         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                         image.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
                         imageBytes = byteArrayOutputStream.toByteArray();
                         ivHeadImage.setImageBitmap(image);
-                    } else if (choose==CHOOSE_PHOTO) {
+                    } else if (choose == CHOOSE_PHOTO) {
                         mUri = intent.getData();
                         if (mUri != null) {
                             ivHeadImage.setImageURI(mUri);
@@ -140,6 +150,7 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
                         @Override
                         public void onResponse(@NonNull Call<BaseResponse<ImageUrl>> call, @NonNull Response<BaseResponse<ImageUrl>> response) {
                             if (response.body() != null && response.body().getCode() == 200) {
+                                insert++;
                                 mloginData.setAvatar(response.body().getData().getImageUrlList().get(0));
                                 Toast.makeText(UserInfoActivity.this, "上传成功", Toast.LENGTH_SHORT).show();
                             }
@@ -181,12 +192,14 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.rl_account) {
+            insert++;
             intent = new Intent(this, ModifyUsernameActivity.class);
             bundle = new Bundle();
             bundle.putInt(MODE, 1);
             intent.putExtras(bundle);
             startActivity(intent);
         } else if (v.getId() == R.id.rl_signature) {
+            insert++;
             intent = new Intent(this, ModifyUsernameActivity.class);
             bundle = new Bundle();
             bundle.putInt(MODE, 2);
@@ -208,6 +221,7 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
                 // 如果没有相机权限，请求权限
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 100);
             } else {
+                insert++;
                 intent = new Intent(Intent.ACTION_GET_CONTENT);
                 choose = CHOOSE_PHOTO;
                 intent.setType("image/*");
@@ -220,25 +234,31 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onBackPressed() {
-        photoService.updateInfo(mloginData).enqueue(new Callback<BaseResponse<Object>>() {
-            @Override
-            public void onResponse(@NonNull Call<BaseResponse<Object>> call, @NonNull Response<BaseResponse<Object>> response) {
-                if (response.body() != null && response.body().getCode() == 200) {
-                    Toast.makeText(UserInfoActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
+        if (insert > 0) {
+            photoService.updateInfo(mloginData).enqueue(new Callback<BaseResponse<Object>>() {
+                @Override
+                public void onResponse(@NonNull Call<BaseResponse<Object>> call, @NonNull Response<BaseResponse<Object>> response) {
+                    if (response.body() != null && response.body().getCode() == 200) {
+                        Toast.makeText(UserInfoActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
+                    } else {
+                        LoginData.setMloginData(gson.fromJson(jsonString, LoginData.class));
+                        Toast.makeText(UserInfoActivity.this, "修改失败", Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(@NonNull Call<BaseResponse<Object>> call, @NonNull Throwable t) {
-                Toast.makeText(UserInfoActivity.this, "修改失败", Toast.LENGTH_SHORT).show();
-            }
-        });
+                @Override
+                public void onFailure(@NonNull Call<BaseResponse<Object>> call, @NonNull Throwable t) {
+                    Toast.makeText(UserInfoActivity.this, "修改失败", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
         super.onBackPressed();
     }
 
     @Override
     public void onGenderSelected(String gender) {
         if (!tvSex.getText().equals(gender)) {
+            insert++;
             tvSex.setText(gender);
         }
         if (gender.equals("男")) {

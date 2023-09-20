@@ -124,6 +124,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.cyan));
         }
+        LoadingDialog.getInstance().dismiss();
     }
     @Override
     public void onClick(View view) {
@@ -170,7 +171,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 mloginData.setCreateTime(null);
                                 mloginData.setLastUpdateTime(null);
                                 mloginData.setAppKey(null);
-                                loadingDialog.dismiss();
                                 intent = new Intent(LoginActivity.this, MainActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);

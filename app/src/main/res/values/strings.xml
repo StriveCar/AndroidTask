@@ -20,12 +20,13 @@
     <string name="find">发现</string>
     <string name="collect">收藏</string>
     <string name="art_word">ʕ ᵔᴥᵔ ʔ 一个人生活久了，遇到点温暖，那颗假装孤傲的心，便会溃不成军。</string>
-    <string name="data">个人信息</string>
+    <string name="data">编辑资料</string>
     <string name="like">已点赞作品</string>
     <string name="night">夜间模式</string>
     <string name="about_us">关于我们</string>
-    <string name="set">设置</string>
+    <string name="drafts">我的草稿箱</string>
     <string name="exit">退出</string>
+    <string name="swap">切换账号</string>
     <string name="seconds_remaining">%1$d秒 |</string>
     <string name="title_activity_loading_dialog">LoadingDialog</string>
     <string name="prompt_email">Email</string>

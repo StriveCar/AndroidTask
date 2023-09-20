@@ -2,26 +2,30 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/person_data"
-            android:icon="@drawable/baseline_person2_24"
-            android:title="@string/data"
-            />
+            android:id="@+id/drafts"
+            android:icon="@drawable/baseline_backup_24"
+            android:title="@string/drafts" />
         <item
             android:id="@+id/like_work"
             android:icon="@drawable/baseline_thumb_up_alt_24"
             android:title="@string/like" />
         <item
-            android:id="@+id/night"
-            android:icon="@drawable/baseline_dark_mode_24"
-            android:title="@string/night" />
+            android:id="@+id/person_data"
+            android:icon="@drawable/baseline_person2_24"
+            android:title="@string/data"
+            />
         <item
             android:id="@+id/about_us"
             android:icon="@drawable/baseline_info_24"
             android:title="@string/about_us" />
         <item
-            android:id="@+id/set"
-            android:icon="@drawable/baseline_settings_24"
-            android:title="@string/set" />
+            android:id="@+id/night"
+            android:icon="@drawable/baseline_dark_mode_24"
+            android:title="@string/night" />
+        <item
+            android:id="@+id/swap"
+            android:icon="@drawable/baseline_swap_horizontal_circle_24"
+            android:title="@string/swap" />
         <item
             android:id="@+id/exit_app"
             android:icon="@drawable/baseline_exit_to_app_24"

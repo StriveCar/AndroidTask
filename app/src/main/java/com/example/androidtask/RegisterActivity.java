@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
 import com.example.androidtask.network.RetrofitClient;
@@ -24,6 +25,7 @@ import com.example.androidtask.response.BaseResponse;
 import com.example.androidtask.response.User;
 import com.example.androidtask.util.CodeUtils;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import retrofit2.Call;
@@ -33,10 +35,12 @@ import retrofit2.Response;
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
 
     private Boolean bPwdSwitch = false;
-    private EditText etPwd,etPwd2,etAccount,etVerify;
+    private EditText etPwd, etPwd2, etAccount, etVerify;
     private ImageView ivPwdSwitch, ivPwdSwitch2, ivCode;
     private Button btRegister;
     private CodeUtils codeutils;
+    private Toolbar toolbar;
+
 
     private final PhotoService photoService = RetrofitClient.getInstance().getService(PhotoService.class);
 
@@ -54,6 +58,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         etVerify = findViewById(R.id.et_verify);
         btRegister = findViewById(R.id.bt_resgiter);
         ivCode = findViewById(R.id.iv_code);
+        toolbar = findViewById(R.id.tool_bar);
 
         codeutils = CodeUtils.getInstance();
         ivCode.setImageBitmap(codeutils.createBitmap());
@@ -67,13 +72,17 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.cyan));
         }
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
     }
 
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.bt_resgiter) {
-            if (etAccount.toString().trim().equals("")) {
+            if (etAccount.getText().toString().trim().equals("")) {
                 Toast.makeText(this, "用户名不能为空", Toast.LENGTH_SHORT).show();
                 return;
             }

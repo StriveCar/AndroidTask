@@ -78,6 +78,7 @@
             <RelativeLayout
                 android:id="@+id/bottom_bar_1_btn"
                 android:layout_width="0dp"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
 
@@ -104,6 +105,8 @@
             <RelativeLayout
                 android:id="@+id/bottom_bar_2_btn"
                 android:layout_width="0dp"
+                android:foreground="?android:attr/selectableItemBackground"
+
                 android:layout_height="match_parent"
                 android:layout_weight="1">
 
@@ -176,6 +179,7 @@
                 android:id="@+id/bottom_bar_4_btn"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:layout_weight="1">
 
                 <TextView
@@ -206,6 +210,7 @@
                 android:id="@+id/bottom_bar_5_btn"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:layout_weight="1">
 
                 <TextView

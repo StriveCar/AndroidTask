@@ -10,6 +10,7 @@
     <color name="cyan">#C2CDD1</color>
     <color name="gray">#F5F5F5</color>
     <color name="gray2">#8C8C8C</color>
+    <color name="gray3">#515151</color>
     <color name="night_status_bar_color">#000000</color>
     <color name="night_navigation_bar_color">#111111</color>
     <color name="night_window_background">#333333</color>

@@ -19,7 +19,7 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             app:cardCornerRadius="10dp"
-            android:layout_marginTop="27dp"
+            android:layout_marginTop="25dp"
             android:layout_marginEnd="16dp">
 
             <LinearLayout
@@ -56,7 +56,7 @@
         android:id="@+id/iv_like"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="100dp"
         android:background="@drawable/shape_rect3"
         android:text="٩(๑•̀ω•́๑)۶"
         android:textColor="@color/teal_200"
@@ -100,15 +100,15 @@
         android:gravity="center_horizontal"
         android:layout_gravity="center"
         android:layout_marginTop="30dp"
-        android:text="  车江宁小组专属  "
+        android:text="  坤坤真爱粉专属  "
         android:textColor="@color/teal_200"
         android:textSize="28sp" />
 
 
     <pl.droidsonroids.gif.GifImageView
         android:id="@+id/gv_error"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:layout_gravity="center"
         android:layout_marginTop="50dp"
         android:src="@drawable/ikun"

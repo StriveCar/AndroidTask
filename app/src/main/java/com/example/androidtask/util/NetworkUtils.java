@@ -4,6 +4,9 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+/**
+ * 用于验证网络的工具类
+ */
 public class NetworkUtils {
 
     // 检查网络连接是否可用
