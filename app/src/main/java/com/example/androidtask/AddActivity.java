@@ -203,7 +203,6 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
     //新增图文分享
     private void uploadPic() {
 
-
         ImageText imageText = new ImageText();
         imageText.setImageCode(imageCode);
         imageText.setPUserId(mlogindata.getId());

@@ -1,6 +1,7 @@
 package com.example.androidtask;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,6 +48,20 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.mViewHolde
         holder.drafts_content.setText(data.get(position).getContent());
         Glide.with(context).load(data.get(position).getImageUrlList().get(0)).into(holder.drafts_pic);
 
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String title = data.get(position).getTitle();
+                String content = data.get(position).getContent();
+                String image = data.get(position).getImageUrlList().get(0);
+
+                Intent intent = new Intent(context, DetailActivity.class);
+                intent.putExtra("title", title);
+                intent.putExtra("content", content);
+                intent.putExtra("image", image);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override

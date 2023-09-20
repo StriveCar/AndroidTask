@@ -8,12 +8,13 @@
         <entry key="..\:/PictureShare/AndroidTask/app/src/main/res/drawable/white_btn_bottom.xml" value="0.137" />
         <entry key="..\:/PictureShare/AndroidTask/app/src/main/res/drawable/white_btn_top.xml" value="0.137" />
         <entry key="..\:/PictureShare/AndroidTask/app/src/main/res/layout/activity_add.xml" value="0.264" />
+        <entry key="..\:/PictureShare/AndroidTask/app/src/main/res/layout/activity_detail.xml" value="0.24592391304347827" />
         <entry key="..\:/PictureShare/AndroidTask/app/src/main/res/layout/activity_login.xml" value="0.13323201621073963" />
         <entry key="..\:/PictureShare/AndroidTask/app/src/main/res/layout/activity_main.xml" value="0.13323201621073963" />
         <entry key="..\:/PictureShare/AndroidTask/app/src/main/res/layout/activity_my_drafts.xml" value="0.27395833333333336" />
         <entry key="..\:/PictureShare/AndroidTask/app/src/main/res/layout/activity_register.xml" value="0.13323201621073963" />
         <entry key="..\:/PictureShare/AndroidTask/app/src/main/res/layout/content_scrolling.xml" value="0.27395833333333336" />
-        <entry key="..\:/PictureShare/AndroidTask/app/src/main/res/layout/list_item.xml" value="0.371875" />
+        <entry key="..\:/PictureShare/AndroidTask/app/src/main/res/layout/list_item.xml" value="0.264" />
         <entry key="..\:/PictureShare/AndroidTask/app/src/main/res/layout/nav_header.xml" value="0.259375" />
         <entry key="..\:/PictureShare/AndroidTask/app/src/main/res/layout/pop_item.xml" value="0.17135416666666667" />
         <entry key="..\:/PictureShare/AndroidTask/app/src/main/res/layout/radius_border.xml" value="0.2726449275362319" />

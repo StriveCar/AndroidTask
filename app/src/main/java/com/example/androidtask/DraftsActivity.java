@@ -5,8 +5,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Telephony;
+import android.view.View;
+import android.widget.ListView;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 
@@ -30,7 +33,7 @@ public class DraftsActivity extends AppCompatActivity {
 
     private final PhotoService photoService = RetrofitClient.getInstance().getService(PhotoService.class);
 
-
+    private RecyclerView rcView;
     private DraftsAdapter adapter;
 
     private String userId;
@@ -46,16 +49,28 @@ public class DraftsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_drafts);
-        initData();
 
         toolbar = findViewById(R.id.tool_bar);
-
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
         toolbar.setTitle("保存记录");
+
+        initData();
+//        initView();
     }
+
+//    private void initView() {
+//        rcView = findViewById(R.id.lv_drafts_list);
+//        rcView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(DraftsActivity.this,DetailActivity.class);
+//                startActivity(intent);
+//            }
+//        });
+//    }
 
     private void initData() {
 
