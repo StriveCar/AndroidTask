@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.appcompat.widget.Toolbar;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -39,6 +40,7 @@ import com.example.androidtask.response.LoginData;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -75,6 +77,7 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
     private String content;
     private String imageCode;
 
+    private Toolbar toolbar;
 
     private ActivityResultLauncher<Intent> mResultLauncher;
 
@@ -155,10 +158,16 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
                         }
                     });
                 }
-
             }
         });
 
+        toolbar = findViewById(R.id.tool_bar);
+
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
+        toolbar.setTitle("发布");
     }
 
 
