@@ -58,19 +58,9 @@ public class DraftsActivity extends AppCompatActivity {
         toolbar.setTitle("保存记录");
 
         initData();
-//        initView();
+
     }
 
-//    private void initView() {
-//        rcView = findViewById(R.id.lv_drafts_list);
-//        rcView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(DraftsActivity.this,DetailActivity.class);
-//                startActivity(intent);
-//            }
-//        });
-//    }
 
     private void initData() {
 

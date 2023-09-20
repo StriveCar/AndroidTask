@@ -1,18 +1,24 @@
 package com.example.androidtask;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -29,6 +35,7 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.mViewHolde
     private List<Records> data;
     private Context context;
 
+    private RecyclerView rc;
 
     public DraftsAdapter(@NonNull Context context, List<Records> data){
         this.data = data;
@@ -62,6 +69,33 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.mViewHolde
                 context.startActivity(intent);
             }
         });
+        holder.delete_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                builder.setMessage("是否删除当前内容")
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // 点击确定按钮的处理逻辑
+                                Toast.makeText(view.getContext(), "删除成功", Toast.LENGTH_SHORT).show();
+
+                            }
+                        })
+                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // 点击取消按钮的处理逻辑
+                                dialog.dismiss();
+                            }
+                        });
+                // 创建并显示弹出框
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        });
+
+
     }
 
     @Override
@@ -76,6 +110,8 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.mViewHolde
         TextView drafts_title;
         TextView drafts_content;
         ImageView drafts_pic;
+        ImageButton delete_button;
+
 
 
         public mViewHolder(@NonNull View itemView) {
@@ -83,7 +119,9 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.mViewHolde
             drafts_title = itemView.findViewById(R.id.df_title);
             drafts_content = itemView.findViewById(R.id.df_content);
             drafts_pic = itemView.findViewById(R.id.df_image);
+            delete_button = itemView.findViewById(R.id.deleteButton);
 
         }
     }
+
 }
