@@ -69,13 +69,18 @@ public class ShareListAdapter extends RecyclerView.Adapter<ShareListAdapter.mVie
         } else {
             Glide.with(context).load(item.getProfileUrl()).into(holder.iv_userprofile);
         }
-        //点赞收藏图标的处理
+        //点赞图标的处理
         if(item.getRecord().getHasLike()){
             holder.iv_thumbsUp.setImageResource(R.drawable.baseline_thumb_up_24);
         } else {
             holder.iv_thumbsUp.setImageResource(R.drawable.baseline_thumb_up_off_alt_24);
         }
-
+        //收藏图标的处理
+        if(item.getRecord().getHasCollect()){
+            holder.iv_collect.setImageResource(R.drawable.baseline_star_24);
+        } else {
+            holder.iv_collect.setImageResource(R.drawable.baseline_star_border_24);
+        }
         //配置嵌套的图片列表适配器
         LinearLayoutManager llm = new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false);
         GridLayoutManager glm = new GridLayoutManager(context,3);
@@ -186,6 +191,71 @@ public class ShareListAdapter extends RecyclerView.Adapter<ShareListAdapter.mVie
                 }
             });
             //收藏
+            iv_collect.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int p = getBindingAdapterPosition();
+                    boolean hasCollect = data.get(p).getRecord().getHasCollect();
+                    if(!hasCollect){
+                        //收藏
+                        photoService.collect(data.get(p).getRecord().getId(), userId).enqueue(new Callback<BaseResponse>() {
+                            @Override
+                            public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                                if (response.body().getCode() == 200){
+                                    System.out.println("收藏成功");
+                                    iv_collect.setImageResource(R.drawable.baseline_star_24);
+                                    data.get(p).getRecord().setHasCollect(true);
+                                    notifyDataSetChanged();
+                                } else {
+                                    String msg = String.format("错误代码：%d",response.body().getCode());
+                                    Toast.makeText(context,msg,Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<BaseResponse> call, Throwable t) {
+                                Toast.makeText(context,t.getMessage(),Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    } else {
+                        //取消收藏
+                        photoService.getDetail(data.get(p).getRecord().getId(), userId).enqueue(new Callback<BaseResponse<Records>>() {
+                            @Override
+                            public void onResponse(Call<BaseResponse<Records>> call, Response<BaseResponse<Records>> response) {
+                                if (response.body().getCode() == 200){
+                                    String collectId = response.body().getData().getCollectId();
+                                    photoService.cancelCollect(collectId).enqueue(new Callback<BaseResponse>() {
+                                        @Override
+                                        public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                                            if (response.body().getCode() == 200){
+                                                System.out.println("取消收藏成功");
+                                                iv_collect.setImageResource(R.drawable.baseline_star_border_24);
+                                                data.get(p).getRecord().setHasCollect(false);
+                                            } else {
+                                                String msg = String.format("错误代码：%d",response.body().getCode());
+                                                Toast.makeText(context,msg,Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<BaseResponse> call, Throwable t) {
+                                            Toast.makeText(context,t.getMessage(),Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                } else {
+                                    String msg = String.format("错误代码：%d",response.body().getCode());
+                                    Toast.makeText(context,msg,Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<BaseResponse<Records>> call, Throwable t) {
+                                Toast.makeText(context,t.getMessage(),Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
+            });
         }
      }
 }

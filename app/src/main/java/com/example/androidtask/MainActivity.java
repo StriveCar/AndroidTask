@@ -94,13 +94,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //初始化Fragment，使用Viewpager管理Fragment
         fragmentlist.add(new ShareListFragment(userId));
         fragmentlist.add(new FollowListFragment());
-        fragmentlist.add(new CollectListFragment());
+        fragmentlist.add(new CollectListFragment(userId));
         fragmentlist.add(new MyShareListFragment());
         viewpager = findViewById(R.id.viewpager);
         ViewPagerAdapter viewpagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle(), fragmentlist);
         viewpager.setAdapter(viewpagerAdapter);
         //默认主页,打开软件就显示主页的分享列表
         viewpager.setCurrentItem(0);
+
     }
 
     private void initBottomNavigationfunction() {

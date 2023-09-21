@@ -37,4 +37,13 @@ public interface PhotoService {
 
     @GET("share/detail")
     Call<BaseResponse<Records>> getDetail(@Query("shareId")String shareId, @Query("userId")String userId);
+
+    @GET("collect")
+    Flowable<BaseResponse<Data<Records>>> getCollect(@Query("current") Integer current,@Query("size") Integer size,@Query("userId") String userId);
+
+    @POST("collect")
+    Call<BaseResponse> collect(@Query("shareId")String shareId, @Query("userId")String userId);
+
+    @POST("collect/cancel")
+    Call<BaseResponse> cancelCollect(@Query("collectId")String collectId);
 }

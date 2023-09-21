@@ -52,12 +52,44 @@ public class ShareListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if(sharelistView == null){
             sharelistView = inflater.inflate(R.layout.fragment_share_list, container,false);
-            initData();
         }
+
+        BindingAdapter();
+
+        getData();
+
         return sharelistView;
     }
 
-    private void initData() {
+    @Override
+    public void onResume() {
+        super.onResume();
+        data.clear();
+        getData();
+    }
+
+    private void BindingAdapter() {
+        DisplayMetrics dm = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int width = dm.widthPixels / 2;
+        rv_sharelist = sharelistView.findViewById(R.id.shareList);
+        adapter = new ShareListAdapter(getActivity(), data, new OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                sharelist_item item = data.get(position);
+                Intent intent = new Intent(getActivity(), ShareDetail.class);
+                Bundle bd = new Bundle();
+                bd.putSerializable("item", item);
+                intent.putExtras(bd);
+                intent.putExtra("userId", userId);
+                startActivity(intent);
+            }
+        }, width, userId);
+        rv_sharelist.setAdapter(adapter);
+        rv_sharelist.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+    }
+
+    private void getData() {
         photoService.getShare(0, 60, userId)
                 .subscribe(new FlowableSubscriber<BaseResponse<Data<Records>>>() {
                     @Override
@@ -80,24 +112,8 @@ public class ShareListFragment extends Fragment {
                                     item.setProfileUrl(profileresponse.body().getData().getAvatar());
                                     data.add(item);
                                     if (data.size() == recordlist.size()) {
-                                        rv_sharelist = sharelistView.findViewById(R.id.shareList);
-                                        DisplayMetrics dm = new DisplayMetrics();
-                                        getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
-                                        int width = dm.widthPixels / 2;
-                                        adapter = new ShareListAdapter(getActivity(), data, new OnItemClickListener() {
-                                            @Override
-                                            public void onItemClick(int position) {
-                                                sharelist_item item = data.get(position);
-                                                Intent intent = new Intent(getActivity(), ShareDetail.class);
-                                                Bundle bd = new Bundle();
-                                                bd.putSerializable("item", item);
-                                                intent.putExtras(bd);
-                                                intent.putExtra("userId", userId);
-                                                startActivity(intent);
-                                            }
-                                        }, width, userId);
-                                        rv_sharelist.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-                                        rv_sharelist.setAdapter(adapter);
+                                        Toast.makeText(getActivity(), "数据加载完成",Toast.LENGTH_SHORT).show();
+                                        adapter.notifyDataSetChanged();
                                     }
                                 }
 
