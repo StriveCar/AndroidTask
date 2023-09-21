@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Handler;
-import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -17,7 +15,6 @@ public class SplashActivity extends AppCompatActivity {
     private TextView countdownTextView, skipButton;
     private CountDownTimer countDownTimer;
 
-    private Handler handler = new Handler();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,14 +23,13 @@ public class SplashActivity extends AppCompatActivity {
         countdownTextView = findViewById(R.id.countdown_text);
         skipButton = findViewById(R.id.skip_text);
 
+        //修改状态栏颜色
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.cyan));
         }
 
-        long countdownMillis = 4000;
-        long intervalMillis = 1000;
-
-        countDownTimer = new CountDownTimer(countdownMillis, intervalMillis) {
+        //计时器
+        countDownTimer = new CountDownTimer(4000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 long secondsRemaining = millisUntilFinished / 1000;
@@ -49,6 +45,7 @@ public class SplashActivity extends AppCompatActivity {
 
         countDownTimer.start();
 
+        //点击跳过启动页面
         skipButton.setOnClickListener(v -> {
             countDownTimer.cancel();
             jumpToMainActivity();
@@ -60,6 +57,5 @@ public class SplashActivity extends AppCompatActivity {
         Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
         startActivity(intent);
         finish();
-//        handler.postDelayed(this::finish, 500);
     }
 }

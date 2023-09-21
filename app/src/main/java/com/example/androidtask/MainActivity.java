@@ -1,7 +1,6 @@
 package com.example.androidtask;
 
 import android.annotation.SuppressLint;
-import android.content.ClipData;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -23,7 +22,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.Group;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -125,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         LoginData mloginData = LoginData.getMloginData();
         tvUsername.setText(mloginData.getUsername());
         tvIntroduce.setText(mloginData.getIntroduce());
-        float radiusDp = 25f; // 圆角的半径，以 dp 为单位
+        float radiusDp = 25f;
         float radiusPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, radiusDp, getResources().getDisplayMetrics());
         RoundedCorners roundedCorners = new RoundedCorners(Math.round(radiusPx));
         RequestOptions options = new RequestOptions().transform(roundedCorners);
@@ -153,6 +151,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         height = displayMetrics.heightPixels - 1300;
         ivImage.setMaxHeight(displayMetrics.heightPixels - 1300);
+        float radiusPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 130, getResources().getDisplayMetrics());
+        DrawerLayout.LayoutParams params = (DrawerLayout.LayoutParams) navView.getLayoutParams();
+        params.width = (int) (displayMetrics.widthPixels-radiusPx);
+        navView.setLayoutParams(params);
 
         LoadingDialog.getInstance().dismiss();
 
