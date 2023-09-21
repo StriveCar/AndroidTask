@@ -1,5 +1,5 @@
 plugins {
-    id 'com.android.application'
+     id 'com.android.application'
 }
 
 android {
@@ -58,5 +58,12 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
     implementation 'com.google.guava:guava:30.1-jre'
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.6'
+
+
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+
+    implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+
+
 
 }

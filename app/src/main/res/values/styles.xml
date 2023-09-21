@@ -9,6 +9,9 @@
         <item name="android:layout_marginTop">3dp</item>
     </style>
 
+    <style name="AnimationPreview">
+        <item name="android:windowEnterAnimation">@animator/fade_in</item>
+        <item name="android:windowExitAnimation">@animator/fade_out</item>
     <style name="CustomNumberPickerStyle">
         <item name="android:colorControlNormal">@color/gray</item>
         <item name="android:colorControlActivated">@color/gray</item>

@@ -41,6 +41,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private ImageView ivPwdSwitch;
     private Button btLogin, btRegister;
     private Intent intent;
+
     private Bundle bundle;
     private ActivityResultLauncher<Intent> register;
     public static final String USER_NAME = "name";
@@ -121,10 +122,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         if (rememberPassword) cbRememberPwd.setChecked(true);
 
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.cyan));
         }
         LoadingDialog.getInstance().dismiss();
+
     }
     @Override
     public void onClick(View view) {
@@ -163,6 +166,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         if (response.body() != null) {
                             if (response.body().getCode() == 200) {
                                 Toast.makeText(LoginActivity.this, "登录成功! ", Toast.LENGTH_SHORT).show();
+                              
                                 LoginData.setMloginData(response.body().getData());
                                 LoginData mloginData = LoginData.getMloginData();
                                 if (response.body().getData().getIntroduce() == null) {
@@ -171,7 +175,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 mloginData.setCreateTime(null);
                                 mloginData.setLastUpdateTime(null);
                                 mloginData.setAppKey(null);
+
                                 intent = new Intent(LoginActivity.this, MainActivity.class);
+
                                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
                             } else if (response.body().getCode() == 500) {

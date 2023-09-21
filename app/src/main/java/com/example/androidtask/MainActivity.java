@@ -1,5 +1,9 @@
 package com.example.androidtask;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.IBinder;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -12,7 +16,20 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+
+import androidx.annotation.CallSuper;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -63,10 +80,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private MenuItem night;
 
+    private ImageView new_share;
+    private Intent intent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        new_share = findViewById(R.id.bottom_bar_image_3);
 
         toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
@@ -103,6 +125,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.lucency));
             }
         });
+
+        new_share.setOnClickListener(this);
 
         initData();
 
@@ -203,10 +227,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         icon = iv;
         iconTv = tv;
+
     }
 
     @Override
     public void onClick(View v) {
+        if (v.getId() == R.id.bottom_bar_image_3){
+
+            intent = new Intent(this, AddActivity.class);
+            startActivity(intent);
+        }
+
         if (v.getId() == R.id.bottom_bar_1_btn) {
             changeSelectStatus(icon_1, iconTv_1);
         } else if (v.getId() == R.id.bottom_bar_2_btn) {

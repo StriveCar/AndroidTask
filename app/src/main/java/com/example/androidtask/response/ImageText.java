@@ -1,37 +1,24 @@
+
 package com.example.androidtask.response;
 
 public class ImageText {
 
     private String content;
-    private String id;
     private String imageCode;
     private String pUserId;
     private String title;
+    private String id;
+
     public void setContent(String content) {
         this.content = content;
     }
 
-    @Override
-    public String toString() {
-        return "ImageText{" +
-                "content='" + content + '\'' +
-                ", id='" + id + '\'' +
-                ", imageCode='" + imageCode + '\'' +
-                ", pUserId='" + pUserId + '\'' +
-                ", title='" + title + '\'' +
-                '}';
-    }
+
 
     public String getContent() {
         return content;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-    public String getId() {
-        return id;
-    }
 
     public void setImageCode(String imageCode) {
         this.imageCode = imageCode;
@@ -54,4 +41,22 @@ public class ImageText {
         return title;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "ImageText{" +
+                "content='" + content + '\'' +
+                ", imageCode='" + imageCode + '\'' +
+                ", pUserId='" + pUserId + '\'' +
+                ", title='" + title + '\'' +
+                ", id='" + id + id + '\'' +
+                '}';
+    }
 }

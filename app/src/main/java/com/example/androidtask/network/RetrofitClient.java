@@ -14,11 +14,12 @@ public class RetrofitClient {
 
     private static final String DEFAULT_BASE_URL = "http://47.107.52.7:88/member/photo/";
 
+
     private final OkHttpClient client = new OkHttpClient.Builder()
             .connectTimeout(20, TimeUnit.SECONDS)
             .readTimeout(20, TimeUnit.SECONDS)
             .writeTimeout(20, TimeUnit.SECONDS)
-//            .addInterceptor(InterceptorUtil.LogInterceptor())
+            .addInterceptor(InterceptorUtil.LogInterceptor())
             .addNetworkInterceptor(InterceptorUtil.HeaderInterceptor())
             .build();
 

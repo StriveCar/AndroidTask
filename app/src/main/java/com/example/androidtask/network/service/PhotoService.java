@@ -1,5 +1,8 @@
 package com.example.androidtask.network.service;
 
+import com.example.androidtask.response.ImageText;
+import com.example.androidtask.response.BaseResponse;
+import com.example.androidtask.response.Data;
 import com.example.androidtask.LoginActivity;
 import com.example.androidtask.response.BaseResponse;
 import com.example.androidtask.response.Data;
@@ -40,6 +43,24 @@ public interface PhotoService {
     @POST("user/login")
     Call<BaseResponse<LoginData>> userLogin(@Query("password") String pwd,@Query("username") String une);
 
+
+    @Multipart
+    @POST("image/upload")
+    Call<BaseResponse<ImageUrl>> uploadImage(@Part MultipartBody.Part imageFile);
+
     @POST("share/add")
     Call<BaseResponse<Object>> uploadAdd(@Body ImageText imageText);
+
+    @POST("share/save")
+    Call<BaseResponse<Object>> saveAdd(@Body ImageText imageText);
+
+    @GET("share/save")
+    Call<BaseResponse<Data<Records>>> getAdd(@Query("userId") String userid);
+
+    @POST("share/delete")
+    Call<BaseResponse<Data<Records>>> deleteAdd(@Query("userId") String userid,@Query("shareId") String shareid);
+
+    @POST("share/change")
+    Call<BaseResponse<Object>> changeStatus(@Body ImageText imageText);
+
 }
