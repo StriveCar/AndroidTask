@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 
 import com.example.androidtask.R;
 
-public class FavouriteListFragment extends Fragment {
+public class CollectListFragment extends Fragment {
     private View FavouriteList;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -21,7 +21,7 @@ public class FavouriteListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         if(FavouriteList == null){
-            FavouriteList = inflater.inflate(R.layout.fragment_favourite_list,container,false);
+            FavouriteList = inflater.inflate(R.layout.fragment_collect_list,container,false);
         }
 
         return FavouriteList;

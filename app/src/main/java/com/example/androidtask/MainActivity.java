@@ -28,7 +28,7 @@ import com.example.androidtask.fragments.MyShareListFragment;
 import com.example.androidtask.fragments.ShareListFragment;
 import com.example.androidtask.network.RetrofitClient;
 import com.example.androidtask.network.service.ArtWordService;
-import com.example.androidtask.fragments.FavouriteListFragment;
+import com.example.androidtask.fragments.CollectListFragment;
 import com.example.androidtask.response.WordResponse;
 import com.google.android.material.navigation.NavigationView;
 
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //初始化Fragment，使用Viewpager管理Fragment
         fragmentlist.add(new ShareListFragment(userId));
         fragmentlist.add(new FollowListFragment());
-        fragmentlist.add(new FavouriteListFragment());
+        fragmentlist.add(new CollectListFragment());
         fragmentlist.add(new MyShareListFragment());
         viewpager = findViewById(R.id.viewpager);
         ViewPagerAdapter viewpagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle(), fragmentlist);
