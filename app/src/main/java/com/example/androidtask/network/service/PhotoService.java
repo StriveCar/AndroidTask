@@ -1,6 +1,7 @@
 package com.example.androidtask.network.service;
 
 import com.example.androidtask.response.BaseResponse;
+import com.example.androidtask.response.Comment;
 import com.example.androidtask.response.Data;
 import com.example.androidtask.response.LoginData;
 import com.example.androidtask.response.Records;
@@ -46,4 +47,15 @@ public interface PhotoService {
 
     @POST("collect/cancel")
     Call<BaseResponse> cancelCollect(@Query("collectId")String collectId);
+
+    @GET("comment/first")
+    Flowable<BaseResponse<Data<Comment>>> getFirstComment(@Query("current")int current, @Query("shareId")String shareId, @Query("size")int size);
+
+    @POST("comment/first")
+    Call<BaseResponse> addFirstCommment(@Query("content")String content, @Query("shareId")String shareId,@Query("userId")String userId,@Query("userName")String username);
+    @GET("comment/second")
+    Flowable<BaseResponse<Data<Comment>>> getsecondComment(@Query("current")int current, @Query("shareId")String shareId, @Query("size")int size);
+
+    @POST("comment/second")
+    Call<BaseResponse> addsecondCommment(@Query("content")String content, @Query("shareId")String shareId,@Query("userId")String userId,@Query("userName")String username);
 }
