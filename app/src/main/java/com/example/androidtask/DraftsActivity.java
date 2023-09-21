@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.androidtask.network.RetrofitClient;
 import com.example.androidtask.network.service.PhotoService;
@@ -44,12 +45,15 @@ public class DraftsActivity extends AppCompatActivity {
     private RecyclerView rv;
     private Toolbar toolbar;
 
+
 //    private Context context = DraftsActivity.this;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_drafts);
 
+
+        //设置头部
         toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
@@ -75,7 +79,7 @@ public class DraftsActivity extends AppCompatActivity {
                     LinearLayoutManager llm = new LinearLayoutManager(DraftsActivity.this);
                     rv.setLayoutManager(llm);
                     rv.setAdapter(adapter);
-                    //adapter.notifyDataSetChanged();
+//                    adapter.notifyDataSetChanged();
 
 
                 } else if (response.body().getCode() == 500) {

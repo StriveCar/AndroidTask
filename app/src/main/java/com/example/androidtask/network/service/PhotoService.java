@@ -3,7 +3,6 @@ package com.example.androidtask.network.service;
 import com.example.androidtask.response.ImageText;
 import com.example.androidtask.response.BaseResponse;
 import com.example.androidtask.response.Data;
-import com.example.androidtask.response.ImageText;
 import com.example.androidtask.response.ImageUrl;
 import com.example.androidtask.response.LoginData;
 import com.example.androidtask.response.Records;
@@ -42,9 +41,11 @@ public interface PhotoService {
     @POST("share/save")
     Call<BaseResponse<Object>> saveAdd(@Body ImageText imageText);
 
-
     @GET("share/save")
     Call<BaseResponse<Data<Records>>> getAdd(@Query("userId") String userid);
+
+    @POST("share/delete")
+    Call<BaseResponse<Data<Records>>> deleteAdd(@Query("userId") String userid,@Query("shareId") String shareid);
 
 
 

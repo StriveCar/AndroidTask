@@ -25,15 +25,30 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.example.androidtask.R;
+import com.example.androidtask.network.RetrofitClient;
+import com.example.androidtask.network.service.PhotoService;
+import com.example.androidtask.response.BaseResponse;
+import com.example.androidtask.response.Data;
 import com.example.androidtask.response.ImageText;
+import com.example.androidtask.response.LoginData;
 import com.example.androidtask.response.Records;
 
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.mViewHolder> {
 
     private List<Records> data;
     private Context context;
+    private DraftsAdapter draftsAdapter;
+
+    private final PhotoService photoService = RetrofitClient.getInstance().getService(PhotoService.class);
+
+    private String userId;
+    private String shareId;
 
     private RecyclerView rc;
 
@@ -78,7 +93,24 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.mViewHolde
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 // 点击确定按钮的处理逻辑
-                                Toast.makeText(view.getContext(), "删除成功", Toast.LENGTH_SHORT).show();
+                                //获取userId和shareId
+                                userId = data.get(position).getPUserId();
+                                shareId = data.get(position).getId();
+                                photoService.deleteAdd(userId,shareId).enqueue(new Callback<BaseResponse<Data<Records>>>() {
+                                    @Override
+                                    public void onResponse(Call<BaseResponse<Data<Records>>> call, Response<BaseResponse<Data<Records>>> response) {
+                                        if (response.body().getCode() == 200) {
+                                            Toast.makeText(view.getContext(), "删除成功", Toast.LENGTH_SHORT).show();
+                                            System.out.println("删除成功!  " + response.body());
+                                        } else if (response.body().getCode() == 500) {
+                                            System.out.println(response.body().getMsg());
+                                        }
+                                    }
+                                    @Override
+                                    public void onFailure(Call<BaseResponse<Data<Records>>> call, Throwable t) {
+                                        Toast.makeText(view.getContext(), "删除失败", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
 
                             }
                         })
