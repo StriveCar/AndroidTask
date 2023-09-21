@@ -33,10 +33,9 @@
             android:exported="true" />
         <activity
             android:name=".LoginActivity"
-            android:name=".LoadingDialog"
             android:exported="false" />
         <activity
-            android:name=".ui.login.LoadingDialog"
+            android:name=".LoadingDialog"
             android:exported="false"
             android:label="@string/title_activity_loading_dialog" />
         <activity
@@ -54,9 +53,6 @@
         <activity
             android:name=".UserInfoActivity"
             android:exported="false" />
-        <activity
-            android:name=".LoginActivity"
-            android:exported="true" />
         <activity
             android:name=".RegisterActivity"
             android:exported="true" />

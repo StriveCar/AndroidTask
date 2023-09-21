@@ -44,10 +44,6 @@ public interface PhotoService {
     Call<BaseResponse<LoginData>> userLogin(@Query("password") String pwd,@Query("username") String une);
 
 
-    @Multipart
-    @POST("image/upload")
-    Call<BaseResponse<ImageUrl>> uploadImage(@Part MultipartBody.Part imageFile);
-
     @POST("share/add")
     Call<BaseResponse<Object>> uploadAdd(@Body ImageText imageText);
 

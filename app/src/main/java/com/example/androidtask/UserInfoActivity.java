@@ -7,7 +7,10 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -57,7 +60,7 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
     private ActivityResultLauncher<Intent> mResultLauncher;
     private Intent intent;
     private Bundle bundle;
-
+    private PhotoPopupWindow mPhotoPopupWindow;
     private Integer choose = -1;
     //拍照
     private static final int TAKE_PHOTO = 1;
@@ -189,6 +192,50 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
     }
 
 
+    private void showSelectDialog() {
+        mPhotoPopupWindow = new PhotoPopupWindow(UserInfoActivity.this, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (v.getId() == R.id.icon_btn_select) {
+                    if (ContextCompat.checkSelfPermission(UserInfoActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(UserInfoActivity.this, new String[]{Manifest.permission.CAMERA}, 200);
+                    }
+                    else {
+                        insert++;
+                        choose = CHOOSE_PHOTO;
+                        mPhotoPopupWindow.dismiss();
+                        Intent intentPickPicture = new Intent();
+                        intentPickPicture.setAction(Intent.ACTION_GET_CONTENT);
+                        intentPickPicture.setType("image/*");
+                        mResultLauncher.launch(intentPickPicture);
+                    }
+                }
+            }
+        }, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (v.getId() == R.id.icon_btn_camera) {
+                    if (ContextCompat.checkSelfPermission(UserInfoActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                        // 如果没有相机权限，请求权限
+                        ActivityCompat.requestPermissions(UserInfoActivity.this, new String[]{Manifest.permission.CAMERA}, 100);
+                    }else {
+                        insert++;
+                        choose = TAKE_PHOTO;
+                        mPhotoPopupWindow.dismiss();
+                        Intent intent = new Intent();
+                        intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+//                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
+                        mResultLauncher.launch(intent);
+                    }
+                }
+
+            }
+        });
+        View rootView = LayoutInflater.from(UserInfoActivity.this).inflate(R.layout.activity_add, null);
+        mPhotoPopupWindow.showAtLocation(rootView,
+                Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+    }
+
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.rl_account) {
@@ -209,26 +256,7 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
             GenderBottomSheetFragment bottomSheetFragment = new GenderBottomSheetFragment();
             bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
         } else if (v.getId() == R.id.iv_head_image || v.getId() == R.id.small_icon) {
-            if (ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED) {
-                // 权限还没有授予，进行申请
-//                ActivityCompat.requestPermissions((Activity) this,
-//                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 200); // 申请的 requestCode 为 200
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 100);
-            }
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                // 如果没有相机权限，请求权限
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 100);
-            } else {
-                insert++;
-                intent = new Intent(Intent.ACTION_GET_CONTENT);
-                choose = CHOOSE_PHOTO;
-                intent.setType("image/*");
-//                intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//                choose=TAKE_PHOTO;
-                mResultLauncher.launch(intent);
-            }
+                showSelectDialog();
         }
     }
 

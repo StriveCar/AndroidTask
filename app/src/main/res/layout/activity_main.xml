@@ -27,13 +27,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:popupTheme="@style/Theme.AndroidTask">
 
-            <!--            <ImageButton-->
-            <!--                android:id="@+id/btn_nva"-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:layout_marginLeft="20dp"-->
-            <!--                android:background="?attr/colorPrimary"-->
-            <!--                android:src="@drawable/navigation" />-->
 
             <TextView
                 android:id="@+id/toolbar_title"
@@ -106,7 +99,6 @@
                 android:id="@+id/bottom_bar_2_btn"
                 android:layout_width="0dp"
                 android:foreground="?android:attr/selectableItemBackground"
-
                 android:layout_height="match_parent"
                 android:layout_weight="1">
 
@@ -139,15 +131,14 @@
                 android:id="@+id/bottom_bar_3_btn"
                 android:layout_width="70dp"
                 android:layout_height="match_parent"
-                android:clipChildren="false"
                 android:orientation="vertical">
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/bottom_bar_3_card"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="-32dp"
+                    android:layout_marginTop="-30dp"
                     android:background="@color/white"
-                    android:clipChildren="false"
                     app:cardCornerRadius="34dp"
                     app:cardElevation="1dp"
                     tools:ignore="VisualLintBounds">
@@ -156,7 +147,7 @@
                         android:id="@+id/bottom_bar_image_3"
                         android:layout_width="match_parent"
                         android:layout_height="57dp"
-                        android:layout_margin="4dp"
+                        android:layout_margin="5dp"
                         android:background="@drawable/circle_background"
                         android:padding="12dp"
                         android:src="@drawable/add" />
@@ -166,8 +157,8 @@
                     android:id="@+id/bottom_bar_text_3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="3dp"
                     android:gravity="center"
+                    android:layout_marginTop="2dp"
                     android:singleLine="true"
                     android:text="发布"
                     android:textColor="#666666"

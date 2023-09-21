@@ -52,6 +52,16 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.mViewHolde
 
     private RecyclerView rc;
 
+    public interface onDeleteClick {
+        void onDelete(int pos);
+    }
+
+    onDeleteClick onDeleteClick;
+
+    public void setOnDeleteClick(DraftsAdapter.onDeleteClick onDeleteClick) {
+        this.onDeleteClick = onDeleteClick;
+    }
+
     public DraftsAdapter(@NonNull Context context, List<Records> data){
         this.data = data;
         this.context = context;
@@ -109,6 +119,7 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.mViewHolde
                                     public void onResponse(Call<BaseResponse<Data<Records>>> call, Response<BaseResponse<Data<Records>>> response) {
                                         if (response.body().getCode() == 200) {
                                             Toast.makeText(view.getContext(), "删除成功", Toast.LENGTH_SHORT).show();
+                                            if (position != -1) onDeleteClick.onDelete(position);
                                             System.out.println("删除成功!  " + response.body());
                                         } else if (response.body().getCode() == 500) {
                                             System.out.println(response.body().getMsg());

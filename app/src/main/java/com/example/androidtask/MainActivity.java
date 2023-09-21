@@ -1,9 +1,5 @@
 package com.example.androidtask;
 
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.os.IBinder;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -16,21 +12,9 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-
-import androidx.annotation.CallSuper;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -72,23 +56,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView icon, icon_1, icon_2, icon_3, icon_4, ivImage;
     private TextView iconTv, iconTv_1, iconTv_2, iconTv_3, iconTv_4;
     private RelativeLayout rl_1, rl_2, rl_3, rl_4, relativeLayout;
+    private LinearLayout linearLayout;
     private Intent intent;
     private int index = 7;
     private int[] imageResources;
     private int height = 0;
     private CountDownTimer clickTimer;
-
     private MenuItem night;
 
-    private ImageView new_share;
-    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        new_share = findViewById(R.id.bottom_bar_image_3);
 
         toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
@@ -115,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         iconTv_4 = findViewById(R.id.bottom_bar_text_5);
         rl_1 = findViewById(R.id.bottom_bar_1_btn);
         rl_2 = findViewById(R.id.bottom_bar_2_btn);
+        linearLayout = findViewById(R.id.bottom_bar_3_btn);
         rl_3 = findViewById(R.id.bottom_bar_4_btn);
         rl_4 = findViewById(R.id.bottom_bar_5_btn);
 
@@ -126,12 +107,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        new_share.setOnClickListener(this);
-
         initData();
 
         navView.setNavigationItemSelectedListener(this);
         drawerLayout.setOnClickListener(this);
+        linearLayout.setOnClickListener(this);
         relativeLayout.setOnClickListener(this);
         rl_1.setOnClickListener(this);
         rl_2.setOnClickListener(this);
@@ -232,17 +212,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.bottom_bar_image_3){
-
-            intent = new Intent(this, AddActivity.class);
-            startActivity(intent);
-        }
 
         if (v.getId() == R.id.bottom_bar_1_btn) {
             changeSelectStatus(icon_1, iconTv_1);
         } else if (v.getId() == R.id.bottom_bar_2_btn) {
             changeSelectStatus(icon_2, iconTv_2);
         } else if (v.getId() == R.id.bottom_bar_3_btn) {
+
+            intent = new Intent(this, AddActivity.class);
+            startActivity(intent);
 
         } else if (v.getId() == R.id.bottom_bar_4_btn) {
             changeSelectStatus(icon_3, iconTv_3);
@@ -294,6 +272,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (item.getItemId() == R.id.swap) {
             intent = new Intent(MainActivity.this,LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }   else if (item.getItemId() == R.id.drafts) {
+            Intent intent = new Intent(this, DraftsActivity.class);
             startActivity(intent);
         }
         return false;

@@ -1,11 +1,14 @@
 package com.example.androidtask;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.MediaStore;
@@ -27,6 +30,8 @@ import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.example.androidtask.network.RetrofitClient;
 
@@ -69,7 +74,6 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
     private ImageView pb_picture;
     private EditText pb_content;
     private EditText pb_title;
-    private Button drafts_button;
 
     private LoginData mlogindata = LoginData.getMloginData();
 
@@ -97,13 +101,11 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
         pb_content = findViewById(R.id.add_content);
         pb_title = findViewById(R.id.add_title);
 
-        drafts_button = findViewById(R.id.myDrafts_button);
 
         publish_button.setOnClickListener(this);
         pb_picture.setOnClickListener(this);
         sc_button.setOnClickListener(this);
 
-        drafts_button.setOnClickListener(this);
 
 
 //        ImageLoader imageLoader= ImageLoader.getInstance();
@@ -168,6 +170,10 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
         toolbar.setTitle("发布");
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.teal_200));
+        }
     }
 
 
@@ -193,10 +199,6 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
         }
         if (view.getId() == R.id.addPic){
             uploadPic();
-        }
-        if(view.getId() == R.id.myDrafts_button){
-            Intent intent = new Intent(this, DraftsActivity.class);
-            startActivity(intent);
         }
     }
 
@@ -245,31 +247,38 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
 
     //弹出选择框
     private void showSelectDialog() {
-
-        mPhotoPopupWindow = new PhotoPopupWindow(AddActivity.this,new View.OnClickListener() {
+        mPhotoPopupWindow = new PhotoPopupWindow(AddActivity.this, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (v.getId() == R.id.icon_btn_select){
-                    choose = CHOOSE_PHOTO;
-                    mPhotoPopupWindow.dismiss();
-                    Intent intentPickPicture = new Intent();
-                    intentPickPicture.setAction(Intent.ACTION_GET_CONTENT);
-                    intentPickPicture.setType("image/*");
-                    mResultLauncher.launch(intentPickPicture);
+                if (v.getId() == R.id.icon_btn_select) {
+                    if (ContextCompat.checkSelfPermission(AddActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(AddActivity.this, new String[]{Manifest.permission.CAMERA}, 200);
+                    }
+                    else {
+                        choose = CHOOSE_PHOTO;
+                        mPhotoPopupWindow.dismiss();
+                        Intent intentPickPicture = new Intent();
+                        intentPickPicture.setAction(Intent.ACTION_GET_CONTENT);
+                        intentPickPicture.setType("image/*");
+                        mResultLauncher.launch(intentPickPicture);
+                    }
                 }
             }
-        }, new View.OnClickListener()
-        {
+        }, new View.OnClickListener() {
             @Override
-            public void onClick (View v){
-                if (v.getId() == R.id.icon_btn_camera){
-                    choose = TAKE_PHOTO;
-                    // 权限已经申请，直接拍照
-                    mPhotoPopupWindow.dismiss();
-                    Intent intent = new Intent();
-                    intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+            public void onClick(View v) {
+                if (v.getId() == R.id.icon_btn_camera) {
+                    if (ContextCompat.checkSelfPermission(AddActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                        // 如果没有相机权限，请求权限
+                        ActivityCompat.requestPermissions(AddActivity.this, new String[]{Manifest.permission.CAMERA}, 100);
+                    }else {
+                        choose = TAKE_PHOTO;
+                        mPhotoPopupWindow.dismiss();
+                        Intent intent = new Intent();
+                        intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
 //                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
-                    mResultLauncher.launch(intent);
+                        mResultLauncher.launch(intent);
+                    }
                 }
 
             }
@@ -277,7 +286,6 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
         View rootView = LayoutInflater.from(AddActivity.this).inflate(R.layout.activity_add, null);
         mPhotoPopupWindow.showAtLocation(rootView,
                 Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
-
     }
 
 //    @Override
