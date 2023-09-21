@@ -1,4 +1,6 @@
-package com.example.androidtask.response;
+package com.example.androidtask;
+
+import com.example.androidtask.response.Records;
 
 import java.io.Serializable;
 import java.util.List;
