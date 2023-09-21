@@ -1,8 +1,10 @@
 package com.example.androidtask;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
@@ -14,12 +16,16 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import com.example.androidtask.network.RetrofitClient;
 import com.example.androidtask.network.service.PhotoService;
 import com.example.androidtask.response.BaseResponse;
 import com.example.androidtask.response.User;
+import com.example.androidtask.util.CodeUtils;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import retrofit2.Call;
@@ -29,16 +35,12 @@ import retrofit2.Response;
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
 
     private Boolean bPwdSwitch = false;
-    private EditText etPwd;
-    private EditText etPwd2;
-
-    private EditText etAccount;
-    private EditText etVerify;
-    private ImageView ivPwdSwitch;
-    private ImageView ivPwdSwitch2;
-
-    private final String UserName = "^[a-z0-9A-Z]+$";
+    private EditText etPwd, etPwd2, etAccount, etVerify;
+    private ImageView ivPwdSwitch, ivPwdSwitch2, ivCode;
     private Button btRegister;
+    private CodeUtils codeutils;
+    private Toolbar toolbar;
+
 
     private final PhotoService photoService = RetrofitClient.getInstance().getService(PhotoService.class);
 
@@ -55,38 +57,66 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         ivPwdSwitch2 = findViewById(R.id.iv_pwd_switch2);
         etVerify = findViewById(R.id.et_verify);
         btRegister = findViewById(R.id.bt_resgiter);
+        ivCode = findViewById(R.id.iv_code);
+        toolbar = findViewById(R.id.tool_bar);
 
+        codeutils = CodeUtils.getInstance();
+        ivCode.setImageBitmap(codeutils.createBitmap());
 
         btRegister.setOnClickListener(this);
         ivPwdSwitch.setOnClickListener(this);
         ivPwdSwitch2.setOnClickListener(this);
+        ivCode.setOnClickListener(this);
         etVerify.setOnFocusChangeListener(this);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.cyan));
+        }
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
     }
 
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.bt_resgiter) {
-            if (!Pattern.matches(UserName, etPwd.getText().toString())) {
-                Toast.makeText(this, "密码由字母和数字组成", Toast.LENGTH_SHORT).show();
+            if (etAccount.getText().toString().trim().equals("")) {
+                Toast.makeText(this, "用户名不能为空", Toast.LENGTH_SHORT).show();
+                return;
             }
-            else {
-                photoService.userRegister(new User("admin", "admin")).enqueue(new Callback<BaseResponse<Object>>() {
+
+            String userName = "^[a-z0-9A-Z]+$";
+            if (!Pattern.matches(userName, etPwd.getText().toString().toLowerCase())) {
+                Toast.makeText(this, "密码由字母和数字组成", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (!codeutils.getCode().equals(etVerify.getText().toString().toLowerCase())) {
+                Toast.makeText(this, "验证码错误", Toast.LENGTH_SHORT).show();
+            } else {
+                photoService.userRegister(new User(etPwd.getText().toString(), etAccount.getText().toString())).enqueue(new Callback<BaseResponse<Object>>() {
                     @Override
-                    public void onResponse(Call<BaseResponse<Object>> call, Response<BaseResponse<Object>> response) {
+                    public void onResponse(@NonNull Call<BaseResponse<Object>> call, @NonNull Response<BaseResponse<Object>> response) {
                         if (response.body() != null) {
                             if (response.body().getCode() == 200) {
                                 Toast.makeText(RegisterActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent();
-                                intent.setClass(RegisterActivity.this, MainActivity.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
+                                Bundle bundle = new Bundle();
+                                bundle.putString(LoginActivity.USER_NAME, etAccount.getText().toString());
+                                bundle.putString(LoginActivity.USER_PWD, etPwd.getText().toString());
+                                intent.putExtras(bundle);
+                                setResult(Activity.RESULT_OK, intent);
+                                finish();
                             } else if (response.body().getCode() == 500) {
                                 Toast.makeText(RegisterActivity.this, response.body().getMsg(), Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
+
                     @Override
-                    public void onFailure(Call<BaseResponse<Object>> call, Throwable t) {
+                    public void onFailure(@NonNull Call<BaseResponse<Object>> call, @NonNull Throwable t) {
                         Toast.makeText(RegisterActivity.this, "注册失败", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -111,6 +141,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
             etPwd.setSelection(context);
             etPwd2.setSelection(context2);
+        } else if (view.getId() == R.id.iv_code) {
+            ivCode.setImageBitmap(codeutils.createBitmap());
         }
     }
 

@@ -34,28 +34,26 @@ import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private final PhotoService photoService = RetrofitClient.getInstance().getService(PhotoService.class);
     private Boolean bPwdSwitch = false;
-    private EditText etPwd;
-    private EditText etAccount;
+    private EditText etPwd, etAccount;
     private CheckBox cbRememberPwd;
     private ImageView ivPwdSwitch;
-    private Button btLogin;
-    private Button btRegister;
-
-    private final PhotoService photoService = RetrofitClient.getInstance().getService(PhotoService.class);
+    private Button btLogin, btRegister;
     private Intent intent;
-    private ActivityResultLauncher<Intent> register;
 
+    private Bundle bundle;
+    private ActivityResultLauncher<Intent> register;
     public static final String USER_NAME = "name";
     public static final String USER_PWD = "password";
-    private Bundle bundle;
+
+    private String spFileName, accountKey, passwordKey, rememberPasswordKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_login);
-
 
         ivPwdSwitch = findViewById(R.id.iv_pwd_switch);
         etPwd = findViewById(R.id.et_pwd);
@@ -64,34 +62,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         btLogin = findViewById(R.id.bt_login);
         btRegister = findViewById(R.id.bt_resgiter);
 
-
-        String spFileName = getResources()
-                .getString(R.string.shared_preferences_file_name);
-        String accountKey = getResources()
-                .getString(R.string.login_account_name);
-        String passwordKey = getResources()
-                .getString(R.string.login_password);
-        String rememberPasswordKey = getResources()
-                .getString(R.string.login_remember_password);
-
-        SharedPreferences spFile = getSharedPreferences(
-                spFileName,
-                MODE_PRIVATE);
-        String account = spFile.getString(accountKey, null);
-        String password = spFile.getString(passwordKey, null);
-        boolean rememberPassword = spFile.getBoolean(
-                rememberPasswordKey,
-                false);
-
-        if (account != null && !TextUtils.isEmpty(account)) {
-            etAccount.setText(account);
-        }
-
-        if (password != null && !TextUtils.isEmpty(password)) {
-            etPwd.setText(password);
-        }
-
-        if (rememberPassword) cbRememberPwd.setChecked(true);
+        loadInfo();
 
         ivPwdSwitch.setOnClickListener(view -> {
             int context = String.valueOf(etPwd.getText()).length();
@@ -122,17 +93,45 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         });
     }
 
+    public void loadInfo(){
+        spFileName = getResources()
+                .getString(R.string.shared_preferences_file_name);
+        accountKey = getResources()
+                .getString(R.string.login_account_name);
+        passwordKey = getResources()
+                .getString(R.string.login_password);
+        rememberPasswordKey = getResources()
+                .getString(R.string.login_remember_password);
+
+        SharedPreferences spFile = getSharedPreferences(
+                spFileName,
+                MODE_PRIVATE);
+        String account = spFile.getString(accountKey, null);
+        String password = spFile.getString(passwordKey, null);
+        boolean rememberPassword = spFile.getBoolean(
+                rememberPasswordKey,
+                false);
+
+        if (account != null && !TextUtils.isEmpty(account)) {
+            etAccount.setText(account);
+        }
+
+        if (password != null && !TextUtils.isEmpty(password)) {
+            etPwd.setText(password);
+        }
+
+        if (rememberPassword) cbRememberPwd.setChecked(true);
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.cyan));
+        }
+        LoadingDialog.getInstance().dismiss();
+
+    }
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.bt_login) {
-            String spFileName = getResources()
-                    .getString(R.string.shared_preferences_file_name);
-            String accountKey = getResources()
-                    .getString(R.string.login_account_name);
-            String passwordKey = getResources()
-                    .getString(R.string.login_password);
-            String rememberPasswordKey = getResources()
-                    .getString(R.string.login_remember_password);
 
             SharedPreferences spFile = getSharedPreferences(
                     spFileName,
@@ -158,14 +157,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     editor.remove(rememberPasswordKey);
                     editor.apply();
                 }
+                LoadingDialog loadingDialog = LoadingDialog.getInstance(LoginActivity.this);
+                loadingDialog.show();
                 photoService.userLogin(etPwd.getText().toString(), etAccount.getText().toString()).enqueue(new Callback<BaseResponse<LoginData>>() {
                     @Override
                     public void onResponse(@NonNull Call<BaseResponse<LoginData>> call, @NonNull Response<BaseResponse<LoginData>> response) {
+
                         if (response.body() != null) {
                             if (response.body().getCode() == 200) {
                                 Toast.makeText(LoginActivity.this, "登录成功! ", Toast.LENGTH_SHORT).show();
-
-                                intent = new Intent(LoginActivity.this, MainActivity.class);
+                              
                                 LoginData.setMloginData(response.body().getData());
                                 LoginData mloginData = LoginData.getMloginData();
                                 if (response.body().getData().getIntroduce() == null) {
@@ -174,9 +175,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 mloginData.setCreateTime(null);
                                 mloginData.setLastUpdateTime(null);
                                 mloginData.setAppKey(null);
+
+                                intent = new Intent(LoginActivity.this, MainActivity.class);
+
                                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
                             } else if (response.body().getCode() == 500) {
+                                loadingDialog.dismiss();
                                 Toast.makeText(LoginActivity.this, response.body().getMsg(), Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -194,4 +199,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             register.launch(intent);
         }
     }
+
+
 }

@@ -8,11 +8,20 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/lucency"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+    </androidx.appcompat.widget.Toolbar>
+
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1">
-
+        android:layout_height="160dp"
+        >
         <ImageView
             android:layout_width="108dp"
             android:layout_height="108dp"
@@ -26,7 +35,6 @@
         android:layout_height="300dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-
         app:cardBackgroundColor="#CCFFFFFF"
         app:cardCornerRadius="5dp">
 
@@ -174,14 +182,15 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_marginTop="15dp"
                 android:layout_height="36dp"
+                android:layout_marginTop="15dp"
                 android:orientation="horizontal">
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="25dp"
+                    android:layout_marginRight="10dp"
                     android:layout_weight="2"
                     app:cardCornerRadius="5dp">
 
@@ -205,28 +214,25 @@
                             android:layout_gravity="center"
                             android:layout_marginStart="5dp"
                             android:layout_weight="1"
-                            android:autofillHints="number"
                             android:background="@null"
+                            android:digits="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
                             android:hint="@string/verify"
                             android:importantForAutofill="yes"
-                            android:inputType="number"
-                            android:maxLines="1"
                             android:maxLength="6"
+                            android:maxLines="1"
                             tools:ignore="TouchTargetSizeCheck" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
-                <Button
-                    android:layout_weight="1"
-                    android:layout_marginRight="25dp"
-                    android:id="@+id/bt_send_verify"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+
+                <ImageView
+                    android:id="@+id/iv_code"
+                    android:layout_width="130dp"
+                    android:layout_height="34dp"
                     android:layout_gravity="center"
-                    android:background="@color/lucency"
+                    android:layout_marginRight="25dp"
                     android:contentDescription="@null"
                     android:importantForAccessibility="yes"
-                    android:text="@string/send_verify"
-                    android:textSize="18sp" />
+                    android:scaleType="fitXY" />
             </LinearLayout>
 
 

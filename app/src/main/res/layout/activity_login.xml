@@ -6,7 +6,9 @@
     android:layout_height="match_parent"
     android:background="@drawable/mainbcc"
     android:orientation="vertical"
+    android:fitsSystemWindows="true"
     tools:context=".MainActivity">
+
 
     <RelativeLayout
         android:layout_width="match_parent"

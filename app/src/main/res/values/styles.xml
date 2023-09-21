@@ -4,7 +4,6 @@
     <style name="main_tab_button">
         <item name="android:layout_width">27dp</item>
         <item name="android:layout_height">27dp</item>
-        <item name="android:layout_above">@+id/bottom_bar_text_1</item>
         <item name="android:layout_alignParentTop">true</item>
         <item name="android:layout_centerHorizontal">true</item>
         <item name="android:layout_marginTop">3dp</item>
@@ -13,6 +12,18 @@
     <style name="AnimationPreview">
         <item name="android:windowEnterAnimation">@animator/fade_in</item>
         <item name="android:windowExitAnimation">@animator/fade_out</item>
+    <style name="CustomNumberPickerStyle">
+        <item name="android:colorControlNormal">@color/gray</item>
+        <item name="android:colorControlActivated">@color/gray</item>
+        <item name="android:colorControlHighlight">@color/gray</item>
+        <item name="android:dividerHeight">2dp</item>
+    </style>
+
+    <style name="TransparentDialog" parent="@android:style/Theme.Holo.Light.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="colorPrimary">@color/lucency</item>
+        <!-- 修改标题文字颜色 -->
+        <item name="android:textColorPrimary">@color/lucency</item>
     </style>
 
 </resources>

@@ -1,6 +1,5 @@
 package com.example.androidtask.response;
 
-
 import com.example.androidtask.network.RetrofitClient;
 
 public class LoginData {

@@ -1,3 +1,4 @@
+
 package com.example.androidtask.response;
 
 public class ImageText {
