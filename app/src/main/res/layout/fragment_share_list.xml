@@ -7,8 +7,15 @@
     tools:context=".fragments.ShareListFragment"
     android:layout_margin="8dp">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/shareList"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefreshLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/shareList"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </FrameLayout>

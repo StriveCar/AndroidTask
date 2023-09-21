@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.androidtask.OnItemClickListener;
 import com.example.androidtask.R;
@@ -43,7 +44,9 @@ public class ShareListFragment extends Fragment {
     private RecyclerView rv_sharelist;
     private ShareListAdapter adapter;
     private PhotoService photoService = RetrofitClient.getInstance().getService(PhotoService.class);
+    private int current = 0,size = 20;
     private String userId;
+    private SwipeRefreshLayout srl;
     public ShareListFragment(String userId){
         this.userId = userId;
     }
@@ -58,14 +61,61 @@ public class ShareListFragment extends Fragment {
 
         getData();
 
+        srl = sharelistView.findViewById(R.id.swipeRefreshLayout);
+        srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                data.clear();
+                refreshData();
+            }
+        });
         return sharelistView;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        data.clear();
-        getData();
+    private void refreshData() {
+        photoService.getShare(current,size,userId).subscribe(new FlowableSubscriber<BaseResponse<Data<Records>>>() {
+            @Override
+            public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Subscription s) {
+                s.request(Long.MAX_VALUE);
+            }
+
+            @Override
+            public void onNext(BaseResponse<Data<Records>> dataBaseResponse) {
+                recordlist = dataBaseResponse.getData().getRecords();
+                Records temp;
+                // 获取头像并添加到数据列表
+                for (int i = 0; i < recordlist.size(); i++) {
+                    sharelist_item item = new sharelist_item();
+                    temp = recordlist.get(i);
+                    item.setRecord(temp);
+                    photoService.getUserByName(temp.getUsername()).enqueue(new Callback<BaseResponse<UserInfo>>() {
+                        @Override
+                        public void onResponse(Call<BaseResponse<UserInfo>> call, Response<BaseResponse<UserInfo>> profileresponse) {
+                            item.setProfileUrl(profileresponse.body().getData().getAvatar());
+                            data.add(item);
+                            if (data.size() == recordlist.size()) {
+                                Toast.makeText(getActivity(), "数据加载完成",Toast.LENGTH_SHORT).show();
+                                adapter.notifyDataSetChanged();
+                                srl.setRefreshing(false);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<BaseResponse<UserInfo>> call, Throwable t) {
+                            Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onComplete() {
+            }
+        });
     }
 
     private void BindingAdapter() {
@@ -90,7 +140,7 @@ public class ShareListFragment extends Fragment {
     }
 
     private void getData() {
-        photoService.getShare(0, 60, userId)
+        photoService.getShare(current, size, userId)
                 .subscribe(new FlowableSubscriber<BaseResponse<Data<Records>>>() {
                     @Override
                     public void onSubscribe(Subscription s) {

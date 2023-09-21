@@ -114,6 +114,69 @@ public class ShareDetail extends AppCompatActivity {
             }
         });
 
+        iv_collect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean hasCollect = item.getRecord().getHasCollect();
+                if(!hasCollect){
+                    //收藏
+                    photoService.collect(item.getRecord().getId(), userId).enqueue(new Callback<BaseResponse>() {
+                        @Override
+                        public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                            if (response.body().getCode() == 200){
+                                System.out.println("收藏成功");
+                                iv_collect.setImageResource(R.drawable.baseline_star_24);
+                                item.getRecord().setHasCollect(true);
+                            } else {
+                                String msg = String.format("错误代码：%d",response.body().getCode());
+                                Toast.makeText(ShareDetail.this,msg,Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<BaseResponse> call, Throwable t) {
+                            Toast.makeText(ShareDetail.this,t.getMessage(),Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else {
+                    //取消收藏
+                    photoService.getDetail(item.getRecord().getId(), userId).enqueue(new Callback<BaseResponse<Records>>() {
+                        @Override
+                        public void onResponse(Call<BaseResponse<Records>> call, Response<BaseResponse<Records>> response) {
+                            if (response.body().getCode() == 200){
+                                String collectId = response.body().getData().getCollectId();
+                                photoService.cancelCollect(collectId).enqueue(new Callback<BaseResponse>() {
+                                    @Override
+                                    public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                                        if (response.body().getCode() == 200){
+                                            System.out.println("取消收藏成功");
+                                            iv_collect.setImageResource(R.drawable.baseline_star_border_24);
+                                            item.getRecord().setHasCollect(false);
+                                        } else {
+                                            String msg = String.format("错误代码：%d",response.body().getCode());
+                                            Toast.makeText(ShareDetail.this,msg,Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<BaseResponse> call, Throwable t) {
+                                        Toast.makeText(ShareDetail.this,t.getMessage(),Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            } else {
+                                String msg = String.format("错误代码：%d",response.body().getCode());
+                                Toast.makeText(ShareDetail.this,msg,Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<BaseResponse<Records>> call, Throwable t) {
+                            Toast.makeText(ShareDetail.this,t.getMessage(),Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+        });
     }
 
     private void getData() {
@@ -133,12 +196,24 @@ public class ShareDetail extends AppCompatActivity {
         iv_collect = findViewById(R.id.iv_collect);
 
         getData();
-        //处理头像
+        //处理头像图片
         String st = item.getProfileUrl();
-        if(st == "" || st == null){
+        if (st == "" || st == null){
             iv.setImageResource(R.drawable.baseline_person_outline_24);
         } else {
             Glide.with(this).load(item.getProfileUrl()).into(iv);
+        }
+        //处理收藏图片
+        if (item.getRecord().getHasCollect()){
+            iv_collect.setImageResource(R.drawable.baseline_star_24);
+        } else {
+            iv_collect.setImageResource(R.drawable.baseline_star_border_24);
+        }
+        //处理点赞图片
+        if (item.getRecord().getHasLike()){
+            iv_thumbsUp.setImageResource(R.drawable.baseline_thumb_up_24);
+        } else {
+            iv_thumbsUp.setImageResource(R.drawable.baseline_thumb_up_off_alt_24);
         }
         //绑定数据
         tv_username.setText(item.getRecord().getUsername());

@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         viewpager.setAdapter(viewpagerAdapter);
         //默认主页,打开软件就显示主页的分享列表
         viewpager.setCurrentItem(0);
-
+        viewpager.isSelected();
     }
 
     private void initBottomNavigationfunction() {
