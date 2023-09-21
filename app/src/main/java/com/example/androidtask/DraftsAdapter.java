@@ -73,14 +73,22 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.mViewHolde
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 String title = data.get(position).getTitle();
                 String content = data.get(position).getContent();
+                String imageCode = data.get(position).getImageCode();
+                String id = data.get(position).getId();
+                String userId = data.get(position).getPUserId();
+
                 String image = data.get(position).getImageUrlList().get(0);
 
                 Intent intent = new Intent(context, DetailActivity.class);
                 intent.putExtra("title", title);
                 intent.putExtra("content", content);
                 intent.putExtra("image", image);
+                intent.putExtra("imageCode",imageCode);
+                intent.putExtra("id",id);
+                intent.putExtra("userId",userId);
                 context.startActivity(intent);
             }
         });

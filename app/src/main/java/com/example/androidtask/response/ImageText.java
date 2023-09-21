@@ -6,6 +6,8 @@ public class ImageText {
     private String imageCode;
     private String pUserId;
     private String title;
+    private String id;
+
     public void setContent(String content) {
         this.content = content;
     }
@@ -38,6 +40,13 @@ public class ImageText {
         return title;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     @Override
     public String toString() {
@@ -46,6 +55,7 @@ public class ImageText {
                 ", imageCode='" + imageCode + '\'' +
                 ", pUserId='" + pUserId + '\'' +
                 ", title='" + title + '\'' +
+                ", id='" + id + id + '\'' +
                 '}';
     }
 }

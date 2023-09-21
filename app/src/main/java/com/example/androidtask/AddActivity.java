@@ -229,7 +229,6 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
                             System.out.println(response.body().getMsg());
                         }
                     }
-
                     @Override
                     public void onFailure(Call<BaseResponse<Object>> call, Throwable t) {
                         Toast.makeText(AddActivity.this, "新增失败", Toast.LENGTH_SHORT).show();

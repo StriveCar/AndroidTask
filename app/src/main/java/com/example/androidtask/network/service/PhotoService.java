@@ -47,6 +47,7 @@ public interface PhotoService {
     @POST("share/delete")
     Call<BaseResponse<Data<Records>>> deleteAdd(@Query("userId") String userid,@Query("shareId") String shareid);
 
-
+    @POST("share/change")
+    Call<BaseResponse<Object>> changeStatus(@Body ImageText imageText);
 
 }
