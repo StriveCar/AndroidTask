@@ -1,6 +1,5 @@
 package com.example.androidtask.fragments;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -12,7 +11,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -26,12 +24,10 @@ import com.example.androidtask.response.BaseResponse;
 import com.example.androidtask.response.Data;
 import com.example.androidtask.response.Records;
 import com.example.androidtask.response.UserInfo;
-import com.example.androidtask.response.sharelist_item;
+import com.example.androidtask.sharelist_item;
 
-import org.checkerframework.checker.units.qual.A;
 import org.reactivestreams.Subscription;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +43,10 @@ public class ShareListFragment extends Fragment {
     private RecyclerView rv_sharelist;
     private ShareListAdapter adapter;
     private PhotoService photoService = RetrofitClient.getInstance().getService(PhotoService.class);
+    private String userId;
+    public ShareListFragment(String userId){
+        this.userId = userId;
+    }
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -58,7 +58,7 @@ public class ShareListFragment extends Fragment {
     }
 
     private void initData() {
-        photoService.getShare(0, 60, "1692126434274971648")
+        photoService.getShare(0, 60, userId)
                 .subscribe(new FlowableSubscriber<BaseResponse<Data<Records>>>() {
                     @Override
                     public void onSubscribe(Subscription s) {
@@ -92,9 +92,10 @@ public class ShareListFragment extends Fragment {
                                                 Bundle bd = new Bundle();
                                                 bd.putSerializable("item", item);
                                                 intent.putExtras(bd);
+                                                intent.putExtra("userId", userId);
                                                 startActivity(intent);
                                             }
-                                        }, width);
+                                        }, width, userId);
                                         rv_sharelist.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
                                         rv_sharelist.setAdapter(adapter);
                                     }

@@ -8,7 +8,6 @@ import com.example.androidtask.response.User;
 import com.example.androidtask.response.UserInfo;
 
 import io.reactivex.rxjava3.core.Flowable;
-import io.reactivex.rxjava3.core.Observable;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -29,4 +28,13 @@ public interface PhotoService {
 
     @GET("user/getUserByName")
     Call<BaseResponse<UserInfo>> getUserByName(@Query("username")String username);
+
+    @POST("like")
+    Call<BaseResponse> thumbsUp(@Query("shareId") String shareId, @Query("userId") String userId);
+
+    @POST("like/cancel")
+    Call<BaseResponse> cancelLike(@Query("likeId")String likeId);
+
+    @GET("share/detail")
+    Call<BaseResponse<Records>> getDetail(@Query("shareId")String shareId, @Query("userId")String userId);
 }

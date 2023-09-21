@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initViewPager() {
         //初始化Fragment，使用Viewpager管理Fragment
-        fragmentlist.add(new ShareListFragment());
+        fragmentlist.add(new ShareListFragment(userId));
         fragmentlist.add(new FollowListFragment());
         fragmentlist.add(new FavouriteListFragment());
         fragmentlist.add(new MyShareListFragment());
