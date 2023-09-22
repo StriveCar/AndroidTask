@@ -72,9 +72,11 @@ public class ModifyUsernameActivity extends AppCompatActivity {
             } else if (30 * mode - etUsername.getText().length() < 0) {
                 Toast.makeText(this, "超出长度限制", Toast.LENGTH_SHORT).show();
             } else {
-                if (mode == 1) {
+                if (mode == 1 && !mloginData.getUsername().equals(String.valueOf(etUsername.getText()))) {
+                    UserInfoActivity.insert++;
                     mloginData.setUsername(String.valueOf(etUsername.getText()));
-                } else {
+                } else if (mode == 2 && !mloginData.getIntroduce().equals(String.valueOf(etUsername.getText()))) {
+                    UserInfoActivity.insert++;
                     mloginData.setIntroduce(String.valueOf(etUsername.getText()));
                 }
                 finish();
@@ -134,6 +136,7 @@ public class ModifyUsernameActivity extends AppCompatActivity {
         } else if (mode == 2) {
             toolbar.setTitle("修改我的个性签名");
             etUsername.setText(mloginData.getIntroduce());
+            etUsername.setSelection(mloginData.getIntroduce().length());
             tvNum.setText("" + (60 - mloginData.getIntroduce().length()));
         } else if (mode == 3) {
             toolbar.setTitle("关于我们");
@@ -141,7 +144,7 @@ public class ModifyUsernameActivity extends AppCompatActivity {
 
             etUsername.setSingleLine(false);
             ViewGroup.LayoutParams layoutParams = etUsername.getLayoutParams();
-            layoutParams.height = 900;
+            layoutParams.height = 1050;
             etUsername.setLayoutParams(layoutParams);
             etUsername.setMaxLines(15);
             etUsername.setText(getResources()

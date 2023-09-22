@@ -153,14 +153,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        height = displayMetrics.heightPixels - 1300;
-        ivImage.setMaxHeight(displayMetrics.heightPixels - 1300);
-        float radiusPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 130, getResources().getDisplayMetrics());
+        float radiusPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 130f, getResources().getDisplayMetrics());
+        height = displayMetrics.heightPixels;
+        ivImage.setMaxHeight((int) (displayMetrics.heightPixels - radiusPx*4));
         DrawerLayout.LayoutParams params = (DrawerLayout.LayoutParams) navView.getLayoutParams();
         params.width = (int) (displayMetrics.widthPixels-radiusPx);
         navView.setLayoutParams(params);
 
-        LoadingDialog.getInstance().dismiss();
 
         imageResources = new int[]{R.drawable.image01, R.drawable.image02, R.drawable.image03, R.drawable.image04,
                 R.drawable.image05, R.drawable.image06, R.drawable.image07, R.drawable.image08,

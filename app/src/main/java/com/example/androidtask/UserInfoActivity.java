@@ -69,7 +69,7 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
 
     public static String MODE = "mode";
 
-    private int insert = 0;
+    public static int insert = 0;
 
     private LoginData loginData;
     private String jsonString;
@@ -153,7 +153,6 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
                         @Override
                         public void onResponse(@NonNull Call<BaseResponse<ImageUrl>> call, @NonNull Response<BaseResponse<ImageUrl>> response) {
                             if (response.body() != null && response.body().getCode() == 200) {
-                                insert++;
                                 mloginData.setAvatar(response.body().getData().getImageUrlList().get(0));
                                 Toast.makeText(UserInfoActivity.this, "上传成功", Toast.LENGTH_SHORT).show();
                             }
@@ -224,7 +223,6 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
                         mPhotoPopupWindow.dismiss();
                         Intent intent = new Intent();
                         intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-//                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
                         mResultLauncher.launch(intent);
                     }
                 }
@@ -239,14 +237,12 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.rl_account) {
-            insert++;
             intent = new Intent(this, ModifyUsernameActivity.class);
             bundle = new Bundle();
             bundle.putInt(MODE, 1);
             intent.putExtras(bundle);
             startActivity(intent);
         } else if (v.getId() == R.id.rl_signature) {
-            insert++;
             intent = new Intent(this, ModifyUsernameActivity.class);
             bundle = new Bundle();
             bundle.putInt(MODE, 2);

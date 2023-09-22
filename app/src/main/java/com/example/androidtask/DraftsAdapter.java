@@ -33,6 +33,7 @@ import com.example.androidtask.response.ImageText;
 import com.example.androidtask.response.LoginData;
 import com.example.androidtask.response.Records;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -90,15 +91,17 @@ public class DraftsAdapter extends RecyclerView.Adapter<DraftsAdapter.mViewHolde
                 String id = data.get(position).getId();
                 String userId = data.get(position).getPUserId();
 
-                String image = data.get(position).getImageUrlList().get(0);
+                List<String> image = data.get(position).getImageUrlList();
 
                 Intent intent = new Intent(context, DetailActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putStringArrayListExtra("stringList", (ArrayList<String>)image);
                 intent.putExtra("title", title);
                 intent.putExtra("content", content);
-                intent.putExtra("image", image);
                 intent.putExtra("imageCode",imageCode);
                 intent.putExtra("id",id);
                 intent.putExtra("userId",userId);
+//                intent.setFlags();
                 context.startActivity(intent);
             }
         });

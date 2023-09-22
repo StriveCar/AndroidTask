@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -20,8 +21,10 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.widget.Toolbar;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -45,6 +48,8 @@ import com.example.androidtask.response.LoginData;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import okhttp3.MediaType;
@@ -59,7 +64,7 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
     //照片选取类
     PhotoPopupWindow mPhotoPopupWindow;
 
-    private Integer choose=-1;
+    private Integer choose = -1;
     //拍照
     private static final int TAKE_PHOTO = 1;
     //获取相册的图片
@@ -84,9 +89,10 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
     private Toolbar toolbar;
 
     private ActivityResultLauncher<Intent> mResultLauncher;
+    private List<byte[]> imageBytesList;
+    private LinearLayout imageContainer, imageContainer1;
 
-
-
+    LinearLayout horizontalLayout = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,11 +107,19 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
         pb_content = findViewById(R.id.add_content);
         pb_title = findViewById(R.id.add_title);
 
+        imageContainer = findViewById(R.id.image_container);
+        imageContainer1 = findViewById(R.id.image_container1);
 
         publish_button.setOnClickListener(this);
         pb_picture.setOnClickListener(this);
         sc_button.setOnClickListener(this);
-
+        imageBytesList = new ArrayList<>();
+        horizontalLayout = new LinearLayout(this);
+        horizontalLayout.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        ));
+        horizontalLayout.setOrientation(LinearLayout.HORIZONTAL);
 
 
 //        ImageLoader imageLoader= ImageLoader.getInstance();
@@ -121,44 +135,77 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
 
 //        ImageLoader.getInstance().displayImage("file://" + file.getPath(),pb_picture, options);
 
-
         mResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == RESULT_OK) {
                 Intent intent = result.getData();
                 if (intent != null) {
                     byte[] imageBytes = null;
-                    if (choose==TAKE_PHOTO) {
+                    ImageView imageView = new ImageView(this);
+                    imageView.setLayoutParams(new LinearLayout.LayoutParams(
+                            320,
+                            320
+                    ));
+                    imageView.setPadding(10, 4, 4, 10);
+                    imageView.setBackgroundColor(getResources().getColor(R.color.white));
+                    if (choose == TAKE_PHOTO) {
                         Bitmap image = intent.getExtras().getParcelable("data");
                         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                         image.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
                         imageBytes = byteArrayOutputStream.toByteArray();
-                        pb_picture.setImageBitmap(image);
-                    } else if (choose==CHOOSE_PHOTO) {
+                        imageView.setImageBitmap(image);
+                        imageContainer.addView(imageView, imageBytesList.size() % 3);
+                    } else if (choose == CHOOSE_PHOTO) {
                         mUri = intent.getData();
                         if (mUri != null) {
-                            pb_picture.setImageURI(mUri);
+                            imageView.setImageURI(mUri);
                             imageBytes = getImageBytes(mUri);
+                            imageContainer.addView(imageView, imageBytesList.size() % 3);
                         }
                     }
-                    MediaType mediaType = MediaType.Companion.parse("multipart/form-data");
-                    RequestBody requestBody = RequestBody.Companion.create(imageBytes, mediaType);
-                    MultipartBody.Part imagePart = MultipartBody.Part.createFormData("fileList", "image.jpg", requestBody);
 
-                    photoService.uploadImage(imagePart).enqueue(new Callback<BaseResponse<ImageUrl>>() {
-                        @Override
-                        public void onResponse(@NonNull Call<BaseResponse<ImageUrl>> call, @NonNull Response<BaseResponse<ImageUrl>> response) {
-                            if (response.body() != null && response.body().getCode() == 200) {
-                                imageCode=response.body().getData().getImageCode();
-//                                mloginData.setAvatar(response.body().getData().getImageUrlList().get(0));
-                                Toast.makeText(AddActivity.this, "上传成功", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(@NonNull Call<BaseResponse<ImageUrl>> call, @NonNull Throwable t) {
-                            Toast.makeText(AddActivity.this, "上传失败", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+                    if (imageBytesList.size() % 3 == 0) {
+                        horizontalLayout = new LinearLayout(this);
+                        horizontalLayout.setLayoutParams(new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.WRAP_CONTENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT
+                        ));
+                        horizontalLayout.setOrientation(LinearLayout.HORIZONTAL);
+                        ImageView imageView2 = new ImageView(this);
+                        imageView2.setLayoutParams(new LinearLayout.LayoutParams(
+                                320,
+                                320
+                        ));
+                        imageView2.setPadding(10, 4, 4, 10);
+                        imageView2.setBackgroundColor(getResources().getColor(R.color.white));
+                        imageView2.setImageBitmap(bitmap);
+                        horizontalLayout.addView(imageView2);
+                    } else if (imageBytesList.size() % 3 == 2) {
+                        imageContainer.removeView(imageContainer.getChildAt(0));
+                        imageContainer.removeView(imageContainer.getChildAt(0));
+                        imageContainer.removeView(imageContainer.getChildAt(0));
+                        ImageView imageView2 = new ImageView(this);
+                        imageView2.setLayoutParams(new LinearLayout.LayoutParams(
+                                320,
+                                320
+                        ));
+                        imageView2.setPadding(10, 4, 4, 10);
+                        imageView2.setBackgroundColor(getResources().getColor(R.color.white));
+                        imageView2.setImageBitmap(bitmap);
+                        horizontalLayout.addView(imageView2);
+                        imageContainer1.addView(horizontalLayout, 0);
+                    } else {
+                        ImageView imageView2 = new ImageView(this);
+                        imageView2.setLayoutParams(new LinearLayout.LayoutParams(
+                                320,
+                                320
+                        ));
+                        imageView2.setPadding(10, 4, 4, 10);
+                        imageView2.setBackgroundColor(getResources().getColor(R.color.white));
+                        imageView2.setImageBitmap(bitmap);
+                        horizontalLayout.addView(imageView2);
+                    }
+                    imageBytesList.add(imageBytes);
                 }
             }
         });
@@ -177,33 +224,57 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
     }
 
 
-
     // 当要退出此Activity时，再运行特定函数
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //弹出框
-        onBackPressed();
     }
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.add_picture){
+        if (view.getId() == R.id.add_picture) {
             Drawable defaultDrawable = getResources().getDrawable(R.drawable.add2);
-            if (pb_picture.getDrawable().getConstantState().equals(defaultDrawable.getConstantState())){
+            if (pb_picture.getDrawable().getConstantState().equals(defaultDrawable.getConstantState())) {
                 showSelectDialog();
-            }
-            else {
-               return;
+            } else {
+                return;
             }
         }
-        if (view.getId() == R.id.addPic){
-            uploadPic();
+        if (view.getId() == R.id.addPic) {
+            LoadingDialog.getInstance(this).show();
+            uploadPic(1);
+            LoadingDialog.getInstance().dismiss();
         }
     }
 
+    private void uploadPic(int mode) {
+        MediaType mediaType = MediaType.Companion.parse("multipart/form-data");
+        List<MultipartBody.Part> imageParts = new ArrayList<>();
+        for (int i = 0; i < imageBytesList.size(); i++) {
+            RequestBody requestBody = RequestBody.Companion.create(imageBytesList.get(i), mediaType);
+            MultipartBody.Part imagePart = MultipartBody.Part.createFormData("fileList", "image" + i + ".jpg", requestBody);
+            imageParts.add(imagePart);
+        }
+
+        photoService.uploadImage(imageParts).enqueue(new Callback<BaseResponse<ImageUrl>>() {
+            @Override
+            public void onResponse(Call<BaseResponse<ImageUrl>> call, Response<BaseResponse<ImageUrl>> response) {
+                if (response.body() != null && response.body().getCode() == 200) {
+                    imageCode = response.body().getData().getImageCode();
+                    Toast.makeText(AddActivity.this, "上传成功", Toast.LENGTH_SHORT).show();
+                    if (mode == 1) uploadAdd();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BaseResponse<ImageUrl>> call, Throwable t) {
+                Toast.makeText(AddActivity.this, "上传失败", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     //新增图文分享
-    private void uploadPic() {
+    private void uploadAdd() {
 
         ImageText imageText = new ImageText();
         imageText.setImageCode(imageCode);
@@ -213,14 +284,12 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
 
         String textTitle = pb_title.getText().toString().trim();
         String textContent = pb_content.getText().toString().trim();
-        if(textTitle.isEmpty()||textContent.isEmpty() ){
+        if (textTitle.trim().isEmpty() || textContent.trim().isEmpty()) {
             Toast.makeText(AddActivity.this, "主题或内容未输入！", Toast.LENGTH_SHORT).show();
-        }
-        else {
-            if (imageCode == null){
+        } else {
+            if (imageCode == null) {
                 Toast.makeText(AddActivity.this, "请上传图片！", Toast.LENGTH_SHORT).show();
-            }
-            else {
+            } else {
                 photoService.uploadAdd(imageText).enqueue(new Callback<BaseResponse<Object>>() {
                     @Override
                     public void onResponse(Call<BaseResponse<Object>> call, Response<BaseResponse<Object>> response) {
@@ -231,13 +300,14 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
                             System.out.println(response.body().getMsg());
                         }
                     }
+
                     @Override
                     public void onFailure(Call<BaseResponse<Object>> call, Throwable t) {
                         Toast.makeText(AddActivity.this, "新增失败", Toast.LENGTH_SHORT).show();
                     }
                 });
 
-                Intent intent = new Intent(this,MainActivity.class);
+                Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
             }
 
@@ -253,8 +323,7 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
                 if (v.getId() == R.id.icon_btn_select) {
                     if (ContextCompat.checkSelfPermission(AddActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                         ActivityCompat.requestPermissions(AddActivity.this, new String[]{Manifest.permission.CAMERA}, 200);
-                    }
-                    else {
+                    } else {
                         choose = CHOOSE_PHOTO;
                         mPhotoPopupWindow.dismiss();
                         Intent intentPickPicture = new Intent();
@@ -271,7 +340,7 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
                     if (ContextCompat.checkSelfPermission(AddActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                         // 如果没有相机权限，请求权限
                         ActivityCompat.requestPermissions(AddActivity.this, new String[]{Manifest.permission.CAMERA}, 100);
-                    }else {
+                    } else {
                         choose = TAKE_PHOTO;
                         mPhotoPopupWindow.dismiss();
                         Intent intent = new Intent();
@@ -356,7 +425,7 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
     @CallSuper
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (ev.getAction() ==  MotionEvent.ACTION_DOWN ) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             View view = getCurrentFocus();
             if (isShouldHideKeyBord(view, ev)) {
                 hideSoftInput(view.getWindowToken());
@@ -397,40 +466,61 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
         //
         String textTitle = pb_title.getText().toString().trim();
         String textContent = pb_content.getText().toString().trim();
-        if(textTitle.isEmpty() && textContent.isEmpty() && imageCode == null){
+        if (textTitle.isEmpty() && textContent.isEmpty() && imageCode == null) {
             finish();
-        }
-        else {
+        } else {
             builder.setMessage("是否要保存当前内容？")
                     .setPositiveButton("是", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            // 点击确认按钮，保存图文
-                            imageText.setImageCode(imageCode);
-                            imageText.setPUserId(mlogindata.getId());
-                            imageText.setContent(pb_content.getText().toString());
-                            imageText.setTitle(pb_title.getText().toString());
+                            MediaType mediaType = MediaType.Companion.parse("multipart/form-data");
+                            List<MultipartBody.Part> imageParts = new ArrayList<>();
+                            for (int i = 0; i < imageBytesList.size(); i++) {
+                                RequestBody requestBody = RequestBody.Companion.create(imageBytesList.get(i), mediaType);
+                                MultipartBody.Part imagePart = MultipartBody.Part.createFormData("fileList", "image" + i + ".jpg", requestBody);
+                                imageParts.add(imagePart);
+                            }
 
-                            photoService.saveAdd(imageText).enqueue(new Callback<BaseResponse<Object>>() {
+                            photoService.uploadImage(imageParts).enqueue(new Callback<BaseResponse<ImageUrl>>() {
                                 @Override
-                                public void onResponse(Call<BaseResponse<Object>> call, Response<BaseResponse<Object>> response) {
-                                    if (response.body().getCode() == 200) {
-                                        Toast.makeText(AddActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
-                                        System.out.println("保存成功!  " + response.body());
-                                        System.out.println(imageCode+mlogindata.getId()+pb_content.getText().toString()+pb_title.getText().toString());
-                                        finish();
-                                    } else if (response.body().getCode() == 500) {
-                                        Toast.makeText(AddActivity.this, "保存失败！保存图文时每一项内容都要填写", Toast.LENGTH_SHORT).show();
-                                        System.out.println(response.body().getMsg());
+                                public void onResponse(Call<BaseResponse<ImageUrl>> call, Response<BaseResponse<ImageUrl>> response) {
+                                    if (response.body() != null && response.body().getCode() == 200) {
+                                        imageCode = response.body().getData().getImageCode();
+                                        Toast.makeText(AddActivity.this, "上传成功", Toast.LENGTH_SHORT).show();
+                                        LoadingDialog.getInstance(AddActivity.this).show();
+                                        imageText.setImageCode(imageCode);
+                                        imageText.setPUserId(mlogindata.getId());
+                                        imageText.setContent(pb_content.getText().toString());
+                                        imageText.setTitle(pb_title.getText().toString());
 
+                                        photoService.saveAdd(imageText).enqueue(new Callback<BaseResponse<Object>>() {
+                                            @Override
+                                            public void onResponse(Call<BaseResponse<Object>> call, Response<BaseResponse<Object>> response) {
+                                                if (response.body().getCode() == 200) {
+                                                    Toast.makeText(AddActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
+                                                    System.out.println("保存成功!  " + response.body());
+                                                    System.out.println(imageCode + mlogindata.getId() + pb_content.getText().toString() + pb_title.getText().toString());
+                                                    finish();
+                                                } else if (response.body().getCode() == 500) {
+                                                    Toast.makeText(AddActivity.this, "保存失败！保存图文时每一项内容都要填写", Toast.LENGTH_SHORT).show();
+                                                    System.out.println(response.body().getMsg());
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onFailure(Call<BaseResponse<Object>> call, Throwable t) {
+                                                Toast.makeText(AddActivity.this, "保存失败", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
                                     }
                                 }
 
                                 @Override
-                                public void onFailure(Call<BaseResponse<Object>> call, Throwable t) {
-                                    Toast.makeText(AddActivity.this, "保存失败", Toast.LENGTH_SHORT).show();
+                                public void onFailure(Call<BaseResponse<ImageUrl>> call, Throwable t) {
+                                    Toast.makeText(AddActivity.this, "上传失败", Toast.LENGTH_SHORT).show();
                                 }
                             });
+                            LoadingDialog.getInstance().dismiss();
                         }
                     })
                     .setNegativeButton("否", new DialogInterface.OnClickListener() {

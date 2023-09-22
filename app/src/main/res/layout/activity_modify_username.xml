@@ -24,7 +24,7 @@
         android:layout_height="50dp"
         android:background="@color/white"
         android:layout_marginTop="30dp"
-        android:paddingStart="20dp"
+        android:paddingStart="18dp"
         android:paddingEnd="20dp"
         android:clickable="true"
         android:singleLine="true"

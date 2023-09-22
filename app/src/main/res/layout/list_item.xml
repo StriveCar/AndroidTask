@@ -30,8 +30,7 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:background="@color/textColor"
-
+                android:background="@color/gray"
                 android:layout_height="30dp">
 
                 <ImageButton
@@ -41,7 +40,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_alignParentRight="true"
                     android:src="@drawable/ic_baseline_clear_24"
-                    android:background="@color/textColor"
+                    android:background="@color/gray"
 
                     android:visibility="visible" />
             </RelativeLayout>
@@ -52,7 +51,9 @@
                 android:layout_height="100dp"
                 android:id="@+id/df_title"
                 android:textSize="18dp"
-                android:background="@color/textColor"
+                android:ellipsize="end"
+                android:maxLines="4"
+                android:background="@color/gray"
                 android:textStyle="bold|italic"
                 android:gravity="center"
                 />
@@ -62,7 +63,9 @@
                 android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:background="@color/textColor"
+                android:ellipsize="end"
+                android:maxLines="4"
+                android:background="@color/gray"
                 android:textSize="14dp"
                 />
         </LinearLayout>

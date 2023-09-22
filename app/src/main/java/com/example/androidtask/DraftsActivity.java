@@ -65,10 +65,14 @@ public class DraftsActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.teal_200));
         }
-
-        initData();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        LoadingDialog.getInstance(DraftsActivity.this).show();
+        initData();
+    }
 
     private void initData() {
 
@@ -77,6 +81,8 @@ public class DraftsActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<BaseResponse<Data<Records>>> call, Response<BaseResponse<Data<Records>>> response) {
                 if (response.body().getCode() == 200 && response.body().getData() != null) {
+                    rv.setVisibility(View.VISIBLE);
+                    tvEmptyView.setVisibility(View.GONE);
                     list = response.body().getData().getRecords();
                     adapter = new DraftsAdapter(DraftsActivity.this, list);
                     adapter.setOnDeleteClick(new DraftsAdapter.onDeleteClick() {
@@ -84,6 +90,10 @@ public class DraftsActivity extends AppCompatActivity {
                         public void onDelete(int pos) {
                             list.remove(pos);
                             adapter.notifyDataSetChanged();
+                            if (list.isEmpty()){
+                                rv.setVisibility(View.GONE);
+                                tvEmptyView.setVisibility(View.VISIBLE);
+                            }
                         }
                     });
                     LinearLayoutManager llm = new LinearLayoutManager(DraftsActivity.this);
@@ -101,6 +111,6 @@ public class DraftsActivity extends AppCompatActivity {
                 Toast.makeText(DraftsActivity.this, "新增失败", Toast.LENGTH_SHORT).show();
             }
         });
-
+        LoadingDialog.getInstance().dismiss();
     }
 }

@@ -12,6 +12,8 @@ import com.example.androidtask.response.LoginData;
 import com.example.androidtask.response.Records;
 import com.example.androidtask.response.User;
 
+import java.util.List;
+
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Observable;
 import okhttp3.MultipartBody;
@@ -36,6 +38,10 @@ public interface PhotoService {
     @Multipart
     @POST("image/upload")
     Call<BaseResponse<ImageUrl>> uploadImage(@Part MultipartBody.Part imageFile);
+
+    @Multipart
+    @POST("image/upload")
+    Call<BaseResponse<ImageUrl>> uploadImage(@Part List<MultipartBody.Part> imageFiles);
 
     @POST("user/register")
     Call<BaseResponse<Object>> userRegister(@Body User user);
