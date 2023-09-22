@@ -23,4 +23,6 @@
     <color name="night_color_control_highlight">#666666</color>
     <color name="night_color_control_normal">#999999</color>
     <color name="night_button_normal">#333333</color>
+    <color name="black_overlay">#66000000</color>
+    <color name="lightgray">#818080</color>
 </resources>

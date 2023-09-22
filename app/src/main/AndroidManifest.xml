@@ -51,6 +51,12 @@
             android:name=".ModifyUsernameActivity"
             android:exported="false" />
         <activity
+            android:name=".FullScreenImageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ShareDetail"
+            android:exported="false" />
+        <activity
             android:name=".UserInfoActivity"
             android:exported="false" />
         <activity

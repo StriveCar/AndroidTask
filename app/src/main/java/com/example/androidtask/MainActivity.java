@@ -14,7 +14,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,21 +22,31 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
+import com.example.androidtask.adapters.ViewPagerAdapter;
+import com.example.androidtask.fragments.CollectListFragment;
+import com.example.androidtask.fragments.FollowListFragment;
+import com.example.androidtask.fragments.MyShareListFragment;
+import com.example.androidtask.fragments.ShareListFragment;
 import com.example.androidtask.network.RetrofitClient;
 import com.example.androidtask.network.service.ArtWordService;
 import com.example.androidtask.response.LoginData;
 import com.example.androidtask.response.WordResponse;
 import com.google.android.material.navigation.NavigationView;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import retrofit2.Call;
@@ -56,7 +65,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView icon, icon_1, icon_2, icon_3, icon_4, ivImage;
     private TextView iconTv, iconTv_1, iconTv_2, iconTv_3, iconTv_4;
     private RelativeLayout rl_1, rl_2, rl_3, rl_4, relativeLayout;
-    private LinearLayout linearLayout;
     private Intent intent;
     private int index = 7;
     private int[] imageResources;
@@ -64,6 +72,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private CountDownTimer clickTimer;
     private MenuItem night;
 
+    private CardView bottom_bar_3;
+    private List<Fragment> fragmentlist = new ArrayList<>();
+    private ViewPager2 viewpager;
+    private LoginData mloginData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         iconTv_4 = findViewById(R.id.bottom_bar_text_5);
         rl_1 = findViewById(R.id.bottom_bar_1_btn);
         rl_2 = findViewById(R.id.bottom_bar_2_btn);
-        linearLayout = findViewById(R.id.bottom_bar_3_btn);
+        bottom_bar_3 = findViewById(R.id.bottom_bar_3_card);
         rl_3 = findViewById(R.id.bottom_bar_4_btn);
         rl_4 = findViewById(R.id.bottom_bar_5_btn);
 
@@ -111,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         navView.setNavigationItemSelectedListener(this);
         drawerLayout.setOnClickListener(this);
-        linearLayout.setOnClickListener(this);
+        bottom_bar_3.setOnClickListener(this);
         relativeLayout.setOnClickListener(this);
         rl_1.setOnClickListener(this);
         rl_2.setOnClickListener(this);
@@ -124,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onStart() {
         super.onStart();
-        LoginData mloginData = LoginData.getMloginData();
+        mloginData = LoginData.getMloginData();
         tvUsername.setText(mloginData.getUsername());
         tvIntroduce.setText(mloginData.getIntroduce());
         float radiusDp = 25f;
@@ -136,7 +148,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             Glide.with(this).load(R.drawable.bysl).apply(options).diskCacheStrategy(DiskCacheStrategy.NONE).into(imProfile);
         }
+        navView.setNavigationItemSelectedListener(this);
+        drawerLayout.setOnClickListener(this);
+        initViewPager();
     }
+
+    private void initViewPager() {
+        //初始化Fragment，使用Viewpager管理Fragment
+        fragmentlist.add(new ShareListFragment(mloginData.getId(),mloginData.getUsername()));
+        fragmentlist.add(new FollowListFragment());
+        fragmentlist.add(new CollectListFragment(mloginData.getId(),mloginData.getUsername()));
+        fragmentlist.add(new MyShareListFragment(mloginData.getId()));
+        viewpager = findViewById(R.id.viewpager);
+        ViewPagerAdapter viewpagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle(), fragmentlist);
+        viewpager.setAdapter(viewpagerAdapter);
+        //默认主页,打开软件就显示主页的分享列表
+        viewpager.setCurrentItem(0);
+        viewpager.isSelected();
+    }
+
 
     public void initData() {
         Typeface typeface = Typeface.createFromAsset(getAssets(), "ZiTiGuanJiaNaNa-2.ttf");
@@ -216,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             changeSelectStatus(icon_1, iconTv_1);
         } else if (v.getId() == R.id.bottom_bar_2_btn) {
             changeSelectStatus(icon_2, iconTv_2);
-        } else if (v.getId() == R.id.bottom_bar_3_btn) {
+        } else if (v.getId() == R.id.bottom_bar_3_card) {
 
             intent = new Intent(this, AddActivity.class);
             startActivity(intent);
@@ -301,5 +331,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Toast.makeText(MainActivity.this, "获取文字失败", Toast.LENGTH_SHORT).show();
             }
         });
+
     }
+
+
 }

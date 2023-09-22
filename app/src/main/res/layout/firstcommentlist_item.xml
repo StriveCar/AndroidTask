@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_margin="8dp">
+
+<!--    一级评论-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/tv_firstComment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="username: I'm iron man"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+    </LinearLayout>
+<!--    二级评论列表-->
+    <ListView
+        android:id="@+id/lv_SecondCommentList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:scrollbars="none"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp"/>
+</LinearLayout>

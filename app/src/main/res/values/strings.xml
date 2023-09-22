@@ -40,4 +40,8 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="about_info">队名：车江宁队\n组长：车立钧\n组员：梁喜宁，徐江荣\n\n项目描述：我们的大作业项目名为拾影，是一个安卓应用，旨在分享图片\n\n版权信息：2023年车江宁小组保留所有权利\n\n联系方式：如果您对我们的项目或团队有任何疑问或建议，请随时与我们联系：\n- 电子邮件：iclj@foxmail.com</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_fullscreen_pic">FullscreenPicActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

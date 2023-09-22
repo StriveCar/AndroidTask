@@ -44,6 +44,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private CheckBox cbRememberPwd;
     private ImageView ivPwdSwitch;
     private Button btLogin, btRegister;
+
     private Intent intent;
 
     private Bundle bundle;
