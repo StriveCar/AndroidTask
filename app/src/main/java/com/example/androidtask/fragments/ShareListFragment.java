@@ -46,8 +46,10 @@ public class ShareListFragment extends Fragment {
     private PhotoService photoService = RetrofitClient.getInstance().getService(PhotoService.class);
     private int current = 0,size = 50;
     private String userId;
+    private String username;
     private SwipeRefreshLayout srl;
-    public ShareListFragment(String userId){
+    public ShareListFragment(String userId, String username){
+        this.username = username;
         this.userId = userId;
     }
     @Nullable
@@ -133,6 +135,7 @@ public class ShareListFragment extends Fragment {
                 bd.putSerializable("item", item);
                 intent.putExtras(bd);
                 intent.putExtra("userId", userId);
+                intent.putExtra("username", username);
                 startActivity(intent);
             }
         }, width, userId);

@@ -5,13 +5,9 @@
     android:layout_height="match_parent"
     tools:context=".fragments.MyShareListFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_myShareList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="我的作品"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_gravity="center"/>
+        android:layout_height="match_parent"/>
 
 </FrameLayout>

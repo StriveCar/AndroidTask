@@ -66,4 +66,7 @@ public interface PhotoService {
                                          @Query("shareId")String shareId,
                                          @Query("userId")String userId,
                                          @Query("userName")String username);
+
+    @GET("share/myself")
+    Flowable<BaseResponse<Data<Records>>> getMyShare(@Query("current")int current,@Query("size")int size,@Query("userId")String userId);
 }

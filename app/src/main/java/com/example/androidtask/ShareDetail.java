@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -48,9 +49,11 @@ public class ShareDetail extends AppCompatActivity {
     private ImageView iv,iv_thumbsUp,iv_collect;
     private TextView tv_username,tv_title,tv_content;
     private EditText et_comment;
+    private Button btn_addcomment;
     private sharelist_item item;
     private PhotoService photoService = RetrofitClient.getInstance().getService(PhotoService.class);
     private String userId;
+    private String username;
     private List<Comment> firstcommentdata = new ArrayList<>();
     private CommentListAdapter adapter1;
     private int current = 0,size = 20;
@@ -75,6 +78,7 @@ public class ShareDetail extends AppCompatActivity {
     }
 
     private void BindingEvent() {
+        //点赞
         iv_thumbsUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -135,7 +139,7 @@ public class ShareDetail extends AppCompatActivity {
                 }
             }
         });
-
+        //收藏
         iv_collect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -200,7 +204,30 @@ public class ShareDetail extends AppCompatActivity {
             }
         });
         //评论
+        btn_addcomment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String content = et_comment.getText().toString();
+                System.out.println(String.format("content:%s\nshareId:%s\nuserId:%s\nusername:%s\n",content,item.getRecord().getId(),userId,username));
+                photoService.addFirstCommment(content,item.getRecord().getId(),userId,username).enqueue(new Callback<BaseResponse>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                        if (response.body().getCode() == 200){
+                            firstcommentdata.clear();
+                            getData();
+                        } else {
+                            String msg = String.format("错误代码：%d",response.body().getCode());
+                            Toast.makeText(ShareDetail.this, msg, Toast.LENGTH_SHORT).show();
+                        }
+                    }
 
+                    @Override
+                    public void onFailure(Call<BaseResponse> call, Throwable t) {
+
+                    }
+                });
+            }
+        });
     }
 
     private void init() {
@@ -208,6 +235,7 @@ public class ShareDetail extends AppCompatActivity {
         Intent i = getIntent();
         Bundle bd = i.getExtras();
         userId = i.getStringExtra("userId");
+        username = i.getStringExtra("username");
         item = (sharelist_item) bd.getSerializable("item");
         getData();
     }
@@ -258,6 +286,7 @@ public class ShareDetail extends AppCompatActivity {
         iv_thumbsUp = findViewById(R.id.iv_thumbsUp);
         iv_collect = findViewById(R.id.iv_collect);
         et_comment = findViewById(R.id.et_comment);
+        btn_addcomment = findViewById(R.id.btn_addcomment);
 
         init();
         //处理头像图片

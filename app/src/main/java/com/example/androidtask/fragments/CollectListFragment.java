@@ -41,11 +41,13 @@ public class CollectListFragment extends Fragment {
     private View CollectList;
     private RecyclerView rv_collectList;
     private CollectListAdapter adapter;
-    private List<sharelist_item> list = new ArrayList<>();
+    private List<sharelist_item> data = new ArrayList<>();
     private PhotoService photoService = RetrofitClient.getInstance().getService(PhotoService.class);
     private String userId;
-    public CollectListFragment(String userId){
+    private String username;
+    public CollectListFragment(String userId, String username){
         this.userId = userId;
+        this.username = username;
     }
     private SwipeRefreshLayout srl;
     private int current = 1,size = 20;
@@ -62,7 +64,7 @@ public class CollectListFragment extends Fragment {
         srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                list.clear();
+                data.clear();
                 refreshData();
             }
         });
@@ -92,9 +94,9 @@ public class CollectListFragment extends Fragment {
                                     if(response.body().getCode() == 200){
                                         if(response.body().getData() != null){
                                             item.setProfileUrl(response.body().getData().getAvatar());
-                                            list.add(item);
-                                            if(list.size() == dataBaseResponse.getData().getRecords().size()){
-                                                Toast.makeText(getActivity(), "数据加载完成",Toast.LENGTH_SHORT).show();
+                                            data.add(item);
+                                            if(data.size() == dataBaseResponse.getData().getRecords().size()){
+                                                //Toast.makeText(getActivity(), "数据加载完成",Toast.LENGTH_SHORT).show();
                                                 adapter.notifyDataSetChanged();
                                                 srl.setRefreshing(false);
                                             }
@@ -118,7 +120,8 @@ public class CollectListFragment extends Fragment {
                     }
                 } else {
                     String msg = String.format("错误代码：%d",dataBaseResponse.getCode());
-                    Toast.makeText(getContext(),msg,Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(),msg,Toast.LENGTH_SHORT).show();\
+                    System.out.println(msg);
                 }
             }
 
@@ -138,20 +141,21 @@ public class CollectListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        list.clear();
+        data.clear();
         getData();
     }
     private void BindingAdapter() {
-        adapter = new CollectListAdapter(getActivity(), list, new OnItemClickListener(){
+        adapter = new CollectListAdapter(getActivity(), data, new OnItemClickListener(){
 
             @Override
             public void onItemClick(int position) {
-                sharelist_item item = list.get(position);
+                sharelist_item item = data.get(position);
                 Intent intent = new Intent(getActivity(), ShareDetail.class);
                 Bundle bd = new Bundle();
                 bd.putSerializable("item", item);
                 intent.putExtras(bd);
                 intent.putExtra("userId", userId);
+                intent.putExtra("username", username);
                 startActivity(intent);
             }
         },userId);
@@ -183,8 +187,8 @@ public class CollectListFragment extends Fragment {
                             public void onResponse(Call<BaseResponse<UserInfo>> call, Response<BaseResponse<UserInfo>> response) {
                                 if(response.body().getCode() == 200){
                                     item.setProfileUrl(response.body().getData().getAvatar());
-                                    list.add(item);
-                                    if(list.size() == rlist.size()){
+                                    data.add(item);
+                                    if(data.size() == rlist.size()){
                                         Toast.makeText(getActivity(), "数据加载完成",Toast.LENGTH_SHORT).show();
                                         adapter.notifyDataSetChanged();
                                     }

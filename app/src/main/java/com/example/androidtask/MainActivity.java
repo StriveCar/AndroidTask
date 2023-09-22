@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private List<Fragment> fragmentlist = new ArrayList<>();
     private ViewPager2 viewpager;
     private String userId;
+    private String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,10 +93,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initViewPager() {
         //初始化Fragment，使用Viewpager管理Fragment
-        fragmentlist.add(new ShareListFragment(userId));
+        fragmentlist.add(new ShareListFragment(userId,username));
         fragmentlist.add(new FollowListFragment());
-        fragmentlist.add(new CollectListFragment(userId));
-        fragmentlist.add(new MyShareListFragment());
+        fragmentlist.add(new CollectListFragment(userId,username));
+        fragmentlist.add(new MyShareListFragment(userId));
         viewpager = findViewById(R.id.viewpager);
         ViewPagerAdapter viewpagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle(), fragmentlist);
         viewpager.setAdapter(viewpagerAdapter);
@@ -139,6 +140,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         bundle = getIntent().getExtras();
         if (bundle != null) {
+            userId = bundle.get(LoginActivity.USER_ID).toString();
+            username = bundle.get(LoginActivity.USER_NAME).toString();
             tv_username.setText(bundle.getString(LoginActivity.USER_NAME));
             tv_introduce.setText(bundle.getString(LoginActivity.USER_INTRODUCE));
             userId = bundle.getString(LoginActivity.USER_ID);
