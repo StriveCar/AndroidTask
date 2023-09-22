@@ -49,13 +49,21 @@ public interface PhotoService {
     Call<BaseResponse> cancelCollect(@Query("collectId")String collectId);
 
     @GET("comment/first")
-    Flowable<BaseResponse<Data<Comment>>> getFirstComment(@Query("current")int current, @Query("shareId")String shareId, @Query("size")int size);
+    Call<BaseResponse<Data<Comment>>> getFirstComment(@Query("current")int current, @Query("shareId")String shareId, @Query("size")int size);
 
     @POST("comment/first")
     Call<BaseResponse> addFirstCommment(@Query("content")String content, @Query("shareId")String shareId,@Query("userId")String userId,@Query("userName")String username);
+
     @GET("comment/second")
-    Flowable<BaseResponse<Data<Comment>>> getsecondComment(@Query("current")int current, @Query("shareId")String shareId, @Query("size")int size);
+    Flowable<BaseResponse<Data<Comment>>> getsecondComment(@Query("commentId")String ParentcommentId, @Query("current")int current, @Query("shareId")String shareId, @Query("size")int size);
 
     @POST("comment/second")
-    Call<BaseResponse> addsecondCommment(@Query("content")String content, @Query("shareId")String shareId,@Query("userId")String userId,@Query("userName")String username);
+    Call<BaseResponse> addsecondCommment(@Query("content")String content,
+                                         @Query("parentCommentId")String parentCommentId,
+                                         @Query("parentCommentUserId")String parentCommentUserId,
+                                         @Query("replyCommentId")String replyCommentId,
+                                         @Query("replyCommentUserId")String replyCommentUserId,
+                                         @Query("shareId")String shareId,
+                                         @Query("userId")String userId,
+                                         @Query("userName")String username);
 }

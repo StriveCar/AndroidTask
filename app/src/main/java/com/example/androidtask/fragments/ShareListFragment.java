@@ -44,7 +44,7 @@ public class ShareListFragment extends Fragment {
     private RecyclerView rv_sharelist;
     private ShareListAdapter adapter;
     private PhotoService photoService = RetrofitClient.getInstance().getService(PhotoService.class);
-    private int current = 0,size = 20;
+    private int current = 0,size = 50;
     private String userId;
     private SwipeRefreshLayout srl;
     public ShareListFragment(String userId){
@@ -73,6 +73,7 @@ public class ShareListFragment extends Fragment {
     }
 
     private void refreshData() {
+        current++;
         photoService.getShare(current,size,userId).subscribe(new FlowableSubscriber<BaseResponse<Data<Records>>>() {
             @Override
             public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Subscription s) {
@@ -110,7 +111,7 @@ public class ShareListFragment extends Fragment {
 
             @Override
             public void onError(Throwable t) {
-                Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                System.out.println(String.format("异常：%s",t.getMessage()));
             }
             @Override
             public void onComplete() {
@@ -178,7 +179,7 @@ public class ShareListFragment extends Fragment {
                     @Override
                     public void onError(Throwable t) {
                         // 处理错误情况，比如显示错误信息
-                        Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                        System.out.println(String.format("异常：%s",t.getMessage()));
                     }
 
                     @Override

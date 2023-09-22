@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,7 +47,8 @@ public class CollectListFragment extends Fragment {
     public CollectListFragment(String userId){
         this.userId = userId;
     }
-    private int current = 1;
+    private SwipeRefreshLayout srl;
+    private int current = 1,size = 20;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if(CollectList == null){
@@ -56,8 +58,82 @@ public class CollectListFragment extends Fragment {
 
         getData();
 
+        srl = CollectList.findViewById(R.id.swipeRefreshLayout);
+        srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                list.clear();
+                refreshData();
+            }
+        });
+
         return CollectList;
     }
+
+    private void refreshData() {
+        photoService.getCollect(current,size,userId).subscribe(new FlowableSubscriber<BaseResponse<Data<Records>>>() {
+            @Override
+            public void onSubscribe(@NonNull Subscription s) {s.request(Long.MAX_VALUE);}
+
+            @Override
+            public void onNext(BaseResponse<Data<Records>> dataBaseResponse) {
+                if(dataBaseResponse.getCode() == 200){
+                    if(dataBaseResponse.getData() != null){
+                        Records temp;
+
+                        String url;
+                        for(int i=0; i<dataBaseResponse.getData().getRecords().size();i++){
+                            sharelist_item item = new sharelist_item();
+                            temp = dataBaseResponse.getData().getRecords().get(i);
+                            item.setRecord(temp);
+                            photoService.getUserByName(temp.getUsername()).enqueue(new Callback<BaseResponse<UserInfo>>() {
+                                @Override
+                                public void onResponse(Call<BaseResponse<UserInfo>> call, Response<BaseResponse<UserInfo>> response) {
+                                    if(response.body().getCode() == 200){
+                                        if(response.body().getData() != null){
+                                            item.setProfileUrl(response.body().getData().getAvatar());
+                                            list.add(item);
+                                            if(list.size() == dataBaseResponse.getData().getRecords().size()){
+                                                Toast.makeText(getActivity(), "数据加载完成",Toast.LENGTH_SHORT).show();
+                                                adapter.notifyDataSetChanged();
+                                                srl.setRefreshing(false);
+                                            }
+                                        } else {
+                                            System.out.println("数据为空");
+                                        }
+                                    } else {
+                                        String msg = String.format("错误代码：%d",response.body().getCode());
+                                        Toast.makeText(getContext(),msg,Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<BaseResponse<UserInfo>> call, Throwable t) {
+
+                                }
+                            });
+                        }
+                    } else {
+                        System.out.println("收藏列表为空");
+                    }
+                } else {
+                    String msg = String.format("错误代码：%d",dataBaseResponse.getCode());
+                    Toast.makeText(getContext(),msg,Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onError(Throwable t) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+    }
+
 
     @Override
     public void onResume() {
@@ -86,7 +162,7 @@ public class CollectListFragment extends Fragment {
     }
 
     private void getData() {
-        photoService.getCollect(current,20,userId).subscribe(new FlowableSubscriber<BaseResponse<Data<Records>>>() {
+        photoService.getCollect(current,size,userId).subscribe(new FlowableSubscriber<BaseResponse<Data<Records>>>() {
             @Override
             public void onSubscribe(@NonNull Subscription s) {
                 s.request(Long.MAX_VALUE);

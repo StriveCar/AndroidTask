@@ -2,7 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:layout_margin="8dp">
 
@@ -16,17 +16,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="username: I'm iron man"
-            />
-        <Button
-            android:id="@+id/btn_reply"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="回复"
-            android:layout_gravity="center_vertical"/>
+            android:textColor="@color/black"
+            android:textSize="18sp" />
     </LinearLayout>
 <!--    二级评论列表-->
     <ListView
         android:id="@+id/lv_SecondCommentList"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:scrollbars="none"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp"/>
 </LinearLayout>
