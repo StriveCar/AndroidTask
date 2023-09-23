@@ -67,6 +67,12 @@ public interface PhotoService {
     @POST("like")
     Call<BaseResponse> thumbsUp(@Query("shareId") String shareId, @Query("userId") String userId);
 
+    @POST("focus")
+    Call<BaseResponse<Object>> attention(@Query("focusUserId") String focusUserId, @Query("userId") String userId);
+
+    @POST("focus/cancel")
+    Call<BaseResponse<Object>> attentionCancel(@Query("focusUserId") String focusUserId, @Query("userId") String userId);
+
     @POST("like/cancel")
     Call<BaseResponse> cancelLike(@Query("likeId")String likeId);
 

@@ -65,7 +65,7 @@ public class ShareListAdapter extends RecyclerView.Adapter<ShareListAdapter.mVie
         String st = data.get(position).getProfileUrl();
         //头像
         if(st == "" || st == null){
-            holder.iv_userprofile.setImageResource(R.drawable.baseline_person_outline_24);
+            holder.iv_userprofile.setImageResource(R.drawable.bysl);
         } else {
             Glide.with(context).load(item.getProfileUrl()).into(holder.iv_userprofile);
         }
@@ -80,6 +80,12 @@ public class ShareListAdapter extends RecyclerView.Adapter<ShareListAdapter.mVie
             holder.iv_collect.setImageResource(R.drawable.baseline_star_24);
         } else {
             holder.iv_collect.setImageResource(R.drawable.baseline_star_border_24);
+        }
+
+        if (item.getRecord().getHasFocus()){
+            holder.iv_collect.setImageResource(R.drawable.attention2);
+        }  else {
+            holder.iv_collect.setImageResource(R.drawable.attention);
         }
         //配置嵌套的图片列表适配器
         LinearLayoutManager llm = new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false);
@@ -102,7 +108,7 @@ public class ShareListAdapter extends RecyclerView.Adapter<ShareListAdapter.mVie
      class mViewHolder extends RecyclerView.ViewHolder{
         TextView sharelist_item_username;
         RecyclerView sharelist_item_imagelist;
-        ImageView iv_userprofile,iv_thumbsUp,iv_collect;
+        ImageView iv_userprofile,iv_thumbsUp,iv_collect,iv_attention;
         CardView cv;
         public mViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -111,6 +117,7 @@ public class ShareListAdapter extends RecyclerView.Adapter<ShareListAdapter.mVie
             iv_userprofile = itemView.findViewById(R.id.iv_userprofile);
             iv_thumbsUp = itemView.findViewById(R.id.iv_thumbsUp);
             iv_collect = itemView.findViewById(R.id.iv_collect);
+            iv_attention = itemView.findViewById(R.id.iv_attention);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -184,6 +191,53 @@ public class ShareListAdapter extends RecyclerView.Adapter<ShareListAdapter.mVie
 
                             @Override
                             public void onFailure(Call<BaseResponse<Records>> call, Throwable t) {
+                                Toast.makeText(context,t.getMessage(),Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
+            });
+            iv_attention.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int p = getBindingAdapterPosition();
+                    sharelist_item item = data.get(p);
+                    boolean hasFocus = item.getRecord().getHasFocus();
+                    if(!hasFocus){
+                        //点赞
+                        photoService.attention(data.get(p).getRecord().getId(), userId).enqueue(new Callback<BaseResponse<Object>>() {
+                            @Override
+                            public void onResponse(Call<BaseResponse<Object>> call, Response<BaseResponse<Object>> response) {
+                                if(response.body().getCode() == 200){
+                                    item.getRecord().setHasFocus(true);
+                                    iv_attention.setImageResource(R.drawable.attention2);
+                                } else {
+                                    String msg = String.format("错误代码：%d",response.body().getCode());
+                                    Toast.makeText(context,msg,Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<BaseResponse<Object>> call, Throwable t) {
+                                Toast.makeText(context,t.getMessage(),Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    } else {
+                        //取消点赞,先获取likeId
+                        photoService.attention(data.get(p).getRecord().getId(), userId).enqueue(new Callback<BaseResponse<Object>>() {
+                            @Override
+                            public void onResponse(Call<BaseResponse<Object>> call, Response<BaseResponse<Object>> response) {
+                                if(response.body().getCode() == 200){
+                                    item.getRecord().setHasFocus(false);
+                                    iv_attention.setImageResource(R.drawable.attention);
+                                } else {
+                                    String msg = String.format("错误代码：%d",response.body().getCode());
+                                    Toast.makeText(context,msg,Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<BaseResponse<Object>> call, Throwable t) {
                                 Toast.makeText(context,t.getMessage(),Toast.LENGTH_SHORT).show();
                             }
                         });

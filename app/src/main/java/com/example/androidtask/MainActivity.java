@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView imProfile;
     private TextView tvUsername, tvIntroduce, tvArt;
     private final ArtWordService artWordService = RetrofitClient.getInstance().getService("https://apis.tianapi.com/", ArtWordService.class);
-    private boolean nightSun = false;
     private Toolbar toolbar;
     private ImageView icon, icon_1, icon_2, icon_3, icon_4, ivImage;
     private TextView iconTv, iconTv_1, iconTv_2, iconTv_3, iconTv_4;
@@ -243,8 +242,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
 
         if (v.getId() == R.id.bottom_bar_1_btn) {
+            viewpager.setCurrentItem(0);
             changeSelectStatus(icon_1, iconTv_1);
         } else if (v.getId() == R.id.bottom_bar_2_btn) {
+            viewpager.setCurrentItem(1);
             changeSelectStatus(icon_2, iconTv_2);
         } else if (v.getId() == R.id.bottom_bar_3_card) {
 
@@ -252,8 +253,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(intent);
 
         } else if (v.getId() == R.id.bottom_bar_4_btn) {
+            viewpager.setCurrentItem(2);
             changeSelectStatus(icon_3, iconTv_3);
         } else if (v.getId() == R.id.bottom_bar_5_btn) {
+            viewpager.setCurrentItem(3);
             changeSelectStatus(icon_4, iconTv_4);
         } else if (v.getId() == R.id.image) {
             clickTimer.start();
