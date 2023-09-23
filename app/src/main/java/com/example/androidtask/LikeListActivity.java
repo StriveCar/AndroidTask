@@ -1,13 +1,17 @@
 package com.example.androidtask;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.DisplayMetrics;
+import android.view.View;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 
@@ -45,12 +49,14 @@ public class LikeListActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private int current = 0,size = 20;
     private boolean refresh = false;
+    private ConstraintLayout tvEmptyView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_like_list);
 
+        tvEmptyView = findViewById(R.id.tv_empty);
         toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
@@ -120,7 +126,15 @@ public class LikeListActivity extends AppCompatActivity {
                                     });
                                 }
                             } else {
-                                System.out.println("点赞列表为空");
+                                Handler handler = new Handler(Looper.getMainLooper());
+                                handler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        srl.setVisibility(View.GONE);
+                                        tvEmptyView.setVisibility(View.VISIBLE);
+                                        adapter.notifyDataSetChanged();
+                                    }
+                                });
                             }
                         } else {
                             String msg = String.format("错误代码：%d",dataresponse.getCode());

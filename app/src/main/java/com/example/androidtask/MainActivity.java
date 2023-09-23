@@ -155,13 +155,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initViewPager() {
         //初始化Fragment，使用Viewpager管理Fragment
-        fragmentlist.add(new ShareListFragment(mloginData.getId(),mloginData.getUsername()));
-        fragmentlist.add(new FollowListFragment(mloginData.getId(),mloginData.getUsername()));
-        fragmentlist.add(new CollectListFragment(mloginData.getId(),mloginData.getUsername()));
+        fragmentlist.add(new ShareListFragment(mloginData.getId(), mloginData.getUsername()));
+        fragmentlist.add(new FollowListFragment(mloginData.getId(), mloginData.getUsername()));
+        fragmentlist.add(new CollectListFragment(mloginData.getId(), mloginData.getUsername()));
         fragmentlist.add(new MyShareListFragment(mloginData.getId()));
         viewpager = findViewById(R.id.viewpager);
         ViewPagerAdapter viewpagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle(), fragmentlist);
         viewpager.setAdapter(viewpagerAdapter);
+        viewpager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                switch (position){
+                    case 0:changeSelectStatus(icon_1, iconTv_1);break;
+                    case 1:changeSelectStatus(icon_2, iconTv_2);break;
+                    case 2:changeSelectStatus(icon_3, iconTv_3);break;
+                    case 3:changeSelectStatus(icon_4, iconTv_4);break;
+                }
+            }
+        });
         //默认主页,打开软件就显示主页的分享列表
         viewpager.setCurrentItem(0);
         viewpager.isSelected();
@@ -185,9 +196,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         float radiusPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 130f, getResources().getDisplayMetrics());
         height = displayMetrics.heightPixels;
-        ivImage.setMaxHeight((int) (displayMetrics.heightPixels - radiusPx*4));
+        ivImage.setMaxHeight((int) (displayMetrics.heightPixels - radiusPx * 4));
         DrawerLayout.LayoutParams params = (DrawerLayout.LayoutParams) navView.getLayoutParams();
-        params.width = (int) (displayMetrics.widthPixels-radiusPx);
+        params.width = (int) (displayMetrics.widthPixels - radiusPx);
         navView.setLayoutParams(params);
 
 
@@ -306,10 +317,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (item.getItemId() == R.id.exit_app) {
             finish();
         } else if (item.getItemId() == R.id.swap) {
-            intent = new Intent(MainActivity.this,LoginActivity.class);
+            intent = new Intent(MainActivity.this, LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
-        }   else if (item.getItemId() == R.id.drafts) {
+        } else if (item.getItemId() == R.id.drafts) {
             Intent intent = new Intent(this, DraftsActivity.class);
             startActivity(intent);
         }

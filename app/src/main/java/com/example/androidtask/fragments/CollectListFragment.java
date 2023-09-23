@@ -1,18 +1,20 @@
 package com.example.androidtask.fragments;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.androidtask.OnItemClickListener;
 import com.example.androidtask.R;
@@ -41,6 +43,7 @@ public class CollectListFragment extends Fragment {
     private View CollectList;
     private RecyclerView rv_collectList;
     private CollectListAdapter adapter;
+    private ConstraintLayout tvEmptyView;
     private List<sharelist_item> data = new ArrayList<>();
     private PhotoService photoService = RetrofitClient.getInstance().getService(PhotoService.class);
     private String userId;
@@ -60,6 +63,7 @@ public class CollectListFragment extends Fragment {
 
         getData();
 
+        tvEmptyView = CollectList.findViewById(R.id.tv_empty);
         srl = CollectList.findViewById(R.id.swipeRefreshLayout);
         srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -82,40 +86,59 @@ public class CollectListFragment extends Fragment {
                 if(dataBaseResponse.getCode() == 200){
                     if(dataBaseResponse.getData() != null){
                         Records temp;
-
                         String url;
-                        for(int i=0; i<dataBaseResponse.getData().getRecords().size();i++){
-                            sharelist_item item = new sharelist_item();
-                            temp = dataBaseResponse.getData().getRecords().get(i);
-                            item.setRecord(temp);
-                            photoService.getUserByName(temp.getUsername()).enqueue(new Callback<BaseResponse<UserInfo>>() {
+                        if (dataBaseResponse.getData().getRecords().isEmpty())
+                        {
+                            Handler handler = new Handler(Looper.getMainLooper());
+                            handler.post(new Runnable() {
                                 @Override
-                                public void onResponse(Call<BaseResponse<UserInfo>> call, Response<BaseResponse<UserInfo>> response) {
-                                    if(response.body().getCode() == 200){
-                                        if(response.body().getData() != null){
-                                            item.setProfileUrl(response.body().getData().getAvatar());
-                                            data.add(item);
-                                            if(data.size() == dataBaseResponse.getData().getRecords().size()){
-                                                //Toast.makeText(getActivity(), "数据加载完成",Toast.LENGTH_SHORT).show();
-                                                adapter.notifyDataSetChanged();
-                                                srl.setRefreshing(false);
-                                            }
-                                        } else {
-                                            System.out.println("数据为空");
-                                        }
-                                    } else {
-                                        String msg = String.format("错误代码：%d",response.body().getCode());
-                                        Toast.makeText(getContext(),msg,Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-
-                                @Override
-                                public void onFailure(Call<BaseResponse<UserInfo>> call, Throwable t) {
-
+                                public void run() {
+                                    srl.setVisibility(View.GONE);
+                                    tvEmptyView.setVisibility(View.VISIBLE);
+                                    Log.d("kkx", "kkx");
+                                    adapter.notifyDataSetChanged();
+//                                    Toast.makeText(getContext(), "收藏列表为空", Toast.LENGTH_LONG).show();
                                 }
                             });
+                        } else {
+                            srl.setVisibility(View.VISIBLE);
+                            tvEmptyView.setVisibility(View.GONE);
+                            for(int i=0; i<dataBaseResponse.getData().getRecords().size();i++){
+                                sharelist_item item = new sharelist_item();
+                                temp = dataBaseResponse.getData().getRecords().get(i);
+                                item.setRecord(temp);
+                                photoService.getUserByName(temp.getUsername()).enqueue(new Callback<BaseResponse<UserInfo>>() {
+                                    @Override
+                                    public void onResponse(Call<BaseResponse<UserInfo>> call, Response<BaseResponse<UserInfo>> response) {
+                                        if(response.body().getCode() == 200){
+                                            if(response.body().getData() != null){
+                                                item.setProfileUrl(response.body().getData().getAvatar());
+                                                data.add(item);
+                                                if(data.size() == dataBaseResponse.getData().getRecords().size()){
+                                                    //Toast.makeText(getActivity(), "数据加载完成",Toast.LENGTH_SHORT).show();
+                                                    adapter.notifyDataSetChanged();
+                                                    srl.setRefreshing(false);
+                                                }
+                                            } else {
+                                                current = 0;
+                                                System.out.println("数据为空");
+                                            }
+                                        } else {
+                                            String msg = String.format("错误代码：%d",response.body().getCode());
+                                            Toast.makeText(getContext(),msg,Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<BaseResponse<UserInfo>> call, Throwable t) {
+
+                                    }
+                                });
+                            }
                         }
                     } else {
+                        srl.setVisibility(View.GONE);
+                        tvEmptyView.setVisibility(View.VISIBLE);
                         System.out.println("收藏列表为空");
                     }
                 } else {
@@ -175,8 +198,16 @@ public class CollectListFragment extends Fragment {
             @Override
             public void onNext(BaseResponse<Data<Records>> dataBaseResponse) {
                 if (dataBaseResponse.getData() == null) {
-                    //收藏列表为空
-                    Toast.makeText(getContext(), "收藏列表为空", Toast.LENGTH_LONG).show();
+                    Handler handler = new Handler(Looper.getMainLooper());
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            srl.setVisibility(View.GONE);
+                            tvEmptyView.setVisibility(View.VISIBLE);
+                            adapter.notifyDataSetChanged();
+//                            Toast.makeText(getContext(), "收藏列表为空", Toast.LENGTH_LONG).show();
+                        }
+                    });
                 } else {
                     List<Records> rlist = dataBaseResponse.getData().getRecords();
                     for(int i=0;i<rlist.size();i++){

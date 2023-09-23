@@ -32,4 +32,5 @@
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
+    <include layout="@layout/layout_empty_data"></include>
 </androidx.constraintlayout.widget.ConstraintLayout>

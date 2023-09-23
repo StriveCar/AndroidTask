@@ -2,10 +2,14 @@ package com.example.androidtask.fragments;
 
 import android.os.Bundle;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +37,7 @@ public class MyShareListFragment extends Fragment {
     private View MyShareList;
     private MyshareListAdapter adapter;
     private RecyclerView rv_myShareList;
+    private ConstraintLayout tvEmptyView;
     private List<sharelist_item> data = new ArrayList<>();
     private PhotoService photoService = RetrofitClient.getInstance().getService(PhotoService.class);
     private String userId;
@@ -52,6 +57,7 @@ public class MyShareListFragment extends Fragment {
             MyShareList = inflater.inflate(R.layout.fragment_my_share_list,container,false);
         }
 
+        tvEmptyView = MyShareList.findViewById(R.id.tv_empty);
         rv_myShareList = MyShareList.findViewById(R.id.rv_myShareList);
         adapter = new MyshareListAdapter(data,getActivity(),userId);
         rv_myShareList.setAdapter(adapter);
@@ -71,6 +77,8 @@ public class MyShareListFragment extends Fragment {
             public void onNext(BaseResponse<Data<Records>> dataBaseResponse) {
                 if (dataBaseResponse.getCode() == 200){
                     if (dataBaseResponse.getData() != null){
+                        rv_myShareList.setVisibility(View.VISIBLE);
+                        tvEmptyView.setVisibility(View.GONE);
                         for(Records i:dataBaseResponse.getData().getRecords()){
                             System.out.println(i);
                             sharelist_item item = new sharelist_item();
@@ -81,7 +89,17 @@ public class MyShareListFragment extends Fragment {
                             adapter.notifyDataSetChanged();
                         }
                     } else {
-                        System.out.println("没有我自己的作品");
+                            Handler handler = new Handler(Looper.getMainLooper());
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    rv_myShareList.setVisibility(View.GONE);
+                                    tvEmptyView.setVisibility(View.VISIBLE);
+                                    Log.d("kkx", "kkx");
+                                    adapter.notifyDataSetChanged();
+                                    Toast.makeText(getContext(), "收藏列表为空", Toast.LENGTH_LONG).show();
+                                }
+                            });
                     }
                 } else {
                     String msg = String.format("错误代码：%d",dataBaseResponse.getCode());

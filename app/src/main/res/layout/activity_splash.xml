@@ -74,7 +74,7 @@
         android:background="@drawable/shape_rect3"
         android:clickable="true"
         android:gravity="center"
-        android:text="欢迎来到享图"
+        android:text="欢迎来到拾影"
         android:textColor="@color/teal_200"
         android:textSize="28sp" />
 

@@ -2,7 +2,10 @@ package com.example.androidtask.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -45,19 +49,23 @@ public class FollowListFragment extends Fragment {
     private RecyclerView rv_sharelist;
     private ShareListAdapter adapter;
     private PhotoService photoService = RetrofitClient.getInstance().getService(PhotoService.class);
-    private int current = 0,size = 50;
+    private int current = 0, size = 50;
     private String userId;
     private String username;
     private SwipeRefreshLayout srl;
-    public FollowListFragment(String userId, String username){
+
+    private ConstraintLayout tvEmptyView;
+
+    public FollowListFragment(String userId, String username) {
         this.username = username;
         this.userId = userId;
     }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if(sharelistView == null){
-            sharelistView = inflater.inflate(R.layout.fragment_share_list, container,false);
+        if (sharelistView == null) {
+            sharelistView = inflater.inflate(R.layout.fragment_share_list, container, false);
         }
 
         BindingAdapter();
@@ -65,6 +73,7 @@ public class FollowListFragment extends Fragment {
         getData();
 
         srl = sharelistView.findViewById(R.id.swipeRefreshLayout);
+        tvEmptyView = sharelistView.findViewById(R.id.tv_empty);
         srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -77,7 +86,7 @@ public class FollowListFragment extends Fragment {
 
     private void refreshData() {
         current++;
-        photoService.getFocus(current,size,userId).subscribe(new FlowableSubscriber<BaseResponse<Data<Records>>>() {
+        photoService.getFocus(current, size, userId).subscribe(new FlowableSubscriber<BaseResponse<Data<Records>>>() {
             @Override
             public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Subscription s) {
                 s.request(Long.MAX_VALUE);
@@ -88,34 +97,45 @@ public class FollowListFragment extends Fragment {
                 recordlist = dataBaseResponse.getData().getRecords();
                 Records temp;
                 // 获取头像并添加到数据列表
-                for (int i = 0; i < recordlist.size(); i++) {
-                    sharelist_item item = new sharelist_item();
-                    temp = recordlist.get(i);
-                    item.setRecord(temp);
-                    photoService.getUserByName(temp.getUsername()).enqueue(new Callback<BaseResponse<UserInfo>>() {
-                        @Override
-                        public void onResponse(Call<BaseResponse<UserInfo>> call, Response<BaseResponse<UserInfo>> profileresponse) {
-                            item.setProfileUrl(profileresponse.body().getData().getAvatar());
-                            data.add(item);
-                            if (data.size() == recordlist.size()) {
-                                Toast.makeText(getActivity(), "数据加载完成",Toast.LENGTH_SHORT).show();
-                                adapter.notifyDataSetChanged();
-                                srl.setRefreshing(false);
+                if (dataBaseResponse.getData()==null | recordlist.isEmpty()) {
+                    Log.d("kkx","未成功");
+                    current = 0;
+                    srl.setRefreshing(false);
+                    srl.setVisibility(View.GONE);
+                    tvEmptyView.setVisibility(View.VISIBLE);
+                } else {
+                    srl.setVisibility(View.VISIBLE);
+                    tvEmptyView.setVisibility(View.GONE);
+                    for (int i = 0; i < recordlist.size(); i++) {
+                        sharelist_item item = new sharelist_item();
+                        temp = recordlist.get(i);
+                        item.setRecord(temp);
+                        photoService.getUserByName(temp.getUsername()).enqueue(new Callback<BaseResponse<UserInfo>>() {
+                            @Override
+                            public void onResponse(Call<BaseResponse<UserInfo>> call, Response<BaseResponse<UserInfo>> profileresponse) {
+                                item.setProfileUrl(profileresponse.body().getData().getAvatar());
+                                data.add(item);
+                                if (data.size() == recordlist.size()) {
+//                                    Toast.makeText(getActivity(), "数据加载完成", Toast.LENGTH_SHORT).show();
+                                    adapter.notifyDataSetChanged();
+                                    srl.setRefreshing(false);
+                                }
                             }
-                        }
 
-                        @Override
-                        public void onFailure(Call<BaseResponse<UserInfo>> call, Throwable t) {
-                            Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                            @Override
+                            public void onFailure(Call<BaseResponse<UserInfo>> call, Throwable t) {
+                                Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
                 }
             }
 
             @Override
             public void onError(Throwable t) {
-                System.out.println(String.format("异常：%s",t.getMessage()));
+                System.out.println(String.format("异常：%s", t.getMessage()));
             }
+
             @Override
             public void onComplete() {
             }
@@ -154,36 +174,48 @@ public class FollowListFragment extends Fragment {
 
                     @Override
                     public void onNext(BaseResponse<Data<Records>> response) {
-                        recordlist = response.getData().getRecords();
                         Records temp;
                         // 获取头像并添加到数据列表
-                        for (int i = 0; i < recordlist.size(); i++) {
-                            sharelist_item item = new sharelist_item();
-                            temp = recordlist.get(i);
-                            item.setRecord(temp);
-                            photoService.getUserByName(temp.getUsername()).enqueue(new Callback<BaseResponse<UserInfo>>() {
+                        if (response.getData() == null) {
+                            Handler handler = new Handler(Looper.getMainLooper());
+                            handler.post(new Runnable() {
                                 @Override
-                                public void onResponse(Call<BaseResponse<UserInfo>> call, Response<BaseResponse<UserInfo>> profileresponse) {
-                                    item.setProfileUrl(profileresponse.body().getData().getAvatar());
-                                    data.add(item);
-                                    if (data.size() == recordlist.size()) {
-                                        Toast.makeText(getActivity(), "数据加载完成",Toast.LENGTH_SHORT).show();
-                                        adapter.notifyDataSetChanged();
-                                    }
-                                }
-
-                                @Override
-                                public void onFailure(Call<BaseResponse<UserInfo>> call, Throwable t) {
-                                    Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                                public void run() {
+                                    srl.setVisibility(View.GONE);
+                                    tvEmptyView.setVisibility(View.VISIBLE);
+                                    adapter.notifyDataSetChanged();
                                 }
                             });
+                        } else {
+                            recordlist = response.getData().getRecords();
+                            for (int i = 0; i < recordlist.size(); i++) {
+                                sharelist_item item = new sharelist_item();
+                                temp = recordlist.get(i);
+                                item.setRecord(temp);
+                                photoService.getUserByName(temp.getUsername()).enqueue(new Callback<BaseResponse<UserInfo>>() {
+                                    @Override
+                                    public void onResponse(Call<BaseResponse<UserInfo>> call, Response<BaseResponse<UserInfo>> profileresponse) {
+                                        item.setProfileUrl(profileresponse.body().getData().getAvatar());
+                                        data.add(item);
+                                        if (data.size() == recordlist.size()) {
+//                                            Toast.makeText(getActivity(), "数据加载完成", Toast.LENGTH_SHORT).show();
+                                            adapter.notifyDataSetChanged();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<BaseResponse<UserInfo>> call, Throwable t) {
+                                        Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
                         }
                     }
 
                     @Override
                     public void onError(Throwable t) {
                         // 处理错误情况，比如显示错误信息
-                        System.out.println(String.format("异常：%s",t.getMessage()));
+                        System.out.println(String.format("异常：%s", t.getMessage()));
                     }
 
                     @Override
