@@ -285,7 +285,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             intent = new Intent(MainActivity.this, UserInfoActivity.class);
             startActivity(intent);
         } else if (item.getItemId() == R.id.like_work) {
-
+            intent = new Intent(MainActivity.this, LikeListActivity.class);
+            startActivity(intent);
         } else if (item.getItemId() == R.id.night) {
             int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
             if (currentNightMode != Configuration.UI_MODE_NIGHT_YES) {

@@ -198,7 +198,6 @@ public class ShareListAdapter extends RecyclerView.Adapter<ShareListAdapter.mVie
                     }
                 }
             });
-
             iv_attention.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
