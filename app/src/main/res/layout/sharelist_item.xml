@@ -23,6 +23,7 @@
                 app:cardCornerRadius="10dp"
                 android:layout_margin="5dp"
                 android:elevation="5dp">
+
                 <ImageView
                     android:id="@+id/iv_userprofile"
                     android:layout_width="50dp"
@@ -32,7 +33,8 @@
 
             <TextView
                 android:id="@+id/sharelist_item_username"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="5"
                 android:layout_height="match_parent"
                 android:padding="4dp"
                 android:text="This is my name"
@@ -41,6 +43,14 @@
                 android:layout_marginStart="5dp"
                 android:textStyle="bold"
                 android:gravity="center_vertical"/>
+
+            <ImageView
+                android:id="@+id/iv_attention"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:src="@drawable/attention" />
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView

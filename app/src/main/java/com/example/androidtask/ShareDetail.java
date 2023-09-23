@@ -1,24 +1,21 @@
 package com.example.androidtask;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.androidtask.adapters.CommentListAdapter;
@@ -30,14 +27,10 @@ import com.example.androidtask.response.Comment;
 import com.example.androidtask.response.Data;
 import com.example.androidtask.response.Records;
 
-import org.reactivestreams.Subscription;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import io.reactivex.rxjava3.annotations.NonNull;
-import io.reactivex.rxjava3.core.FlowableSubscriber;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -46,7 +39,7 @@ public class ShareDetail extends AppCompatActivity {
 
     private Toolbar toolbar;
     private ShareDetailPageAdapter adapter;
-    private ImageView iv,iv_thumbsUp,iv_collect;
+    private ImageView iv,iv_thumbsUp,iv_collect,iv_attention;
     private TextView tv_username,tv_title,tv_content;
     private EditText et_comment;
     private Button btn_addcomment;
@@ -133,6 +126,54 @@ public class ShareDetail extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<BaseResponse<Records>> call, Throwable t) {
+                            Toast.makeText(ShareDetail.this,t.getMessage(),Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+        });
+
+        iv_attention.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean hasFocus = item.getRecord().getHasFocus();
+                if(!hasFocus){
+                    //点赞
+                    photoService.attention(item.getRecord().getId(), userId).enqueue(new Callback<BaseResponse<Object>>() {
+                        @Override
+                        public void onResponse(Call<BaseResponse<Object>> call, Response<BaseResponse<Object>> response) {
+                            if(response.body().getCode() == 200){
+                                item.getRecord().setHasFocus(true);
+                                iv_attention.setImageResource(R.drawable.attention2);
+                            } else {
+                                if (response.body().getMsg().equals("当前应用下无此用户id")){
+                                    Toast.makeText(ShareDetail.this,"无法关注该用户",Toast.LENGTH_SHORT).show();
+                                }
+
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<BaseResponse<Object>> call, Throwable t) {
+                            Toast.makeText(ShareDetail.this,t.getMessage(),Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else {
+                    //取消关注,先获取likeId
+                    photoService.attention(item.getRecord().getId(), userId).enqueue(new Callback<BaseResponse<Object>>() {
+                        @Override
+                        public void onResponse(Call<BaseResponse<Object>> call, Response<BaseResponse<Object>> response) {
+                            if(response.body().getCode() == 200){
+                                item.getRecord().setHasFocus(false);
+                                iv_attention.setImageResource(R.drawable.attention);
+                            } else {
+                                String msg = String.format("错误代码：%d",response.body().getCode());
+                                Toast.makeText(ShareDetail.this,msg,Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<BaseResponse<Object>> call, Throwable t) {
                             Toast.makeText(ShareDetail.this,t.getMessage(),Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -285,6 +326,7 @@ public class ShareDetail extends AppCompatActivity {
         tv_title = findViewById(R.id.tv_title);
         iv_thumbsUp = findViewById(R.id.iv_thumbsUp);
         iv_collect = findViewById(R.id.iv_collect);
+        iv_attention = findViewById(R.id.iv_attention);
         et_comment = findViewById(R.id.et_comment);
         btn_addcomment = findViewById(R.id.btn_addcomment);
 

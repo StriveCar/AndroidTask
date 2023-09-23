@@ -83,10 +83,11 @@ public class ShareListAdapter extends RecyclerView.Adapter<ShareListAdapter.mVie
         }
 
         if (item.getRecord().getHasFocus()){
-            holder.iv_collect.setImageResource(R.drawable.attention2);
+            holder.iv_attention.setImageResource(R.drawable.attention2);
         }  else {
-            holder.iv_collect.setImageResource(R.drawable.attention);
+            holder.iv_attention.setImageResource(R.drawable.attention);
         }
+
         //配置嵌套的图片列表适配器
         LinearLayoutManager llm = new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false);
         GridLayoutManager glm = new GridLayoutManager(context,3);
@@ -197,6 +198,7 @@ public class ShareListAdapter extends RecyclerView.Adapter<ShareListAdapter.mVie
                     }
                 }
             });
+
             iv_attention.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -212,8 +214,10 @@ public class ShareListAdapter extends RecyclerView.Adapter<ShareListAdapter.mVie
                                     item.getRecord().setHasFocus(true);
                                     iv_attention.setImageResource(R.drawable.attention2);
                                 } else {
-                                    String msg = String.format("错误代码：%d",response.body().getCode());
-                                    Toast.makeText(context,msg,Toast.LENGTH_SHORT).show();
+                                    if (response.body().getMsg().equals("当前应用下无此用户id")){
+                                        Toast.makeText(context,"无法关注该用户",Toast.LENGTH_SHORT).show();
+                                    }
+
                                 }
                             }
 
@@ -223,7 +227,7 @@ public class ShareListAdapter extends RecyclerView.Adapter<ShareListAdapter.mVie
                             }
                         });
                     } else {
-                        //取消点赞,先获取likeId
+                        //取消关注,先获取likeId
                         photoService.attention(data.get(p).getRecord().getId(), userId).enqueue(new Callback<BaseResponse<Object>>() {
                             @Override
                             public void onResponse(Call<BaseResponse<Object>> call, Response<BaseResponse<Object>> response) {
