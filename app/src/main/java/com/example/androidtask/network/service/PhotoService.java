@@ -64,6 +64,9 @@ public interface PhotoService {
     @GET("user/getUserByName")
     Call<BaseResponse<UserInfo>> getUserByName(@Query("username")String username);
 
+    @GET("like")
+    Flowable<BaseResponse<Data<Records>>> getLike(@Query("current") Integer current,@Query("size") Integer size,@Query("userId") String userId);
+
     @POST("like")
     Call<BaseResponse> thumbsUp(@Query("shareId") String shareId, @Query("userId") String userId);
 

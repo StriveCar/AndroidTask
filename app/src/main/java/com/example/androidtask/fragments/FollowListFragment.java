@@ -77,7 +77,7 @@ public class FollowListFragment extends Fragment {
 
     private void refreshData() {
         current++;
-        photoService.getShare(current,size,userId).subscribe(new FlowableSubscriber<BaseResponse<Data<Records>>>() {
+        photoService.getFocus(current,size,userId).subscribe(new FlowableSubscriber<BaseResponse<Data<Records>>>() {
             @Override
             public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Subscription s) {
                 s.request(Long.MAX_VALUE);
