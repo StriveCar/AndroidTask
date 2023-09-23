@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -24,6 +25,7 @@ import com.example.androidtask.network.RetrofitClient;
 import com.example.androidtask.network.service.PhotoService;
 import com.example.androidtask.response.BaseResponse;
 import com.example.androidtask.response.Comment;
+import com.example.androidtask.response.CommentParams;
 import com.example.androidtask.response.Data;
 import com.example.androidtask.response.Records;
 
@@ -41,6 +43,7 @@ public class ShareDetail extends AppCompatActivity {
     private ShareDetailPageAdapter adapter;
     private ImageView iv,iv_thumbsUp,iv_collect,iv_attention;
     private TextView tv_username,tv_title,tv_content;
+    private ListView lv_firstcommentlist;
     private EditText et_comment;
     private Button btn_addcomment;
     private sharelist_item item;
@@ -250,7 +253,12 @@ public class ShareDetail extends AppCompatActivity {
             public void onClick(View view) {
                 String content = et_comment.getText().toString();
                 System.out.println(String.format("content:%s\nshareId:%s\nuserId:%s\nusername:%s\n",content,item.getRecord().getId(),userId,username));
-                photoService.addFirstCommment(content,item.getRecord().getId(),userId,username).enqueue(new Callback<BaseResponse>() {
+                CommentParams param = new CommentParams();
+                param.setContent(content);
+                param.setShareId(item.getRecord().getId());
+                param.setUserId(userId);
+                param.setUserName(username);
+                photoService.addFirstCommment(param).enqueue(new Callback<BaseResponse>() {
                     @Override
                     public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
                         if (response.body().getCode() == 200){
@@ -294,7 +302,13 @@ public class ShareDetail extends AppCompatActivity {
                                 firstcommentdata.add(c);
                             }
                             System.out.println(String.format("comments:",firstcommentdata));
-                            adapter1.notifyDataSetChanged();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    adapter1.notifyDataSetChanged();
+                                    ResetListViewHeight();
+                                }
+                            });
                         } else {
                             // 数据为空的处理
                             Toast.makeText(ShareDetail.this, "暂时没有评论", Toast.LENGTH_SHORT).show();
@@ -317,6 +331,24 @@ public class ShareDetail extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void ResetListViewHeight() {
+        //修复列表只显示一行的问题
+        int height = 0;
+        if (firstcommentdata.size() == 0){
+            System.out.println("数据为空，高度设0");
+            return;
+        }
+        for (int i=0; i<firstcommentdata.size();i++) {
+            View listItemView = adapter1.getView(i,null,lv_firstcommentlist);
+            listItemView.measure(0,0);
+            height = height + listItemView.getMeasuredHeight();
+            ViewGroup.LayoutParams param =lv_firstcommentlist.getLayoutParams();
+            param.height = height;
+            lv_firstcommentlist.setLayoutParams(param);
+        }
+        return;
     }
 
     private void Binding() {
@@ -369,7 +401,7 @@ public class ShareDetail extends AppCompatActivity {
         rv.setLayoutManager(glm);
 
         //绑定评论列表
-        ListView lv_firstcommentlist = findViewById(R.id.lv_firstCommentList);
+        lv_firstcommentlist = findViewById(R.id.lv_firstCommentList);
         adapter1 = new CommentListAdapter(ShareDetail.this, firstcommentdata, userId);
         lv_firstcommentlist.setAdapter(adapter1);
 

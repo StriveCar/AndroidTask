@@ -2,6 +2,7 @@ package com.example.androidtask.network.service;
 
 import com.example.androidtask.response.BaseResponse;
 import com.example.androidtask.response.Comment;
+import com.example.androidtask.response.CommentParams;
 import com.example.androidtask.response.Data;
 import com.example.androidtask.response.ImageText;
 import com.example.androidtask.response.ImageUrl;
@@ -97,7 +98,7 @@ public interface PhotoService {
     Call<BaseResponse<Data<Comment>>> getFirstComment(@Query("current")int current, @Query("shareId")String shareId, @Query("size")int size);
 
     @POST("comment/first")
-    Call<BaseResponse> addFirstCommment(@Query("content")String content, @Query("shareId")String shareId,@Query("userId")String userId,@Query("userName")String username);
+    Call<BaseResponse> addFirstCommment(@Body CommentParams param);
 
     @GET("comment/second")
     Flowable<BaseResponse<Data<Comment>>> getsecondComment(@Query("commentId")String ParentcommentId, @Query("current")int current, @Query("shareId")String shareId, @Query("size")int size);
