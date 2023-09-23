@@ -152,10 +152,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initViewPager();
     }
 
+
     private void initViewPager() {
         //初始化Fragment，使用Viewpager管理Fragment
         fragmentlist.add(new ShareListFragment(mloginData.getId(),mloginData.getUsername()));
-        fragmentlist.add(new FollowListFragment());
+        fragmentlist.add(new FollowListFragment(mloginData.getId(),mloginData.getUsername()));
         fragmentlist.add(new CollectListFragment(mloginData.getId(),mloginData.getUsername()));
         fragmentlist.add(new MyShareListFragment(mloginData.getId()));
         viewpager = findViewById(R.id.viewpager);
@@ -242,6 +243,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
 
         if (v.getId() == R.id.bottom_bar_1_btn) {
+            Bundle bundle = new Bundle();
+            bundle.putInt("mode", 1);
             viewpager.setCurrentItem(0);
             changeSelectStatus(icon_1, iconTv_1);
         } else if (v.getId() == R.id.bottom_bar_2_btn) {

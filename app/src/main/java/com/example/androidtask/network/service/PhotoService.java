@@ -70,6 +70,8 @@ public interface PhotoService {
     @POST("focus")
     Call<BaseResponse<Object>> attention(@Query("focusUserId") String focusUserId, @Query("userId") String userId);
 
+    @GET("focus")
+    Flowable<BaseResponse<Data<Records>>> getFocus(@Query("current") Integer current,@Query("size") Integer size,@Query("userId") String userId);
     @POST("focus/cancel")
     Call<BaseResponse<Object>> attentionCancel(@Query("focusUserId") String focusUserId, @Query("userId") String userId);
 

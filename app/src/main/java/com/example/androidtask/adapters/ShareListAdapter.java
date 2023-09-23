@@ -207,7 +207,7 @@ public class ShareListAdapter extends RecyclerView.Adapter<ShareListAdapter.mVie
                     boolean hasFocus = item.getRecord().getHasFocus();
                     if(!hasFocus){
                         //点赞
-                        photoService.attention(data.get(p).getRecord().getId(), userId).enqueue(new Callback<BaseResponse<Object>>() {
+                        photoService.attention(data.get(p).getRecord().getPUserId(), userId).enqueue(new Callback<BaseResponse<Object>>() {
                             @Override
                             public void onResponse(Call<BaseResponse<Object>> call, Response<BaseResponse<Object>> response) {
                                 if(response.body().getCode() == 200){
@@ -228,7 +228,7 @@ public class ShareListAdapter extends RecyclerView.Adapter<ShareListAdapter.mVie
                         });
                     } else {
                         //取消关注,先获取likeId
-                        photoService.attention(data.get(p).getRecord().getId(), userId).enqueue(new Callback<BaseResponse<Object>>() {
+                        photoService.attentionCancel(data.get(p).getRecord().getPUserId(), userId).enqueue(new Callback<BaseResponse<Object>>() {
                             @Override
                             public void onResponse(Call<BaseResponse<Object>> call, Response<BaseResponse<Object>> response) {
                                 if(response.body().getCode() == 200){

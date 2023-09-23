@@ -139,7 +139,7 @@ public class ShareDetail extends AppCompatActivity {
                 boolean hasFocus = item.getRecord().getHasFocus();
                 if(!hasFocus){
                     //点赞
-                    photoService.attention(item.getRecord().getId(), userId).enqueue(new Callback<BaseResponse<Object>>() {
+                    photoService.attention(item.getRecord().getPUserId(), userId).enqueue(new Callback<BaseResponse<Object>>() {
                         @Override
                         public void onResponse(Call<BaseResponse<Object>> call, Response<BaseResponse<Object>> response) {
                             if(response.body().getCode() == 200){
@@ -160,7 +160,7 @@ public class ShareDetail extends AppCompatActivity {
                     });
                 } else {
                     //取消关注,先获取likeId
-                    photoService.attention(item.getRecord().getId(), userId).enqueue(new Callback<BaseResponse<Object>>() {
+                    photoService.attentionCancel(item.getRecord().getPUserId(), userId).enqueue(new Callback<BaseResponse<Object>>() {
                         @Override
                         public void onResponse(Call<BaseResponse<Object>> call, Response<BaseResponse<Object>> response) {
                             if(response.body().getCode() == 200){
@@ -349,6 +349,12 @@ public class ShareDetail extends AppCompatActivity {
             iv_thumbsUp.setImageResource(R.drawable.baseline_thumb_up_24);
         } else {
             iv_thumbsUp.setImageResource(R.drawable.baseline_thumb_up_off_alt_24);
+        }
+
+        if (item.getRecord().getHasFocus()){
+            iv_attention.setImageResource(R.drawable.attention2);
+        }  else {
+            iv_attention.setImageResource(R.drawable.attention);
         }
         //绑定数据
         tv_username.setText(item.getRecord().getUsername());
